@@ -1,5 +1,4 @@
 import React from "react";
-import './login.css'
 import userImage from '../../../assets/icons8-google.svg';
 function User_Login(){
     return(
