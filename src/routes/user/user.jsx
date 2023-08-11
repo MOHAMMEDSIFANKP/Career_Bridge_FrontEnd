@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
-import Step_1 from '../../pages/user/registerstep/user/Step1';
-import Step_2 from '../../pages/user/registerstep/user/Step2';
+import Step_1 from '../../pages/user/registerstep/user/Step1Page';
+import Step_2 from '../../pages/user/registerstep/user/Step2Page';
 import { useEffect } from 'react';
 
 function UserProfile() {
