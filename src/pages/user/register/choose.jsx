@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import image1 from '../../../assets/users.png';
 import image2 from '../../../assets/hiring.webp';
 
 function Choos() {
+  useEffect(() => {
+    document.title = 'Choose somthing';
+  }, []);
   const [selectedOption, setSelectedOption] = useState('client'); // 'client' or 'freelancer'
 
   const handleOptionChange = (option) => {
@@ -57,7 +60,7 @@ function Choos() {
           </div>
           <div className="flex justify-center items-center">
             <button className="butt w-60 p-2 mt-8  text-white rounded-3xl font-semibold bg-purple-500">
-              {selectedOption === 'client' ? 'Sign In' : 'Apply as a freelancer'}
+              {selectedOption === 'client' ? 'Apply as a Company' : 'Apply as a freelancer'}
             </button>
           </div>
         </form>

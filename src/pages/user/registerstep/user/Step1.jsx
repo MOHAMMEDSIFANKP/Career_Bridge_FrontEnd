@@ -1,22 +1,21 @@
-import React, { useState } from "react";
-import biginer from '../../../assets/biginer.png';
-import {
-    Card,
-    CardBody,
-    CardFooter,
-    Typography,
-    Button,
-} from "@material-tailwind/react";
-import { NavbarDefault } from "../../../components/NavBar";
+import React, { useState ,useEffect} from "react";
+import biginer from '../../../../assets/biginer.png';
+import someexpert from '../../../../assets/someexpert.png';
+import expert from '../../../../assets/expert.png';
+import { NavbarDefault } from "../../../../components/NavBar";
 function Step_1() {
+    useEffect(() => {
+        document.title = 'Add your Position';
+      }, []);
+    
     const [selectedDiv, setSelectedDiv] = useState(-1);
     return (
-        <div className="h-screen">
+        <div className="h-screen z-10">
             <div className="h-20">
                 <NavbarDefault />
             </div>
             <div className="ps-6 lg:mt-20 lg:ps-80 md:mt-20">
-                <p className="text-sm ">1/3</p>
+                <p className="text-sm ">1/4</p>
                 <h4 className="text-2xl lg:pt-12 pt-5 md:text-4xl font-serif font-bold">
                     A few quick questions: first, have you <br /> freelanced before?
                 </h4>
@@ -26,7 +25,7 @@ function Step_1() {
             </div>
 
             <div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 gap-4 mx-4 md:mx-8 lg:mx-64 mt-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 gap-4 mx-4 md:mx-8 lg:mx-64 mt-8 pb-20">
                     <div
                         className={`rounded-xl border relative m-2 ${selectedDiv === 0 ? "bg-purple-300" : ""
                             }`}
@@ -36,10 +35,10 @@ function Step_1() {
                             type="radio"
                             className="absolute top-0 right-0 mt-2 mr-2 md:mt-3 md:mr-3"
                         />
-                        <div className="flex-auto">
+                        <div className="flex-auto mb-5">
                             <img src={biginer} className="h-40 m-5 sm:h-40" alt="" />
                             <p className="text-2xl font-serif font-bold ms-8 mb-2">
-                                I am brand new to this
+                                I am new to this
                             </p>
                         </div>
                     </div>
@@ -53,10 +52,10 @@ function Step_1() {
                             type="radio"
                             className="absolute top-0 right-0 mt-2 mr-2 md:mt-3 md:mr-3"
                         />
-                        <div className="flex-auto">
-                            <img src={biginer} className="h-40 m-5 sm:h-40" alt="" />
+                        <div className="flex-auto mb-5">
+                            <img src={someexpert} className="h-40 m-5 sm:h-40" alt="" />
                             <p className="text-2xl font-serif font-bold ms-8 mb-2">
-                                I am brand new to this
+                                Some experience
                             </p>
                         </div>
                     </div>
@@ -70,24 +69,30 @@ function Step_1() {
                             type="radio"
                             className="absolute top-0 right-0 mt-2 mr-2 md:mt-3 md:mr-3"
                         />
-                        <div className="flex-auto">
-                            <img src={biginer} className="h-40 m-5 sm:h-40" alt="" />
-                            <p className="text-2xl font-serif font-bold ms-8 mb-2">
-                                I am brand new to this
+                        <div className="flex-auto mb-5">
+                            <img src={expert} className="h-40 m-5 sm:h-40" alt="" />
+                            <p className="text-2xl font-serif font-bold ms-8 mb-2 ">
+                                I am an expert
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="h-80 flex">
-                <div className="flex items-end justify-start flex-1 m-4">
-                    <button className="bg-transparent hover:bg-purple-500 text-purple-500 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded-full ">Back</button>
-                </div>
-                <div className="flex items-end justify-end flex-1 m-4">
-                <button className="px-4 py-2 text-purple-500 me-4">Skip for now</button>
-                <button className="bg- hover:bg-purple-500 text-purple-500 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded-full ">next </button>
-
-                </div>
+            <div className="bg-white lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
+                <div className="h-20 w-full shadow-xl border flex justify-between">
+                    <div>
+                    <button className="bg-transparent hover:bg-purple-500 text-purple-500 font-semibold hover:text-white py-2 px-6 m-4 border border-purple-500 hover:border-transparent rounded-full ">Back</button>
+                    </div>    
+                    <div className="flex">
+                   <div className="w-24 me-4 flex">
+                   <button className="  text-purple-500">Skip for now</button>
+                   </div>
+                   <div className="w-24 pt-5">
+                
+                    <button className="bg-purple-400 px-6 py-2 rounded-full">Next</button>
+                   </div>
+                    </div>
+                </div> 
             </div>
 
         </div>

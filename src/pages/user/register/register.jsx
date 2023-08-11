@@ -1,7 +1,11 @@
-import React from "react";
+import React,{useEffect} from "react";
 import userImage from '../../../assets/icons8-google.svg';
 
 function SignUp() {
+    useEffect(() => {
+        document.title = 'Register here';
+      }, []);
+    
     return (
         <div className="h-screen flex flex-col items-start">
             <h1 className="font-bold text-2xl text-purple-600 mt-5 ml-9">Career Bridge</h1>

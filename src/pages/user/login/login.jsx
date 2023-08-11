@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
 import userImage from '../../../assets/icons8-google.svg';
 function User_Login(){
+  useEffect(() => {
+    document.title = 'Sign in';
+  }, []);
     return(
     <>
       <div className="w-full h-screen flex justify-center items-center">
