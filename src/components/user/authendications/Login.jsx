@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useRef} from "react";
 
 import { ToastContainer,toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';import userImage from '../../../assets/icons8-google.svg';
+import 'react-toastify/dist/ReactToastify.css';
+import userImage from '../../../assets/icons8-google.svg';
 
 function User_Login(){
   const [user,setUser] = useState ({email : '',password : ''});
@@ -50,7 +51,7 @@ function User_Login(){
     return(
     <>
       <div className="w-full h-screen flex justify-center items-center">
-        <div className="bg-white rounded-2xl  w-full sm:w-10/12 md:w-6/12 xl:w-3/12 border border-purple-400">
+        <div className="bg-white rounded-2xl  w-full sm:w-10/12 md:w-6/12 xl:w-3/12 sm:border border-purple-400">
           <h3 className="text-3xl font-bold my-10 text-center">Login</h3>
           <div className="m-10">
           <ToastContainer />
@@ -81,9 +82,9 @@ function User_Login(){
             <span className="flex-1 text-center font-bold text-white">Continue with Google</span>
             </div>
             <div className="flex justify-between my-3">
-                <hr className="m-5 w-14 border-1 border-purple-400"/>
-                <p className="text-gray-500 text-sm pt-2">Don't have an Upwork account?</p>
-                <hr className="m-5 w-14 border-1 border-purple-400"/>
+                <hr className="my-5 flex-grow border-t-1 border-purple-400"/>
+                <p className="text-gray-500 sm:text-sm px-3 text-xs pt-3">Don't have an Upwork account?</p>
+                <hr className="my-5 flex-grow border-t-1 border-purple-400"/>
             </div>
           </div>
         </div>

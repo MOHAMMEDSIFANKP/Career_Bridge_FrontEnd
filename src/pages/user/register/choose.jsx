@@ -15,14 +15,14 @@ function Choos() {
   return (
     <div className="h-screen flex flex-col items-start">
       <h1 className="font-bold text-2xl text-purple-600 mt-5 ml-9">Career Bridge</h1>
-      <div className="bg-white rounded-2xl sm:w-10/12 md:w-6/12 lg:w-4/12 xl:w-4/12 border border-purple-400 mx-auto mt-16 grid grid-row-2 gap-2">
+      <div className="bg-white rounded-2xl sm:w-10/12 md:w-6/12 lg:w-4/12 xl:w-4/12 sm:border border-purple-400 mx-auto mt-16 grid grid-row-2 gap-2">
         <div>
           <p className="text-2xl font-bold text-center m-8">Join as a client or freelancer</p>
         </div>
         <form action="">
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 grid-cols-none gap-5">
             <div
-              className={`border rounded-xl ms-16 grid grid-row-2 ${
+              className={`border rounded-xl mx-3 sm:ms-16 grid grid-row-2 ${
                 selectedOption === 'client' ? 'border-purple-500 bg-purple-200' : ''
               }`}
               onClick={() => handleOptionChange('client')}
@@ -40,7 +40,7 @@ function Choos() {
               </div>
             </div>
             <div
-              className={`me-16 border rounded-xl grid grid-row-2 ${
+              className={`sm:me-16 border mx-3 sm:mx-0 rounded-xl grid grid-row-2 ${
                 selectedOption === 'freelancer' ? 'border-purple-500 bg-purple-200' : ''
               }`}
               onClick={() => handleOptionChange('freelancer')}
