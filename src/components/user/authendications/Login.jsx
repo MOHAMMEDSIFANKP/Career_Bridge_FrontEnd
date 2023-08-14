@@ -1,16 +1,28 @@
 import React, {useEffect, useState, useRef} from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import userImage from '../../../assets/icons8-google.svg';
 
 function User_Login(){
+
+  const location = useLocation();
+  const checkEmail = location.state?.checkEmail; 
+
   const [user,setUser] = useState ({email : '',password : ''});
+
   const emailInputRef = useRef(null)
   const passInputRef = useRef(null)
-  console.log(user.email,user.password)
+  
   const urlParams = new URLSearchParams(window.location.search);
   const message = urlParams.get('message');
+
+  if (checkEmail) {
+    toast.info("Please check your email for the activation.");
+  }
+  console.log(checkEmail)
+
   useEffect(() => {
     if (message) {
       if (message.length === 13) {
@@ -19,7 +31,9 @@ function User_Login(){
         toast.success(message,);
       }
     }
-  }, []);  
+    
+  }, []);
+
   useEffect(() => {
     emailInputRef.current.focus();
     document.title = 'Login | Career Bridge';
@@ -57,11 +71,11 @@ function User_Login(){
           <ToastContainer />
             <form onSubmit={FormHandlerLogin}>
                 <div>
-                <input  ref={emailInputRef} type="email" value={user.email} id="email" name="email" className="bg-gray-50 border border-purple-400 w-full p-2 rounded-xl" placeholder="Email" 
+                <input  ref={emailInputRef} type="email" value={user.email} id="email" name="email" className="bg-gray-50 border border-gray-400 w-full p-2 rounded-xl focus:outline-none focus:border-purple-500" placeholder="Email" 
                 onChange={(e) => setUser({...user,[e.target.name]: e.target.value})}/>
                 </div> 
                 <div className=" my-4">
-                <input ref={passInputRef} type="password" id="password" name="password" className="bg-gray-50 border border-purple-400  w-full p-2 rounded-xl" placeholder="Password"
+                <input ref={passInputRef} type="password" id="password" name="password" className="bg-gray-50 border border-gray-400  w-full p-2 rounded-xl  focus:outline-none focus:border-purple-500" placeholder="Password"
                 onChange={(e) => setUser({...user,[e.target.name]:e.target.value})} />
                 </div> 
                 <div className="flex justify-center">
