@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LoginPage1 from './pages/user/authendication/LoginPage'
-import User_Home from './pages/user/home/home'
+import User_HomePage from './pages/user/home/User_HomePage'
 import Choos from './pages/user/register/choose'
 import SignUpPage from './pages/user/authendication/SignUpPage'
 import Userprofile from './routes/user/user'
@@ -13,7 +13,7 @@ function App() {
    <div>
     <Router>
       <Routes>
-      <Route path='/' exact element={<User_Home/>} />
+      <Route path='/' exact element={<User_HomePage/>} />
       <Route path='/login/' exact element={<LoginPage1/>} />
       <Route path='/choose' exact element={<Choos/>} />
       <Route path='/signup' exact element={<SignUpPage/>} />

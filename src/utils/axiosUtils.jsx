@@ -24,7 +24,6 @@ const attatToken = (req, tokenName) =>{
 const userAxiosInstant = createAxioxClient(UserUrl)
 userAxiosInstant.interceptors.request.use(async (req) =>{
     const modifiedReq = attatToken(req, 'userToken')
-    console.log('Useraxios instance modified :', modifiedReq);
     return modifiedReq
 })
 
