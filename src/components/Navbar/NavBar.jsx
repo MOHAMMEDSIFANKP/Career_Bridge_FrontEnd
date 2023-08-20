@@ -10,7 +10,7 @@ export function NavbarDefault() {
   const [openNav, setOpenNav] = React.useState(false);
   const history = useNavigate()
   const logout = ()=>{
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('token');
     history('/login')}
   React.useEffect(() => {
     window.addEventListener(

@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useGoogleLogin } from '@react-oauth/google';
-import Loader from "../../Loading/Loading";
-import userImage from '../../../assets/icons8-google.svg';
-import { UserGoogleSignup } from "../../../services/userApi";
+import Loader from "../Loading/Loading";
+import userImage from '../../assets/icons8-google.svg';
+import { CompanyGoogleSignup } from "../../services/companyApi";
 import axios from "axios";
 
-function SignUp() {
+function Company_Register() {
     const navigate = useNavigate()
 
     const [other, setOther] = useState({ cpassword: '', check: false })
@@ -84,15 +84,15 @@ function SignUp() {
                         Accept: 'application/json'
                     }
                 });
-                const res = await UserGoogleSignup(response.data);
+                const res = await CompanyGoogleSignup(response.data);
                 handleLoading();
                 toast.success(res.data.msg)
                 setgUser([])
-                navigate('/user/step1')
+                navigate('/company/')
 
             } catch (error) {
+                console.log(error);
                 handleLoading();
-                console.log(error.response)
                 if (error.response && error.response.data && error.response.data.email) {
                     toast.error(error.response.data.email[0]);
                 } else {
@@ -115,7 +115,7 @@ function SignUp() {
             handleLoading();
             try {
                 const response = await axios.post(
-                    import.meta.env.VITE_BASE_USER_URL + '/api/register/', user);
+                    import.meta.env.VITE_COMPANY_URL + 'register/', user);
                 toast.success(response.data.msg)
                 setUser({
                     first_name: '',
@@ -126,6 +126,7 @@ function SignUp() {
                 });
                 setOther({ cpassword: '', check: false })
                 handleLoading();
+
             } catch (error) {
                 handleLoading();
                 if (error.response && error.response.data) {
@@ -154,7 +155,7 @@ function SignUp() {
 
                 <div className="bg-white rounded-2xl w-12/12 sm:w-6/12 xl:w-3/12 lg:w-5/12 sm:border border-purple-400 mx-auto sm:mt-28 grid grid-row-8 gap-2">
                     <div>
-                        <h3 className="text-2xl font-bold font-serif mt-8 mb-4 text-center">Sign up to find work you love</h3>
+                        <h3 className="text-2xl font-bold font-serif mt-8 mb-4 text-center">Sign up to hire talent</h3>
                     </div>
                     <div onClick={() => login()} className="flex mx-10 rounded-3xl py-1 bg-purple-300 items-center">
                         <img src={userImage} alt="Google logo" className="ml-2 rounded-full h-8" />
@@ -214,4 +215,4 @@ function SignUp() {
     )
 }
 
-export default SignUp
+export default Company_Register

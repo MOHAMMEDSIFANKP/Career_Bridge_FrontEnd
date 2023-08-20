@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import LoginPage1 from './pages/user/authendication/LoginPage'
-import User_HomePage from './pages/user/home/User_HomePage'
-import Choos from './pages/user/register/choose'
-import SignUpPage from './pages/user/authendication/SignUpPage'
-import Userprofile from './routes/user/user'
-// import companyprofile from './routes/company/company'
-import './App.css'
+import LoginPage from './pages/LoginPage'
+import ChoosePage from './pages/ChoosePage'
+import UnknownHomePage from './pages/UnknownUser/UnknownHomePage'
+import UserRoute from './routes/user'
+import CompanyRoute from './routes/company'
+import AdminRoute from './routes/Admin'
+import Private_routes from './Protected_Routes/Private_routes'
 
 function App() {
 
@@ -13,12 +13,14 @@ function App() {
    <div>
     <Router>
       <Routes>
-      <Route path='/' exact element={<User_HomePage/>} />
-      <Route path='/login/' exact element={<LoginPage1/>} />
-      <Route path='/choose' exact element={<Choos/>} />
-      <Route path='/signup' exact element={<SignUpPage/>} />
-      <Route path='/user/*' element={<Userprofile/>} />
-      {/* <Route path='/company/*' element={<companyprofile/>} /> */}
+      <Route element={<Private_routes/>} >
+      <Route path='/' exact element={<UnknownHomePage/>} />
+      <Route path='/login/' exact element={<LoginPage/>} />
+      <Route path='/choose' exact element={<ChoosePage/>} />
+      </Route>
+      <Route path='/user/*' element={<UserRoute/>} />
+      <Route path='/company/*' element={<CompanyRoute/>} />
+      <Route path='/admin/*' element={<AdminRoute/>} />
       </Routes>
     </Router>
    </div>
