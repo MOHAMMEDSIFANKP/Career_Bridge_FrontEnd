@@ -2,7 +2,7 @@ import React from 'react'
 import User_Home from '../../../components/user/home/User_Home'
 import { NavbarDefault } from '../../../components/Navbar/NavBar'
 
-function User_HomePage() {
+function UserHomePage() {
   return (
     <div>
         <NavbarDefault/>
@@ -11,4 +11,4 @@ function User_HomePage() {
   )
 }
 
-export default User_HomePage
+export default UserHomePage

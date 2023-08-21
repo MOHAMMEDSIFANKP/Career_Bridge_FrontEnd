@@ -1,9 +1,10 @@
 import jwt_decode from 'jwt-decode'
 import { Outlet } from 'react-router-dom'
 import UnknownHomePage from '../pages/UnknownUser/UnknownHomePage'
-import Company_HomePage from '../pages/company/Company_HomePage'
+import Company_HomePage from '../pages/Company/CompanyHomePage'
+import AdminHomePage from '../pages/Admin/AdminHomePage'
 
-function User_Protected() {
+function UserProtected() {
   const token = localStorage.getItem('token')
   if (token){
     const decode = jwt_decode(token)
@@ -12,11 +13,15 @@ function User_Protected() {
       return <Outlet/>
     } else if (decode.role === 'company'){
       return <Company_HomePage/>
-    } 
+    } else if (decode.role === 'admin' && decode.is_admin){
+      return <AdminHomePage/>
+    } else{
+      return <UnknownHomePage/>
+    }
   } else {
     return <UnknownHomePage/>
   }
   
 }
 
-export default User_Protected
+export default UserProtected

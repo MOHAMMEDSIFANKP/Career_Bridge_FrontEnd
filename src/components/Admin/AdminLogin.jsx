@@ -98,47 +98,33 @@ function AdminLogin(){
 // After form submition
 const FormHandlerLogin = async (e) => {
   e.preventDefault();
-  
   if (Validation()) {
-    try {
-      const res = await AdminSignin(user);
-      
+    AdminSignin(user).then((res) => {
       if (res.status === 200) {
-        const token = JSON.stringify(res.data);
-        const decoded = jwtDecode(token);
-        console.log(decoded);
-        
+        const token = JSON.stringify(res.data)
+        const decoded = jwtDecode(token)
         if (decoded.role === 'admin' && decoded.is_admin) {
-          localStorage.setItem("token", token);
-          toast.success('Login successful');
-          navigate('/user/');
+          localStorage.setItem("token", token)
+          toast.success('Login succesfull')
+          navigate('/admin/')
         } else if (decoded.role === 'company') {
-          localStorage.setItem('token', token);
-          navigate('/company/');
-        } else {
-          toast.error('Invalid user');
+          // localStorage.setItem('token', token);
+          // navigate('/company/')
+        }
+        else {
+          toast.error('Invalid role')
         }
       } else {
-        toast.error('Invalid login credentials');
+        toast.error('Invalid login credentials')
       }
-    } catch (error) {
-      // Handle backend errors and show error messages
-      if (error.response) {
-        const errorMessage = error.response.data.message;
-        // You can use the error message to display to the user
-        toast.error(errorMessage);
-      } else {
-        // Handle other types of errors (network, etc.)
-        console.error("An error occurred:", error);
-      }
-    }
+    })
   }
-};
+}
 
     return(
       <>
       {loading && <Loader />}
-        <div class="h-screen grid grid-rows-[.08fr]">
+        <div className="h-screen grid grid-rows-[.08fr]">
           <div>
             <h1 className="font-bold text-2xl text-purple-600 mt-5 ml-9">Career Bridge</h1>
           </div>

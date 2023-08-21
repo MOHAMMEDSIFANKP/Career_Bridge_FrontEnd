@@ -1,22 +1,25 @@
 import { Routes, Route } from 'react-router-dom';
-import Step2Page from '../pages/user/registerstep/StepsPage';
-import User_HomePage from '../pages/user/home/User_HomePage';
-import SignUpPage from '../pages/user/authendication/SignUpPage'
-import User_Protected from '../Protected_Routes/User_Protected';
-import Private_routes from '../Protected_Routes/Private_routes';
-function UserProfile() {
+import Step2Page from '../pages/User/RegisterSteps/StepsPage';
+import UserHomePage from '../pages/User/UserHomePage/UserHomePage';
+import SignUpPage from '../pages/User/SignUpPage/SignUpPage';
+import UserProtected from '../ProtectedRoutes/UserProtected';
+import PrivateRoutes from '../ProtectedRoutes/PrivateRoutes';
+import UserProfilePage from '../pages/User/UserProfilePage/UserProfilePage';
+function UserRoutes() {
 
   return (
     <Routes>
-      <Route element={<Private_routes/>}>
+      <Route element={<PrivateRoutes/>}>
+     
         <Route path='/signup' exact element={<SignUpPage />} />
       </Route>
-      <Route element={<User_Protected />}>
-        <Route path='/' element={<User_HomePage />} />
+      {/* <Route element={<UserProtected />}> */}
+        <Route path='/' element={<UserHomePage />} />
         <Route path='/steps' element={<Step2Page />} />
-      </Route>
+        <Route path='/profile' element={<UserProfilePage/>}/>
+      {/* </Route> */}
     </Routes>
   );
 }
 
-export default UserProfile;
+export default UserRoutes;

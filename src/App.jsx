@@ -2,10 +2,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import ChoosePage from './pages/ChoosePage'
 import UnknownHomePage from './pages/UnknownUser/UnknownHomePage'
-import UserRoute from './routes/user'
-import CompanyRoute from './routes/company'
-import AdminRoute from './routes/Admin'
-import Private_routes from './Protected_Routes/Private_routes'
+import UserRoutes from './routes/user'
+import CompanyRoutes from './routes/company'
+import AdminRoutes from './routes/Admin'
+import PrivateRoutes from './ProtectedRoutes/PrivateRoutes'
+import MailConfirm from './pages/MailConfirm'
 
 function App() {
 
@@ -13,14 +14,15 @@ function App() {
    <div>
     <Router>
       <Routes>
-      <Route element={<Private_routes/>} >
+      <Route element={<PrivateRoutes/>} >
       <Route path='/' exact element={<UnknownHomePage/>} />
       <Route path='/login/' exact element={<LoginPage/>} />
       <Route path='/choose' exact element={<ChoosePage/>} />
+      <Route path='/confirm' exact element={<MailConfirm />} />
       </Route>
-      <Route path='/user/*' element={<UserRoute/>} />
-      <Route path='/company/*' element={<CompanyRoute/>} />
-      <Route path='/admin/*' element={<AdminRoute/>} />
+      <Route path='/user/*' element={<UserRoutes/>} />
+      <Route path='/company/*' element={<CompanyRoutes/>} />
+      <Route path='/admin/*' element={<AdminRoutes/>} />
       </Routes>
     </Router>
    </div>

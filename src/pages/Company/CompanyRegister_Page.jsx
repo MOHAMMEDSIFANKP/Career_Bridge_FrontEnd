@@ -1,7 +1,7 @@
 import React from 'react'
 import Company_Register from '../../components/Company/Company_Register'
 
-function Company_Register_Page() {
+function CompanyRegister_Page() {
   return (
     <div>
         <Company_Register/>
@@ -9,4 +9,4 @@ function Company_Register_Page() {
   )
 }
 
-export default Company_Register_Page
+export default CompanyRegister_Page
