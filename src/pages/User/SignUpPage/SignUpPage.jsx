@@ -86,6 +86,7 @@ function SignUpPage() {
           user
         );
         toast.success(response.data.msg);
+        navigate('/confirm')
         setUser({
           first_name: "",
           last_name: "",
@@ -136,7 +137,7 @@ function SignUpPage() {
       handleLoading();
       toast.success(res.data.msg);
       setgUser([]);
-      navigate("/user/step1");
+      navigate("/user/position");
     } catch (error) {
       handleLoading();
       console.log(error.response);

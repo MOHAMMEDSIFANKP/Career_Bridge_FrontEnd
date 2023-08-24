@@ -2,7 +2,6 @@ import React from "react";
 import { Navbar, MobileNav, Typography, Button, IconButton, Menu, MenuHandler, MenuList, MenuItem } from "@material-tailwind/react";
 import './NavBar.css'
 import defaultprofile from '../../assets/defaultprofile.jpeg'
-import { ProfileList } from "../dropdown";
 import { useNavigate } from "react-router-dom";
 
 
@@ -72,7 +71,7 @@ export function NavbarDefault() {
   );
 
   return (
-    <Navbar className="custom-navbar-width px-4 lg:px-8 lg:py-4 sticky top-0 left-0 right-0 z-50">
+    <Navbar className="custom-navbar-width py-2 px-4 lg:px-8 lg:py-4 sticky top-0 left-0 right-0 z-50">
       <div className="lg:mx-28 flex items-center justify-between text-purple-400">
         <Typography
           as="a"

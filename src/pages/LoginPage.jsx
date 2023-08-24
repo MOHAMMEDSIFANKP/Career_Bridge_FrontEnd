@@ -27,52 +27,6 @@ function LoginPage() {
     document.title = "Login | Career Bridge";
   }, []);
 
-  // For google registratin
-  const [guser, setgUser] = useState([]);
-
-  const login = useGoogleLogin({
-    onSuccess: (codeResponse) => setgUser(codeResponse),
-    onError: (error) => console.log("Login Failed:", error),
-  });
-  useEffect(() => {
-    const GoogleAuth = async () => {
-      handleLoading();
-      try {
-        if (!guser) return;
-        const response = await axios.get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${guser.access_token}`,
-          {
-            headers: {
-              Authorization: `Bearer ${guser.access_token}`,
-              Accept: "application/json",
-            },
-          }
-        );
-        const res = await UserGoogleSignin(response.data);
-        const token = JSON.stringify(res.data);
-        const decoded = jwtDecode(token);
-        if (decoded.role === "user") {
-          localStorage.setItem("token", token);
-          navigate("/user/");
-        } else if (decoded.role === "company") {
-          localStorage.setItem("token", token);
-          navigate("/company/");
-        }
-        setgUser([]);
-      } catch (error) {
-        if (error.response) {
-          toast.error(error.response.data.detail);
-        } else {
-          toast.error("An error occurred during signup.");
-        }
-      } finally {
-        handleLoading();
-      }
-    };
-
-    GoogleAuth();
-  }, [guser]);
-
   // Validations
   const Validation = () => {
     if (user.email.trim() === "") {
@@ -104,14 +58,20 @@ function LoginPage() {
     e.preventDefault();
     if (Validation()) {
       userSignin(user).then((res) => {
-        console.log(res);
         if (res.status === 200) {
           const token = JSON.stringify(res.data);
           const decoded = jwtDecode(token);
           if (decoded.role === "user") {
-            localStorage.setItem("token", token);
-            toast.success("Login succesfull");
-            navigate("/user/");
+            if (decoded.is_active) {
+              localStorage.setItem("token", token);
+              if (decoded.is_compleated) {
+                navigate("/user/");
+              } else {
+                navigate("/user/position");
+              }
+            } else {
+              toast.error("Please verify your email");
+            }
           } else if (decoded.role === "company") {
             localStorage.setItem("token", token);
             navigate("/company/");
@@ -119,11 +79,58 @@ function LoginPage() {
             toast.error("Invalid role");
           }
         } else {
-          toast.error("Invalid login credentials");
+          console.log(res.status);
+          toast.error("Invalid login credentials or verify your email");
         }
       });
     }
   };
+
+  // For google registratin
+  const [guser, setgUser] = useState([]);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      setgUser(codeResponse);
+      GoogleAuth();
+    },
+    onError: (error) => console.log("Login Failed:", error),
+  });
+  const GoogleAuth = async () => {
+    handleLoading();
+    try {
+      if (!guser) return;
+      const response = await axios.get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${guser.access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${guser.access_token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+      const res = await UserGoogleSignin(response.data);
+      const token = JSON.stringify(res.data);
+      const decoded = jwtDecode(token);
+      if (decoded.role === "user") {
+        localStorage.setItem("token", token);
+        navigate("/user/");
+      } else if (decoded.role === "company") {
+        localStorage.setItem("token", token);
+        navigate("/company/");
+      }
+      setgUser([]);
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.detail);
+      } else {
+        toast.error("An error occurred during signup.");
+      }
+    } finally {
+      handleLoading();
+    }
+  };
+
   return (
     <>
       {loading && <Loader />}

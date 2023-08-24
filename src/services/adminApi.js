@@ -4,4 +4,7 @@ const AdminSignin = (values) =>{
     return adminAxiosInstant.post('token/', values, {withCredentials: true})
 }
 
-export {AdminSignin}
+const GetLanguages = () =>{
+    return adminAxiosInstant.get('LanguageListCreateAPIView', {withCredentials: true})
+}
+export {AdminSignin,GetLanguages}

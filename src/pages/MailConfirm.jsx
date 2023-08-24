@@ -10,7 +10,7 @@ function MailConfirm() {
        </div>
        <div className='container mx-auto h-screen grid grid-rows-[.08fr]'>
            <div className='text-center mt-10'>
-           <h1 className='font-bold text-3xl text-purple-500'>Check Your Mail and Confirm</h1>
+           <h1 className='font-extrabold text-3xl text-purple-500'>Check Your Mail and Confirm</h1>
            </div>
            <div className='flex justify-center h-4/5 '>
             <img src={MailconfirmImg} className='w-full sm:w-5/6' alt="" />
