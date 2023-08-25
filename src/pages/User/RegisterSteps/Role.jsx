@@ -1,16 +1,81 @@
-import { useEffect } from "react";
-import { Input, Button } from "@material-tailwind/react";
+import { useEffect, useState } from "react";
+import { Input } from "@material-tailwind/react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
+import {
+  AdminJobFieldList,
+  AdminJobTitlelist,
+} from "../../../services/adminApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+// Redex
+import { useDispatch } from "react-redux";
+import { setRole } from "../../../Redux/UserSlice";
+import { useSelector } from "react-redux";
 function Role() {
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Redex destructure
+  const { JobFiledRedex, JobTitleRedex } = useSelector((state) => state.user);
+
+  const [Jobfield, setJobfield] = useState([]);
+  const [JobTitle, setJobTitle] = useState([]);
+  const [showList, setShowList] = useState(false);
+  const [showTitle, setShowTitle] = useState(false);
+  const [selectedField, setSelectedField] = useState(
+    JobFiledRedex !== "" ? JobFiledRedex : ""
+  );
+  const [selectedTitle, setSelectedTitle] = useState(
+    JobTitleRedex !== "" ? JobTitleRedex : ""
+  );
+  const [selectedId, setSelectedId] = useState("");
+
+  // Get data  
+  async function getJoblist() {
+    try {
+      const response = await AdminJobFieldList();
+      setJobfield(response.data);
+      const response2 = await AdminJobTitlelist();
+      setJobTitle(response2.data);
+    } catch (error) {
+      toast.error("Error fetching job fields:", error);
+    }
+  }
+
+  const filterFields = Jobfield.filter((item) =>
+    item.field_name.toLowerCase().includes(selectedField.toLowerCase())
+  );
+
+  const filterJobTitle = JobTitle.filter(
+    (item) =>
+      item.field === selectedId &&
+      item.title_name.toLowerCase().includes(selectedTitle.toLowerCase())
+  );
+
   useEffect(() => {
-    document.title = 'Add your Role | Career Bridge';
-}, []);
+    document.title = "Add your Role | Career Bridge";
+    getJoblist();
+  }, []);
+
+  const NextButton = () => {
+    if (selectedField === "" || selectedTitle === "") {
+      toast.error("Field should not be empty");
+    } else {
+      dispatch(
+        setRole({
+          JobFiledRedex: selectedField,
+          JobTitleRedex: selectedTitle,
+        })
+      );
+      navigate("/user/experience");
+    }
+  };
   return (
     <>
       <NavbarDefault />
+      <ToastContainer />
       <div className="sm:container sm:px-8 mt-10 lg:mx-auto mx-8 lg:mt-32 sm:mt-14 ">
         <p className="text-sm">2/7</p>
         <div className="sm:mt-8 mt-5">
@@ -27,27 +92,75 @@ function Role() {
           <div className="col-span-12 sm:col-span-6 ">
             <div className="">
               <Input
-                type="email"
-                placeholder="Email Address"
+                type="text"
+                placeholder="JobField"
+                value={selectedField}
+                onClick={() => setShowList(!showList)}
+                onChange={(e) => setSelectedField(e.target.value)}
                 className="h-14 !border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                 labelProps={{
                   className: "hidden",
                 }}
                 containerProps={{ className: "min-w-[100px]" }}
               />
+              {showList && (
+                <div className="w-full overflow-y-auto border-2 shadow-2xl">
+                  {filterFields.map((item) => (
+                    <p
+                      key={item.id}
+                      className={`m-4 cursor-pointer ${
+                        selectedField === item.field_name
+                          ? "font-bold"
+                          : "text-black"
+                      }`}
+                      onClick={() => {
+                        setSelectedField(item.field_name);
+                        setSelectedId(item.id);
+                        setShowList(false);
+                      }}
+                    >
+                      {item.field_name}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="col-span-12 sm:col-span-6 ">
             <div className="flex-grow">
               <Input
                 type="email"
-                placeholder="Email Address"
+                value={selectedTitle}
+                placeholder="JobTitle"
                 className="h-14 !border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                onChange={(e) => setSelectedTitle(e.target.value)}
+                onClick={() => setShowTitle(!showTitle)}
                 labelProps={{
                   className: "hidden",
                 }}
                 containerProps={{ className: "min-w-[100px]" }}
               />
+              {showTitle && (
+                <div className="w-full overflow-y-auto border-2 shadow-2xl">
+                  {filterJobTitle.map((item) => (
+                    <p
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedTitle(item.title_name);
+                        setShowTitle(!showTitle);
+                      }}
+                      className={`m-4 cursor-pointer ${
+                        selectedTitle === item.title_name
+                      }}
+                      ? "font-bold"
+                      : "text-black"
+                  }`}
+                    >
+                      {item.title_name}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="z-20 lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
@@ -56,13 +169,16 @@ function Role() {
                 <div className="w-24 ms-4 ms:pt-5 mt-3 sm:mt-5">
                   <button
                     onClick={() => navigate("/user/position")}
-                    className="  text-purple-500 bg-purple-50 px-6 py-2 rounded-full"
+                    className="text-purple-500 bg-purple-50 px-6 py-2 rounded-full"
                   >
                     Prev
                   </button>
                 </div>
                 <div className="w-24 ms:pt-5 mt-3 sm:mt-5">
-                  <button onClick={()=>navigate('/user/experience')} className="bg-purple-300 sm:bg-purple-400 px-6 py-2 rounded-full ">
+                  <button
+                    onClick={NextButton}
+                    className="bg-purple-300 sm:bg-purple-400 px-6 py-2 rounded-full"
+                  >
                     Next
                   </button>
                 </div>

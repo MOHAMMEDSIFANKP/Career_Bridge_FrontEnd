@@ -11,25 +11,113 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
+import FileImage from "../../../assets/fileimage.png";
+import EditImage from "../../../assets/Edit.png";
+import { ExperienceEditModal } from "../../../components/user/ExperienceEditModal";
+
+// Redux
+import { useDispatch } from "react-redux";
+import { setExperiences } from "../../../Redux/UserSlice";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 
 function Experience() {
-  useEffect(() => {
-    document.title = "Add your Experience | Career Bridge";
-  }, []);
+  const dispatch = useDispatch();
 
+  // Redux destructure in experiences
+  const { experiences } = useSelector((state) => state.user);
+
+  const [Form, setForm] = useState({
+    title: "",
+    subtitle: "",
+    company: "",
+    state: "",
+    country: "",
+    startdate: "",
+    enddate: "",
+    Description: "",
+  });
+  const [error, seterror] = useState({
+    title: false,
+    subtitle: false,
+    company: false,
+    state: false,
+    country: false,
+    startdate: false,
+    enddate: false,
+    Description: false,
+  });
+
+  const navigate = useNavigate();
+
+  // Modal
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(!open);
+
+  // Second Modal
+  const [modalStates, setModalStates] = useState(false)
+  const [id,setId] = useState('')
+ 
+  const toggleModal = (index) => {
+    setId(index)
+    setModalStates(!modalStates);
+  };
+ 
   const countries = Object.keys(countriesList.countries).map((countryCode) => ({
     name: countriesList.countries[countryCode].name,
     value: countryCode,
   }));
 
-  const navigate = useNavigate();
-  // Modal
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(!open);
+  useEffect(() => {
+    document.title = "Add your Experience | Career Bridge";
+  }, []);
 
+  const Validation = () => {
+    if (Form.title.trim() === "") {
+      seterror({ ...error, title: true });
+      return false;
+    } else if (Form.subtitle.trim() === "") {
+      seterror({ ...error, subtitle: true });
+      return false;
+    } else if (Form.company.trim() === "") {
+      seterror({ ...error, company: true });
+      return false;
+    } else if (Form.state.trim() === "") {
+      seterror({ ...error, state: true });
+      return false;
+    } else if (Form.country.trim() === "") {
+      seterror({ ...error, country: true });
+      return false;
+    } else if (Form.startdate.trim() === "") {
+      seterror({ ...error, startdate: true });
+      return false;
+    } else if (Form.enddate.trim() === "") {
+      seterror({ ...error, enddate: true });
+      return false;
+    } else if (Form.Description.trim() === "") {
+      seterror({ ...error, Description: true });
+      return false;
+    }
+    return true;
+  };
+
+  const ConformModal = () => {
+    if (Validation()) {
+      dispatch(setExperiences(Form));
+      handleOpen();
+    }
+  };
+
+  const NextButton = () => {
+    if (Validation()) {
+      navigate("/user/education");
+    } else {
+      toast.warn("Add Your experience");
+    }
+  };
   return (
     <>
       <NavbarDefault />
+      <ToastContainer />
       <div className="container  px-8 mt-10 lg:mt-32 sm:mt-14 mx-auto">
         <p className="text-sm">3/7</p>
         <div className="sm:mt-8 mt-5">
@@ -44,10 +132,12 @@ function Experience() {
           </p>
         </div>
         <div className="grid grid-cols-12 gap-4 mt-5 mb-28 ">
-          <div className="sm:col-span-12 md:col-span-6 shadow-xl bg-purple-50 lg:col-span-4 border md:h-56 sm:h-40 sm:w-full w-44 rounded-full sm:rounded-xl border-gray-400 flex items-center sm:ps-8 sm:bg-purple-50 cursor-pointer">
+          <div
+            onClick={handleOpen}
+            className="sm:col-span-12 md:col-span-6 shadow-xl bg-purple-50 lg:col-span-4 border md:h-56 sm:h-40 sm:w-full w-44 rounded-full sm:rounded-xl border-gray-400 flex items-center sm:ps-8 sm:bg-purple-50 cursor-pointer"
+          >
             <div className="rounded-full h-10 w-10 sm:bg-purple-400">
               <p
-                onClick={handleOpen}
                 variant="gradient"
                 className="text-4xl ps-2 sm:text-white text-purple-400"
               >
@@ -58,15 +148,45 @@ function Experience() {
               </p>
             </div>
           </div>
-          <div className="col-span-12 md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-40 rounded-2xl relative"></div>
-          <div className="col-span-12 md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-40 rounded-2xl"></div>
-          <div className="col-span-12 md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-40 rounded-2xl"></div>
-          <div className="col-span-12 md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-40 rounded-2xl"></div>
+          {experiences.map((experience, index) => (
+            <div
+              key={index}
+              className="col-span-12 flex  md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-40 rounded-2xl relative"
+            >
+              <div className="w-2/6 ms-6 mt-6 ">
+                <img src={FileImage} alt="" className="w-20 opacity-75" />
+              </div>
+              <div className="w-full">
+                <div className="h-10 flex justify-end">
+                  <button>
+                    <div
+                      onClick={() => toggleModal(index)}
+                      className="rounded-full border border-purple-400 m-2 p-2"
+                    >
+                      <img src={EditImage} alt="" className="w-4" />
+                    </div>
+                  </button>
+                </div>
+                <div className="text-center">
+                  <h3 className="font-bold text-xl">{experience.title}</h3>
+                  <p className="text-lg">{experience.subtitle}</p>
+                  <p className="text-gray-600">
+                    {experience.state}{" "}
+                    <span>
+                      <br />
+                    </span>
+                    {experience.country}{" "}
+                  </p>
+                  <p className="text-gray-600">{experience.Description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       <Dialog open={open} handler={handleOpen}>
-        <DialogHeader className="text-2xl">Add Work Experience</DialogHeader>
+        <DialogHeader className="text-2xl">Add Work Experience </DialogHeader>
         <DialogBody>
           <div class="grid grid-rows-4 gap-4">
             <div className="mx-2 grid grid-cols-2 gap-4">
@@ -74,16 +194,34 @@ function Experience() {
                 <p className="text-black pb-1">Title *</p>
                 <input
                   type="text"
+                  name="title"
                   placeholder="Ex: Full Stack"
-                  class="border w-full py-2 px-3 border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, title: false });
+                  }}
+                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.title
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
                 />
               </div>
               <div>
                 <p className="text-black pb-1">Sub Title *</p>
                 <input
                   type="text"
-                  placeholder="Ex: Microsoft"
-                  class="border w-full py-2 px-3 border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                  name="subtitle"
+                  placeholder="Ex: Python django"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, subtitle: false });
+                  }}
+                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.subtitle
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
                 />
               </div>
             </div>
@@ -91,8 +229,17 @@ function Experience() {
               <p className="text-black pb-1">Company *</p>
               <input
                 type="text"
+                name="company"
                 placeholder="Ex: Full Stack"
-                class="border w-full py-2 px-3 border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                onChange={(e) => {
+                  setForm({ ...Form, [e.target.name]: e.target.value });
+                  seterror({ ...error, company: false });
+                }}
+                class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                  error.company
+                    ? "focus:ring-red-200 border-2 border-red-400"
+                    : "border-gray-400"
+                }`}
               />
             </div>
             <div className="mx-2 grid grid-cols-2 gap-4">
@@ -100,8 +247,17 @@ function Experience() {
                 <p className="text-black pb-1">State</p>
                 <input
                   type="text"
+                  name="state"
                   placeholder="Ex: London"
-                  class="border py-2 px-3 w-full border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, state: false });
+                  }}
+                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.state
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
                 />
               </div>
               <div>
@@ -112,13 +268,23 @@ function Experience() {
                   Country
                 </label>
                 <select
+                  name="country"
                   id="countrySelect"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, country: false });
+                  }}
+                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.country
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
                   className="border w-full py-2 border-gray-400 bg-white rounded-lg text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
                 >
                   {Object.keys(countries).map((countryCode) => (
                     <option
                       key={countryCode}
-                      value={countryCode}
+                      value={countries[countryCode].name}
                       className="m-10"
                       style={{ paddingLeft: "10px !importent" }}
                     >
@@ -132,22 +298,49 @@ function Experience() {
               <div>
                 <p className="text-black pb-1">Start date</p>
                 <input
+                  name="startdate"
                   type="date"
-                  className="me-3 px-3 border w-full py-2 border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, startdate: false });
+                  }}
+                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.startdate
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
                 />
               </div>
               <div>
                 <p className="text-black pb-1">End date</p>
                 <input
+                  name="enddate"
                   type="date"
-                  className=" me-3 px-3 border w-full py-2 border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, enddate: false });
+                  }}
+                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.enddate
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
                 />
               </div>
             </div>
             <div className="mx-2">
               <p className="text-black pb-1">Description</p>
               <textarea
-                className="border w-full px-3 py-2 border-gray-400 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
+                name="Description"
+                onChange={(e) => {
+                  setForm({ ...Form, [e.target.name]: e.target.value });
+                  seterror({ ...error, Description: false });
+                }}
+                class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                  error.Description
+                    ? "focus:ring-red-200 border-2 border-red-400"
+                    : "border-gray-400"
+                }`}
                 rows="5"
               ></textarea>
             </div>
@@ -159,12 +352,18 @@ function Experience() {
           </Button>
           <button
             className="bg-purple-300 rounded-2xl py-1 px-3 text-center text-white font-bold"
-            onClick={handleOpen}
+            onClick={ConformModal}
           >
             <span>Confirm</span>
           </button>
         </DialogFooter>
       </Dialog>
+            <ExperienceEditModal
+            id={id}
+              isOpen={modalStates}
+              onClose={toggleModal}
+            />
+ 
       <div className="z-20 lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
         <div className="bg-white md:h-20 h-16 w-full shadow-xl border ">
           <div className="flex justify-between">
@@ -178,7 +377,7 @@ function Experience() {
             </div>
             <div className="w-24 ms:pt-5 mt-3 sm:mt-5">
               <button
-                onClick={() => navigate("/user/education")}
+                onClick={NextButton}
                 className="bg-purple-300 sm:bg-purple-400 px-6 py-2 rounded-full "
               >
                 Next

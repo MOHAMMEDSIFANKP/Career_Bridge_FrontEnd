@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-import { UserGoogleSignin } from "../services/userApi";
+import { UserGoogleSignin, userSignin } from "../services/userApi";
 import { useGoogleLogin } from "@react-oauth/google";
 import jwtDecode from "jwt-decode";
-import { userSignin } from "../services/userApi";
-import Loader from "../components/Loading/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import userImage from "../assets/icons8-google.svg";
+import Loader from "../components/Loading/Loading";
 import axios from "axios";
 
 function LoginPage() {
@@ -62,15 +61,11 @@ function LoginPage() {
           const token = JSON.stringify(res.data);
           const decoded = jwtDecode(token);
           if (decoded.role === "user") {
-            if (decoded.is_active) {
-              localStorage.setItem("token", token);
-              if (decoded.is_compleated) {
-                navigate("/user/");
-              } else {
-                navigate("/user/position");
-              }
+            localStorage.setItem("token", token);
+            if (decoded.is_compleated) {
+              navigate("/user/");
             } else {
-              toast.error("Please verify your email");
+              navigate("/user/position");
             }
           } else if (decoded.role === "company") {
             localStorage.setItem("token", token);
