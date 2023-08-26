@@ -42,10 +42,19 @@ const userSlice = createSlice({
         },
         setExperiences: (state, action)=>{
             state.experiences.push(action.payload);
+        },
+        EditExpeience:(state, action) =>{
+            const { index, updatedExperience } = action.payload;
+            state.experiences[index] = updatedExperience;
+
+        },
+        DeteteExperience: (state, action)=>{
+            const index = action.payload;
+            state.experiences.splice(index, 1);
         }
         
     }
 })
 
-export const {setUserDetails, LogoutDetails,setRole,setExperiences} = userSlice.actions;
+export const {setUserDetails, LogoutDetails,setRole,setExperiences,EditExpeience,DeteteExperience} = userSlice.actions;
 export default userSlice.reducer;

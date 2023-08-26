@@ -13,12 +13,16 @@ import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
 import FileImage from "../../../assets/fileimage.png";
 import EditImage from "../../../assets/Edit.png";
+import DeleteImg from "../../../assets/DeleteImg.png";
 import { ExperienceEditModal } from "../../../components/user/ExperienceEditModal";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 // Redux
 import { useDispatch } from "react-redux";
 import { setExperiences } from "../../../Redux/UserSlice";
 import { useSelector } from "react-redux/es/hooks/useSelector";
+import { DeteteExperience } from "../../../Redux/UserSlice";
 
 function Experience() {
   const dispatch = useDispatch();
@@ -53,15 +57,36 @@ function Experience() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(!open);
 
-  // Second Modal
-  const [modalStates, setModalStates] = useState(false)
-  const [id,setId] = useState('')
- 
+  // Edit Modal
+  const [modalStates, setModalStates] = useState(false);
+  const [id, setId] = useState(null);
+
+  // Delete Modal
+  const MySwal = withReactContent(Swal);
+  const [Dltopen, setDltOpen] = useState(false);
+
+
   const toggleModal = (index) => {
-    setId(index)
+    setId(index);
     setModalStates(!modalStates);
   };
- 
+
+  const DeleteModal=(index)=>{
+    MySwal.fire({
+      title: 'Confirm Deletion',
+      text: 'Are you sure you want to delete this experience?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onDelete(); // Call the onDelete function when user confirms
+      }
+    });
+  };
+
+
   const countries = Object.keys(countriesList.countries).map((countryCode) => ({
     name: countriesList.countries[countryCode].name,
     value: countryCode,
@@ -107,8 +132,12 @@ function Experience() {
     }
   };
 
+  const DeleteExp = (index) => {
+    dispatch(DeteteExperience(index));
+  };
+
   const NextButton = () => {
-    if (Validation()) {
+    if (experiences) {
       navigate("/user/education");
     } else {
       toast.warn("Add Your experience");
@@ -166,6 +195,10 @@ function Experience() {
                       <img src={EditImage} alt="" className="w-4" />
                     </div>
                   </button>
+                  <div onClick={()=>DeleteModal(index)} className="flex justify-center items-center rounded-full border border-purple-400 w-8 h-8 mt-2 me-3">
+                    <img src={DeleteImg} className="w-5" alt="" />
+                   
+                  </div>
                 </div>
                 <div className="text-center">
                   <h3 className="font-bold text-xl">{experience.title}</h3>
@@ -184,7 +217,7 @@ function Experience() {
           ))}
         </div>
       </div>
-
+      {/* Add Modal */}
       <Dialog open={open} handler={handleOpen}>
         <DialogHeader className="text-2xl">Add Work Experience </DialogHeader>
         <DialogBody>
@@ -230,7 +263,7 @@ function Experience() {
               <input
                 type="text"
                 name="company"
-                placeholder="Ex: Full Stack"
+                placeholder="Ex: Microsoft"
                 onChange={(e) => {
                   setForm({ ...Form, [e.target.name]: e.target.value });
                   seterror({ ...error, company: false });
@@ -358,12 +391,9 @@ function Experience() {
           </button>
         </DialogFooter>
       </Dialog>
-            <ExperienceEditModal
-            id={id}
-              isOpen={modalStates}
-              onClose={toggleModal}
-            />
- 
+      <ExperienceEditModal id={id} isOpen={modalStates} onClose={toggleModal} />
+      {/* <DeleteExpModal id={id} isOpen={Dltopen} onClose={DeleteModal}/> */}
+
       <div className="z-20 lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
         <div className="bg-white md:h-20 h-16 w-full shadow-xl border ">
           <div className="flex justify-between">
