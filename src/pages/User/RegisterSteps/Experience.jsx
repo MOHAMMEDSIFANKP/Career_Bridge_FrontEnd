@@ -14,15 +14,14 @@ import { useNavigate } from "react-router-dom";
 import FileImage from "../../../assets/fileimage.png";
 import EditImage from "../../../assets/Edit.png";
 import DeleteImg from "../../../assets/DeleteImg.png";
-import { ExperienceEditModal } from "../../../components/user/ExperienceEditModal";
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import { ExperienceEditModal } from "../../../components/user/ExperienceModals/ExperienceEditModal";
+import { DeleteExpModal } from "../../../components/user/ExperienceModals/DeleteExpModal";
+
 
 // Redux
 import { useDispatch } from "react-redux";
 import { setExperiences } from "../../../Redux/UserSlice";
 import { useSelector } from "react-redux/es/hooks/useSelector";
-import { DeteteExperience } from "../../../Redux/UserSlice";
 
 function Experience() {
   const dispatch = useDispatch();
@@ -62,9 +61,8 @@ function Experience() {
   const [id, setId] = useState(null);
 
   // Delete Modal
-  const MySwal = withReactContent(Swal);
-  const [Dltopen, setDltOpen] = useState(false);
 
+  const [Dltopen, setDltOpen] = useState(false);
 
   const toggleModal = (index) => {
     setId(index);
@@ -72,18 +70,8 @@ function Experience() {
   };
 
   const DeleteModal=(index)=>{
-    MySwal.fire({
-      title: 'Confirm Deletion',
-      text: 'Are you sure you want to delete this experience?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        onDelete(); // Call the onDelete function when user confirms
-      }
-    });
+    setId(index)
+    setDltOpen(!Dltopen)
   };
 
 
@@ -132,12 +120,8 @@ function Experience() {
     }
   };
 
-  const DeleteExp = (index) => {
-    dispatch(DeteteExperience(index));
-  };
-
   const NextButton = () => {
-    if (experiences) {
+    if (!experiences[0]=='') {
       navigate("/user/education");
     } else {
       toast.warn("Add Your experience");
@@ -180,7 +164,7 @@ function Experience() {
           {experiences.map((experience, index) => (
             <div
               key={index}
-              className="col-span-12 flex  md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-40 rounded-2xl relative"
+              className="col-span-12 flex  md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-56 rounded-2xl relative"
             >
               <div className="w-2/6 ms-6 mt-6 ">
                 <img src={FileImage} alt="" className="w-20 opacity-75" />
@@ -392,7 +376,7 @@ function Experience() {
         </DialogFooter>
       </Dialog>
       <ExperienceEditModal id={id} isOpen={modalStates} onClose={toggleModal} />
-      {/* <DeleteExpModal id={id} isOpen={Dltopen} onClose={DeleteModal}/> */}
+      <DeleteExpModal id={id} isOpen={Dltopen} onClose={DeleteModal}/>
 
       <div className="z-20 lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
         <div className="bg-white md:h-20 h-16 w-full shadow-xl border ">

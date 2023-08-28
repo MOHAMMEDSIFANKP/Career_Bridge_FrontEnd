@@ -9,6 +9,9 @@ import Role from '../pages/User/RegisterSteps/Role';
 import Experience from '../pages/User/RegisterSteps/Experience';
 import Education from '../pages/User/RegisterSteps/Education';
 import Languages from '../pages/User/RegisterSteps/Languages';
+import Skills from '../pages/User/RegisterSteps/Skills';
+import ProfileCreation from '../pages/User/RegisterSteps/ProfileCreation';
+
 function UserRoutes() {
 
   return (
@@ -25,6 +28,9 @@ function UserRoutes() {
         <Route path='/education' element={<Education/>} />
         <Route path='/languages' element={<Languages/>} />
         <Route path='/profile' element={<UserProfilePage/>}/>
+        <Route path='/skills' element={<Skills/>}/>
+        <Route path='/profilecreation' element={<ProfileCreation/>}/>
+        
       {/* </Route> */}
     </Routes>
   );

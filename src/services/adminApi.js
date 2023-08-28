@@ -17,4 +17,8 @@ const AdminJobFieldList = () =>{
 const AdminJobTitlelist = () => {
   return adminAxiosInstant.get("JobTitledListAndCreater/", { withCredentials: true});
 };
-export { AdminSignin, GetLanguages, AdminJobFieldList, AdminJobTitlelist };
+
+const AdminSkillsList = () =>{
+  return adminAxiosInstant.get('SkillsListCreateAPIView/' ,{withCredentials: true})
+}
+export { AdminSignin, GetLanguages, AdminJobFieldList, AdminJobTitlelist ,AdminSkillsList};

@@ -27,6 +27,7 @@ const UserGoogleSignin = (value) =>{
     };
     return userAxiosInstant.post('api/token/', values, {withCredentials: true})
 }
-
-
-export {userSignup, userSignin, UserGoogleSignup, UserGoogleSignin}
+const UserInfo = (value) =>{
+ return userAxiosInstant.post('api/UserInfoListCreateAPIView/', value, {withCredentials:true})
+}
+export {userSignup, userSignin, UserGoogleSignup, UserGoogleSignin,UserInfo}

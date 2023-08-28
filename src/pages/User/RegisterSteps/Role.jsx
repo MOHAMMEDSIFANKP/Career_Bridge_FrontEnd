@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@material-tailwind/react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
+import { List, ListItem, Card } from "@material-tailwind/react";
 import {
   AdminJobFieldList,
   AdminJobTitlelist,
@@ -104,14 +105,15 @@ function Role() {
                 containerProps={{ className: "min-w-[100px]" }}
               />
               {showList && (
-                <div className="w-full overflow-y-auto border-2 shadow-2xl">
+                <Card className="w-full overflow-y-auto border-2 shadow-2xl">
+                  <List>
                   {filterFields.map((item) => (
-                    <p
+                    <ListItem
                       key={item.id}
-                      className={`m-4 cursor-pointer ${
+                      className={`cursor-pointer hover:text-purple-400 ${
                         selectedField === item.field_name
                           ? "font-bold"
-                          : "text-black"
+                          : "text-gray-800"
                       }`}
                       onClick={() => {
                         setSelectedField(item.field_name);
@@ -120,9 +122,10 @@ function Role() {
                       }}
                     >
                       {item.field_name}
-                    </p>
+                    </ListItem>
                   ))}
-                </div>
+                  </List>
+                </Card>
               )}
             </div>
           </div>
@@ -141,15 +144,16 @@ function Role() {
                 containerProps={{ className: "min-w-[100px]" }}
               />
               {showTitle && (
-                <div className="w-full overflow-y-auto border-2 shadow-2xl">
+                <Card className="w-full overflow-y-auto border-2 shadow-2xl">
+                   <List>
                   {filterJobTitle.map((item) => (
-                    <p
+                    <ListItem
                       key={item.id}
                       onClick={() => {
                         setSelectedTitle(item.title_name);
                         setShowTitle(!showTitle);
                       }}
-                      className={`m-4 cursor-pointer ${
+                      className={` cursor-pointer hover:text-purple-400 ${
                         selectedTitle === item.title_name
                       }}
                       ? "font-bold"
@@ -157,9 +161,10 @@ function Role() {
                   }`}
                     >
                       {item.title_name}
-                    </p>
+                    </ListItem>
                   ))}
-                </div>
+                  </List>
+                </Card>
               )}
             </div>
           </div>

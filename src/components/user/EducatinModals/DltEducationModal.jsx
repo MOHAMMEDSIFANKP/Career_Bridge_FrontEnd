@@ -8,24 +8,25 @@ import {
 } from "@material-tailwind/react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux/es/hooks/useSelector";
-import { DeteteExperience } from "../../../Redux/UserSlice";
+import { DeleteEducation } from "../../../Redux/UserSlice";
 
-const DeleteExpModal = ({ isOpen, onClose, id }) => {
+const DltEducationModal = ({ isOpen, onClose, id }) => {
   const dispatch = useDispatch();
-  const { experiences } = useSelector((state) => state.user);
-  const experienceToDlt = experiences.find((experience, index) => index === id);
+  const { Education } = useSelector((state) => state.user);
+  const educationToDlt = Education.find((education, index) => index === id);
+
   const ConfirmButton=()=>{
-    dispatch(DeteteExperience(id))
+    dispatch(DeleteEducation(id))
     onClose()
   }
   return (
     <>
       <Dialog open={isOpen} handler={onClose} size={"xs"}>
-        <DialogHeader>Remove Work Experience</DialogHeader>
+        <DialogHeader>Remove Education</DialogHeader>
         <DialogBody>
           <p>
             Are you sure you want to remove{" "}
-            '<span className="font-bold">{experienceToDlt && experienceToDlt.company}</span>' from your
+            '<span className="font-bold">{educationToDlt && educationToDlt.School}</span>' from your
             profile?
           </p>{" "}
         </DialogBody>
@@ -41,4 +42,4 @@ const DeleteExpModal = ({ isOpen, onClose, id }) => {
     </>
   );
 };
-export { DeleteExpModal };
+export { DltEducationModal };

@@ -10,6 +10,9 @@ const initialState = {
     JobFiledRedex:"",
     JobTitleRedex:"",
     experiences: [],
+    Education : [],
+    Language : [],
+    Skills : [],
 }
 
 const userSlice = createSlice({
@@ -40,6 +43,8 @@ const userSlice = createSlice({
             state.JobFiledRedex = action.payload.JobFiledRedex
             state.JobTitleRedex = action.payload.JobTitleRedex
         },
+
+        // Experience
         setExperiences: (state, action)=>{
             state.experiences.push(action.payload);
         },
@@ -51,10 +56,40 @@ const userSlice = createSlice({
         DeteteExperience: (state, action)=>{
             const index = action.payload;
             state.experiences.splice(index, 1);
-        }
+        },
         
+        // Education
+        SetEducation: (state, action) =>{
+            state.Education.push(action.payload);
+        },
+        EditEducation: (state, action) =>{
+            const {index, updatedEducation} = action.payload;
+            state.Education[index] = updatedEducation;
+        },
+        DeleteEducation: (state, action) =>{
+            const index = action.payload;
+            state.Education.splice(index, 1)
+        },
+        // Language
+        SetLanguage: (state, action) =>{
+            state.Language.push(action.payload)
+        },
+        DeleteLanguage: (state, action) =>{
+            const index = action.payload;
+            state.Language.splice(index, 1)
+        },
+        // Skills
+        SetSkills : (state, action)=>{
+            state.Skills.push(action.payload)
+        },
+        DeleteSkills: (state, action)=>{
+            const index = action.payload;
+            state.Skills.splice(index, 1)
+        }
+
+
     }
 })
 
-export const {setUserDetails, LogoutDetails,setRole,setExperiences,EditExpeience,DeteteExperience} = userSlice.actions;
+export const {setUserDetails, LogoutDetails,setRole,setExperiences,EditExpeience,DeteteExperience,SetEducation,EditEducation,DeleteEducation,SetLanguage,DeleteLanguage,SetSkills,DeleteSkills} = userSlice.actions;
 export default userSlice.reducer;

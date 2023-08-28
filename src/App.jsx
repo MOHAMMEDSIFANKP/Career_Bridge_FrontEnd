@@ -8,6 +8,7 @@ import AdminRoutes from './routes/Admin'
 import PrivateRoutes from './ProtectedRoutes/PrivateRoutes'
 import MailConfirm from './pages/MailConfirm'
 
+
 function App() {
 
   return (

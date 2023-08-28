@@ -10,7 +10,7 @@ import countriesList from "countries-list";
 
 // Redux
 import { useDispatch } from "react-redux";
-import { EditExpeience } from "../../Redux/UserSlice";
+import { EditExpeience } from "../../../Redux/UserSlice";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 
 const ExperienceEditModal = ({ isOpen, onClose, id }) => {
