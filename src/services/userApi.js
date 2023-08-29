@@ -17,7 +17,7 @@ const UserGoogleSignup = (value) =>{
 
 const userSignin = (values) => {
     return userAxiosInstant.post('api/token/', values, { withCredentials: true })
-      .catch((error) => error.response);
+        .catch((error) => error.response);
   };
 
 const UserGoogleSignin = (value) =>{
@@ -30,4 +30,7 @@ const UserGoogleSignin = (value) =>{
 const UserInfo = (value) =>{
  return userAxiosInstant.post('api/UserInfoListCreateAPIView/', value, {withCredentials:true})
 }
-export {userSignup, userSignin, UserGoogleSignup, UserGoogleSignin,UserInfo}
+const UserProfileUpdate = (value,id) =>{
+    return userAxiosInstant.put('/api/UserProfileUpdate/'+id+'/',value, {withCredentials:true})
+} 
+export {userSignup, userSignin, UserGoogleSignup, UserGoogleSignin,UserInfo,UserProfileUpdate}

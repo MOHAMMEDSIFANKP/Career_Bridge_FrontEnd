@@ -5,37 +5,95 @@ import { useNavigate } from "react-router-dom";
 import countriesList from "countries-list";
 import defaultprofileImg from '../../../assets/ProfileImg.jpeg'
 import { useSelector } from "react-redux";
+import { UserInfo } from "../../../services/userApi";
+import { UserProfileUpdate } from "../../../services/userApi";
+import jwt_decode from 'jwt-decode'
+
 
 function ProfileCreation() {
- 
-  const navigate = useNavigate();
+ const navigate = useNavigate()
+
   const [Form, setForm] = useState({
+    profileImg:null,
     country: "",
     streetaddress: "",
     city: "",
     state: "",
     zipcode: "",
   });
-  
+
   const [error, seterror] = useState({
+    profileImg:false,
     country: false,
     streetaddress: false,
     city: false,
     state: false,
     zipcode: false,
   });
+  
+
+  const Validation = () => {
+    if (Form.profileImg === null) {
+      seterror({ ...error, profileImg: true });
+      return false;
+    } else if (Form.country.trim() === "") {
+      seterror({ ...error, country: true });
+      return false;
+    } else if (Form.streetaddress.trim() === "") {
+      seterror({ ...error, streetaddress: true });
+      return false;
+    } else if (Form.city.trim() === "") {
+      seterror({ ...error, city: true });
+      return false;
+    } else if (Form.state.trim() === "") {
+      seterror({ ...error, state: true });
+      return false;
+    } else if (Form.zipcode.trim() === "") {
+      seterror({ ...error, zipcode: true });
+      return false;
+    }
+    return true;
+  };
   const countries = Object.keys(countriesList.countries).map((countryCode) => ({
     name: countriesList.countries[countryCode].name,
     value: countryCode,
   }));
  
+
   const Skill = useSelector((state) => state.user.Skills);
   const { JobFiledRedex, JobTitleRedex } = useSelector((state) => state.user);
   const { experiences } = useSelector((state) => state.user);
   const { Education } = useSelector((state) => state.user);
   const { Language } = useSelector((state) => state.user);
-  
+  const token = localStorage.getItem('token')
+  const decode = jwt_decode(token)
+console.log(Skill);
   const ConformButton = () =>{
+    if (Validation()){
+      const pictureForm = new FormData();
+      pictureForm.append("profile_image", Form.profileImg);
+      // UserProfileUpdate(pictureForm,decode.id).then(res=>{
+      //   alert('success')
+      // }).catch(error=>{
+      //   alert('not')
+      // })
+    }
+
+    
+    // const data = {
+    //   jobField:{field_name:JobFiledRedex},
+    //   jobTitle:{field:10,title_name:JobTitleRedex},
+    //   experience :experiences,
+    //   education : Education,
+    //   languages:Language,
+    //   skills : [1,2,3,4],
+    //   userId: decode.id,
+    // };
+    // UserInfo(data).then(res=>{
+    //   alert('success')
+    // }).catch(error=>{
+    //   console.log(error)
+    // })
   }
   return (
     <>
@@ -56,25 +114,26 @@ function ProfileCreation() {
           </p>
         </div>
         <div className="sm:flex">
-          <div className="mt-10">
-            <div className="flex justify-center">
+          <div className="mt-10 ">
+            <div className="flex justify-center mb-6">
               <img
-                className="w-20"
-                src={defaultprofileImg}
+                className="w-24 rounded-full border-purple-400 border-2 p-2"
+                src={Form.profileImg ? URL.createObjectURL(Form.profileImg) : defaultprofileImg}
                 alt=""
               />
             </div>
             <div className="flex justify-center mt-3">
               <input
                 type="file"
-                name="company"
+                name="profileImg"
                 placeholder=""
+                accept="image/*"
                 onChange={(e) => {
-                  setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, company: false });
+                  setForm({ ...Form, [e.target.name]: e.target.files[0] });
+                  seterror({ ...error, profileImg: false });
                 }}
                 className={`border w-full mx-2 py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.company
+                  error.profileImg
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
@@ -100,6 +159,7 @@ function ProfileCreation() {
                 }`}
                
               >
+                <option value="">Choose</option>
                 {Object.keys(countries).map((countryCode) => (
                   <option
                     key={countryCode}
@@ -116,13 +176,13 @@ function ProfileCreation() {
               <p className="text-black pb-1">Street Address *</p>
               <input
                 type="text"
-                name="company"
+                name="streetaddress"
                 onChange={(e) => {
                   setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, company: false });
+                  seterror({ ...error, streetaddress: false });
                 }}
                 className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.company
+                  error.streetaddress
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
@@ -133,13 +193,13 @@ function ProfileCreation() {
              <p className="text-black pb-1">City *</p>
               <input
                 type="text"
-                name="company"
+                name="city"
                 onChange={(e) => {
                   setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, company: false });
+                  seterror({ ...error, city: false });
                 }}
                 className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.company
+                  error.city
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
@@ -149,13 +209,13 @@ function ProfileCreation() {
              <p className="text-black pb-1">State *</p>
               <input
                 type="text"
-                name="company"
+                name="state"
                 onChange={(e) => {
                   setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, company: false });
+                  seterror({ ...error, state: false });
                 }}
                 className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.company
+                  error.state
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
@@ -165,13 +225,13 @@ function ProfileCreation() {
              <p className="text-black pb-1">Zip code *</p>
               <input
                 type="text"
-                name="company"
+                name="zipcode"
                 onChange={(e) => {
                   setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, company: false });
+                  seterror({ ...error, zipcode: false });
                 }}
                 className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.company
+                  error.zipcode
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
