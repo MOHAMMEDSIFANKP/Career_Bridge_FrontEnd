@@ -7,23 +7,35 @@ import "react-toastify/dist/ReactToastify.css";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
 
+// Redux
+import { useDispatch } from "react-redux";
+import { setPosition } from "../../../Redux/UserSlice";
+
 function Position() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [pos, setPos] = useState("");
   const [selectedDiv, setSelectedDiv] = useState(-1);
   useEffect(() => {
-    document.title = 'Add your Position | Career Bridge';
+    document.title = "Add your Position | Career Bridge";
   }, []);
   const SelectionSubmit = () => {
     if (selectedDiv === -1) {
       toast.warn("choose an option");
-    } else{
-      navigate('/user/role')
+    } else {
+      if (selectedDiv === 0) {
+        dispatch(setPosition({ position: pos }));
+      } else if (selectedDiv === 1) {
+        dispatch(setPosition({ position: pos }));
+      } else {
+        dispatch(setPosition({ position: pos }));
+      }
+      navigate("/user/role");
     }
-    
   };
   return (
     <>
-    <NavbarDefault/>
+      <NavbarDefault />
       <div className="container  px-8 mt-10 lg:mt-32 sm:mt-14 mx-auto">
         <ToastContainer />
         <p className="text-sm">1/7</p>
@@ -42,7 +54,10 @@ function Position() {
             className={`rounded-xl border shadow-xl relative mt-3 mx-2 ${
               selectedDiv === 0 ? "bg-purple-100 border-gray-400" : ""
             }`}
-            onClick={() => setSelectedDiv(0)}
+            onClick={() => {
+              setSelectedDiv(0);
+              setPos('fresher');
+            }}
           >
             <div className="flex-auto mb-5">
               <img src={biginer} className="h-40 m-5 sm:h-40" alt="" />
@@ -55,7 +70,10 @@ function Position() {
             className={`rounded-xl border shadow-xl relative mt-3 mx-2 ${
               selectedDiv === 1 ? "bg-purple-100 border-gray-400" : ""
             }`}
-            onClick={() => setSelectedDiv(1)}
+            onClick={() => {
+              setSelectedDiv(1);
+              setPos('experience')
+            }}
           >
             <div className="flex-auto mb-5">
               <img src={someexpert} className="h-40 m-5 sm:h-40" alt="" />
@@ -69,7 +87,10 @@ function Position() {
             className={`rounded-xl border shadow-xl relative mt-3 mx-2 ${
               selectedDiv === 2 ? "bg-purple-100 border-gray-400" : ""
             }`}
-            onClick={() => setSelectedDiv(2)}
+            onClick={() =>{
+              setSelectedDiv(2);
+              setPos('expert')
+            }}
           >
             <div className="flex-auto mb-5">
               <img src={expert} className="h-40 m-5 sm:h-40" alt="" />
@@ -84,7 +105,7 @@ function Position() {
             <div className="flex">
               <div className="w-24 me-4 flex">
                 <button
-                  onClick={() => navigate("/user/")}
+                  onClick={() => navigate("/user/profile")}
                   className="  text-purple-500"
                 >
                   Skip for now

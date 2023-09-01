@@ -1,20 +1,50 @@
 import React from "react";
-import { Navbar, MobileNav, Typography, Button, IconButton, Menu, MenuHandler, MenuList, MenuItem } from "@material-tailwind/react";
-import './NavBar.css'
-import defaultprofile from '../../assets/defaultprofile.jpeg'
+import {
+  Navbar,
+  MobileNav,
+  Typography,
+  Button,
+  IconButton,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+} from "@material-tailwind/react";
+import "./NavBar.css";
+import defaultprofile from "../../assets/defaultprofile.jpeg";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import {
+  LogoutDetails,
+  ClearPosition,
+  ClearRole,
+  CleatExperiences,
+  ClearEducation,
+  ClearLanguage,
+  ClearSkills,
+} from "../../Redux/UserSlice";
 
 export function NavbarDefault() {
   const [openNav, setOpenNav] = React.useState(false);
-  const history = useNavigate()
-  const logout = ()=>{
-    localStorage.removeItem('token');
-    history('/login')}
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    dispatch(LogoutDetails());   
+    dispatch(ClearPosition());  
+    dispatch(ClearRole());   
+    dispatch(CleatExperiences());  
+    dispatch(ClearEducation());    
+    dispatch(ClearLanguage()); 
+    dispatch(ClearSkills()); 
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false),
+      () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
 
@@ -82,7 +112,6 @@ export function NavbarDefault() {
         </Typography>
 
         <div className="hidden lg:block">
-          
           <Menu
             animate={{
               mount: { y: 0 },
@@ -90,17 +119,27 @@ export function NavbarDefault() {
             }}
           >
             <MenuHandler>
-             <img src={defaultprofile} className="w-8 rounded-full border-2 border-purple-300" alt=""/>
+              <img
+                src={defaultprofile}
+                className="w-8 rounded-full border-2 border-purple-300"
+                alt=""
+              />
             </MenuHandler>
             <MenuList className="rounded-xl text-black">
               <MenuItem className="flex justify-center items-center ">
-              <img src={defaultprofile}  className="w-16 rounded-full border-2 border-purple-400" alt=""/>
+                <img
+                  src={defaultprofile}
+                  className="w-16 rounded-full border-2 border-purple-400"
+                  alt=""
+                />
               </MenuItem>
               <MenuItem className="text-center capitalize ">
                 daxo anahmmed
               </MenuItem>
-              <hr className="mx-4"/>
-              <MenuItem className="my-1 text-center" onClick={logout}>Logout</MenuItem>
+              <hr className="mx-4" />
+              <MenuItem className="my-1 text-center" onClick={logout}>
+                Logout
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>
@@ -144,10 +183,7 @@ export function NavbarDefault() {
         </IconButton>
       </div>
       <MobileNav open={openNav}>
-        <div className="container mx-auto">
-          {navList}
-
-        </div>
+        <div className="container mx-auto">{navList}</div>
       </MobileNav>
     </Navbar>
   );

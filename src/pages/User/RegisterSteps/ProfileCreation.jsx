@@ -7,12 +7,13 @@ import defaultprofileImg from '../../../assets/ProfileImg.jpeg'
 import { useSelector } from "react-redux";
 import { UserInfo } from "../../../services/userApi";
 import { UserProfileUpdate } from "../../../services/userApi";
+import { UserIs_compleatedUpdate } from "../../../services/userApi";
+import { TokenRefresh } from "../../../services/userApi";
 import jwt_decode from 'jwt-decode'
-
+import Loader from "../../../components/Loading/Loading";
 
 function ProfileCreation() {
  const navigate = useNavigate()
-
   const [Form, setForm] = useState({
     profileImg:null,
     country: "",
@@ -30,7 +31,9 @@ function ProfileCreation() {
     state: false,
     zipcode: false,
   });
-  
+    //  For loading
+    const [loading, setLoading] = useState(false);
+    const handleLoading = () => setLoading((cur) => !cur);
 
   const Validation = () => {
     if (Form.profileImg === null) {
@@ -66,37 +69,57 @@ function ProfileCreation() {
   const { Education } = useSelector((state) => state.user);
   const { Language } = useSelector((state) => state.user);
   const token = localStorage.getItem('token')
+  const tokenData = JSON.parse(token);
+  const accessToken = tokenData.refresh;
   const decode = jwt_decode(token)
-console.log(Skill);
-  const ConformButton = () =>{
-    if (Validation()){
-      const pictureForm = new FormData();
-      pictureForm.append("profile_image", Form.profileImg);
-      // UserProfileUpdate(pictureForm,decode.id).then(res=>{
-      //   alert('success')
-      // }).catch(error=>{
-      //   alert('not')
-      // })
-    }
 
-    
-    // const data = {
-    //   jobField:{field_name:JobFiledRedex},
-    //   jobTitle:{field:10,title_name:JobTitleRedex},
-    //   experience :experiences,
-    //   education : Education,
-    //   languages:Language,
-    //   skills : [1,2,3,4],
-    //   userId: decode.id,
-    // };
-    // UserInfo(data).then(res=>{
-    //   alert('success')
-    // }).catch(error=>{
-    //   console.log(error)
-    // })
-  }
+  const ConformButton = async() =>{
+    try {
+      if (Validation()) {
+        const pictureForm = new FormData();
+        pictureForm.append("profile_image", Form.profileImg);
+        handleLoading()
+        await UserProfileUpdate(pictureForm, decode.id);
+        const data = {
+          jobField: { field_name: JobFiledRedex },
+          jobTitle: {field:10, title_name: JobTitleRedex },
+          experience: experiences,
+          education: Education,
+          languages: Language,
+          skills: Skill,
+          userId: decode.user_id,
+          streetaddress: Form.streetaddress,
+          city: Form.city,
+          state: Form.state,
+          zipcode: Form.zipcode,
+        };
+        const Token ={
+          refresh: accessToken
+        };
+        await UserInfo(data);
+        await UserIs_compleatedUpdate({is_compleated:true},decode.id)
+        await TokenRefresh(Token).then(res=>{
+          const token = JSON.stringify(res.data);
+          localStorage.setItem("token", token);
+        })
+        handleLoading();
+        navigate('/user/')
+      }
+    }catch (error) {
+      handleLoading();
+      if (error.response && error.response.data && error.response.data.length > 0) {
+        toast.error(error.response.data[0]);
+        navigate('/user/')
+      } else {
+        toast.error('Something went wrong.');
+      }
+      console.error("Error updating profile and user info:", error);
+    }
+    }
+   
   return (
     <>
+     {loading && <Loader />}
       <NavbarDefault />
       <ToastContainer />
       <div className="container  px-8 mt-10 lg:mt-32 sm:mt-14 mx-auto">
@@ -224,7 +247,7 @@ console.log(Skill);
              <div className="w-4/12">
              <p className="text-black pb-1">Zip code *</p>
               <input
-                type="text"
+                type="number"
                 name="zipcode"
                 onChange={(e) => {
                   setForm({ ...Form, [e.target.name]: e.target.value });

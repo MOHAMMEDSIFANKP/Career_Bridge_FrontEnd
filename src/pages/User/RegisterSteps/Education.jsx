@@ -21,6 +21,7 @@ function Education() {
   }, []);
 
   const { Education } = useSelector((state) => state.user);
+  const {positions} = useSelector((state) => state.user)
 
   // Add modal
   const [open, setOpen] = useState(false);
@@ -116,7 +117,13 @@ function Education() {
           <div className="flex justify-between">
             <div className="w-24 ms-4 ms:pt-5 mt-3 sm:mt-5">
               <button
-                onClick={() => navigate("/user/experience")}
+                onClick={() => {
+                  if (positions === 'fresher'){
+                    navigate('/user/role')
+                  }else{
+                    navigate("/user/experience")
+                  }
+                }}
                 className="  text-purple-500 bg-purple-50 px-6 py-2 rounded-full"
               >
                 Prev

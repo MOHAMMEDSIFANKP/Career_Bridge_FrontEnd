@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
 import { UserGoogleSignin, userSignin } from "../services/userApi";
 import { useGoogleLogin } from "@react-oauth/google";
 import jwtDecode from "jwt-decode";
@@ -9,9 +8,22 @@ import "react-toastify/dist/ReactToastify.css";
 import userImage from "../assets/icons8-google.svg";
 import Loader from "../components/Loading/Loading";
 import axios from "axios";
+import { UserInfoDetails } from "../services/userApi";
+
+// Redux
+import { useDispatch } from "react-redux";
+import {
+  setRole,
+  setExperiences,
+  SetEducation,
+  SetLanguage,
+  SetSkills,
+  setUserDetails,
+} from "../Redux/UserSlice";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [user, setUser] = useState({ email: "", password: "" });
 
   const emailInputRef = useRef(null);
@@ -51,22 +63,58 @@ function LoginPage() {
     const Regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return Regex.test(email);
   }
-
+  async function fetchUserInfo(id) {
+    try {
+      const res = await UserInfoDetails(id);
+      console.log(res);
+      dispatch(
+        setRole({
+          JobFiledRedex: res.data.jobField.field_name,
+          JobTitleRedex: res.data.jobTitle.title_name,
+        })
+      );
+      res.data.experience.map((values,index)=>{
+        dispatch(setExperiences(values));
+      });
+      res.data.education.map((values, index)=>{
+        dispatch(SetEducation(values));
+      });
+      res.data.languages.map((values, index)=>{
+        dispatch(SetLanguage(values));
+      });
+      res.data.skills.map((values, index)=>{
+      dispatch(SetSkills(values))
+      })
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+  function StoreUserDetails(token){
+    console.log(token.email);
+    dispatch(setUserDetails(
+      email = token.email,
+    
+    ))
+    console.log(token);
+  }
   // After form submition
   const FormHandlerLogin = async (e) => {
     e.preventDefault();
     if (Validation()) {
-      userSignin(user).then((res) => {
+      try {
+        const res = await userSignin(user);
         if (res.status === 200) {
           const token = JSON.stringify(res.data);
           const decoded = jwtDecode(token);
           if (decoded.role === "user") {
             localStorage.setItem("token", token);
             if (decoded.is_compleated) {
+              fetchUserInfo(decoded.userInfoId);
               navigate("/user/");
             } else {
               navigate("/user/position");
             }
+            StoreUserDetails(decoded)
           } else if (decoded.role === "company") {
             localStorage.setItem("token", token);
             navigate("/company/");
@@ -77,7 +125,9 @@ function LoginPage() {
           console.log(res.status);
           toast.error("Invalid login credentials or verify your email");
         }
-      });
+      } catch (error) {
+        toast.error("An error occurred during login. Please try again later.");
+      }
     }
   };
 

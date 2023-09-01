@@ -20,7 +20,9 @@ function Role() {
 
   // Redex destructure
   const { JobFiledRedex, JobTitleRedex } = useSelector((state) => state.user);
+  const {positions} = useSelector((state) => state.user)
 
+  
   const [Jobfield, setJobfield] = useState([]);
   const [JobTitle, setJobTitle] = useState([]);
   const [showList, setShowList] = useState(false);
@@ -70,7 +72,11 @@ function Role() {
           JobTitleRedex: selectedTitle,
         })
       );
+      if (positions === 'fresher'){
+        navigate('/user/education')
+      }else{
       navigate("/user/experience");
+      }
     }
   };
   return (

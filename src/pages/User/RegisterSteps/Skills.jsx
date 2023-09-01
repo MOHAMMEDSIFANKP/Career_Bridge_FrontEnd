@@ -3,6 +3,8 @@ import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { ToastContainer, toast } from "react-toastify";
 import { AdminSkillsList } from "../../../services/adminApi";
 import { useNavigate } from "react-router-dom";
+import { MenuItem } from "@material-tailwind/react";
+
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -66,12 +68,12 @@ function Skills() {
   };
 
   // From array checking Limit end or not
-  const checkSkills = (skill) => {
+  const checkSkills = (skill,id) => {
     if (Form.length >= 10) {
       toast.warn("Limit reached");
     } else if (!Form.includes(skill)) {
       setForm([...Form, skill]);
-      dispatch(SetSkills({skills:skill}));
+      dispatch(SetSkills({skills:skill,id:id}));
     } else {
       toast.warn("Skill already added");
     }
@@ -136,17 +138,17 @@ function Skills() {
             </div>
 
             {show && (
-              <div className="absolute overflow-auto w-4/5 sm:w-2/5 md:w-2/6 border bg-white rounded-lg mt-1 text-center">
+              <div className="absolute overflow-auto w-4/5 sm:w-2/5 md:w-2/6 border bg-white rounded-lg mt-1 shadow-xl">
                 {filterFields.map((skill, index) => (
-                  <p
-                    className="hover:text-purple-300 py-1"
+                  <MenuItem
+                    className="hover:text-purple-300 py-2 text-center hover:font-bold"
                     key={index}
                     onClick={(e) => {
-                      ShowFUnc(), checkSkills(skill.skills);
+                      ShowFUnc(), checkSkills(skill.skills,skill.id);
                     }}
                   >
                     {skill.skills}
-                  </p>
+                  </MenuItem>
                 ))}
               </div>
             )}
@@ -163,7 +165,7 @@ function Skills() {
                 <div
                   key={index}
                   onClick={(e) => {
-                    checkSkills(skill.skills);
+                    checkSkills(skill.skills,skill.id);
                     setShowskills((prevSkills) =>
                       prevSkills.filter(
                         (prevSkill) => prevSkill.skills !== skill.skills
