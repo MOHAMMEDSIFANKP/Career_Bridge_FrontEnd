@@ -79,7 +79,7 @@ function ProfileCreation() {
         const pictureForm = new FormData();
         pictureForm.append("profile_image", Form.profileImg);
         handleLoading()
-        await UserProfileUpdate(pictureForm, decode.id);
+        await UserProfileUpdate(pictureForm, decode.user_id);
         const data = {
           jobField: { field_name: JobFiledRedex },
           jobTitle: {field:10, title_name: JobTitleRedex },
@@ -97,7 +97,7 @@ function ProfileCreation() {
           refresh: accessToken
         };
         await UserInfo(data);
-        await UserIs_compleatedUpdate({is_compleated:true},decode.id)
+        await UserIs_compleatedUpdate({is_compleated:true},decode.user_id)
         await TokenRefresh(Token).then(res=>{
           const token = JSON.stringify(res.data);
           localStorage.setItem("token", token);

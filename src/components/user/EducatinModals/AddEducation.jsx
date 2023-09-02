@@ -38,12 +38,16 @@ const AddEducation = ({ isOpen, onClose }) => {
       return false;
     } else if (Form.Degree.trim() === "") {
       seterror({ ...error, Degree: true });
+      return false;
     } else if (Form.DatesAttended.trim() === "") {
       seterror({ ...error, DatesAttended: true });
+      return false;
     } else if (Form.Datesended.trim() === "") {
       seterror({ ...error, Datesended: true });
+      return false;
     } else if (Form.Description.trim() === "") {
       seterror({ ...error, Description: true });
+      return false;
     }
     return true;
   };

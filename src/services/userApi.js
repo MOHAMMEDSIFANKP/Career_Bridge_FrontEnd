@@ -1,14 +1,21 @@
 import { userAxiosInstant } from "../utils/axiosUtils";
 
 const userSignup = (values) => {
-  return userAxiosInstant.post("/api/register/", values, {
+  return userAxiosInstant.post("api/register/", values, {
     withCredentials: true,
   });
 };
 
 const UserInfoDetails = (id)=>{
-  return userAxiosInstant.get('/api/UserInfoDetails/'+id+'/')
+  return userAxiosInstant.get('api/UserInfoDetails/'+id+'/')
 }
+
+const UserDetail = (id) => {
+  return userAxiosInstant.get('api/user-detail/'+id+'/', {
+    withCredentials: true,
+  })
+};
+
 const UserGoogleSignup = (value) => {
   const values = {
     email: value.email,
@@ -17,7 +24,7 @@ const UserGoogleSignup = (value) => {
     last_name: value.family_name,
     password: value.id,
   };
-  return userAxiosInstant.post("/api/googleregistration/", values, {
+  return userAxiosInstant.post("api/googleregistration/", values, {
     withCredentials: true,
   });
 };
@@ -43,13 +50,14 @@ const TokenRefresh = (value) => {
   })
   .catch((error) => error.response);
 };
+
 const UserInfo = (value) => {
   return userAxiosInstant.post("api/UserInfoListCreateAPIView/", value, {
     withCredentials: true,
   })
 };
 const UserProfileUpdate = (value, id) => {
-  return userAxiosInstant.put("/api/UserProfileUpdate/" + id + "/", value, {
+  return userAxiosInstant.put("api/UserProfileUpdate/" + id + "/", value, {
     withCredentials: true,
   });
 };
@@ -66,6 +74,7 @@ export {
   UserGoogleSignin,
   UserInfoDetails,
   UserInfo,
+  UserDetail,
   UserProfileUpdate,
   UserIs_compleatedUpdate,
   TokenRefresh,

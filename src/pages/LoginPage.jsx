@@ -9,6 +9,7 @@ import userImage from "../assets/icons8-google.svg";
 import Loader from "../components/Loading/Loading";
 import axios from "axios";
 import { UserInfoDetails } from "../services/userApi";
+import { UserDetail } from "../services/userApi";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -63,41 +64,50 @@ function LoginPage() {
     const Regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return Regex.test(email);
   }
-  async function fetchUserInfo(id) {
+  async function fetchUserInfo(token) {
     try {
-      const res = await UserInfoDetails(id);
-      console.log(res);
+      const res = await UserInfoDetails(token.userInfoId);
+      const UserDetails = await UserDetail(token.user_id)
       dispatch(
         setRole({
           JobFiledRedex: res.data.jobField.field_name,
           JobTitleRedex: res.data.jobTitle.title_name,
         })
       );
-      res.data.experience.map((values,index)=>{
+      res.data.experience.map((values, index) => {
         dispatch(setExperiences(values));
       });
-      res.data.education.map((values, index)=>{
+      res.data.education.map((values, index) => {
         dispatch(SetEducation(values));
       });
-      res.data.languages.map((values, index)=>{
+      res.data.languages.map((values, index) => {
         dispatch(SetLanguage(values));
       });
-      res.data.skills.map((values, index)=>{
-      dispatch(SetSkills(values))
-      })
+      res.data.skills.map((values, index) => {
+        dispatch(SetSkills(values));
+      });
+      const userInformation = {
+        id: UserDetails.data.id,
+        profile_image: UserDetails.data.profile_image,
+        email: UserDetails.data.email,
+        first_name: UserDetails.data.first_name,
+        last_name: UserDetails.data.last_name,
+        is_active: UserDetails.data.is_active,
+        is_compleated: UserDetails.data.is_compleated,
+        id_admin: UserDetails.data.is_admin,
+        role: UserDetails.data.role,
+        streetaddress: res.data.streetaddress,
+        city: res.data.city,
+        state: res.data.state,
+      }
+      if (userInformation) {
+        dispatch(setUserDetails({ UserInfo: userInformation }));
+      }
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
-  function StoreUserDetails(token){
-    console.log(token.email);
-    dispatch(setUserDetails(
-      email = token.email,
-    
-    ))
-    console.log(token);
-  }
-  // After form submition
+
   const FormHandlerLogin = async (e) => {
     e.preventDefault();
     if (Validation()) {
@@ -109,12 +119,11 @@ function LoginPage() {
           if (decoded.role === "user") {
             localStorage.setItem("token", token);
             if (decoded.is_compleated) {
-              fetchUserInfo(decoded.userInfoId);
               navigate("/user/");
             } else {
               navigate("/user/position");
             }
-            StoreUserDetails(decoded)
+            fetchUserInfo(decoded);
           } else if (decoded.role === "company") {
             localStorage.setItem("token", token);
             navigate("/company/");

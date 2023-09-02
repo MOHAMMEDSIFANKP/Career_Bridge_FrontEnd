@@ -1,13 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  id: "",
-  email: "",
-  profile_image: "",
-  role: "",
-  is_compleated: "",
-  is_google: "",
-  UserInfo: {email:''},
+  UserInfo: {},
   JobFiledRedex: "",
   JobTitleRedex: "",
   positions : "",
@@ -22,18 +16,10 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action) => {
-      // state.UserInfo = action.payload.UserInfo;
-      state.email = action.payload.email
+      state.UserInfo= action.payload.UserInfo;
     },
     LogoutDetails: (state, action) => {
-      // state.id = "";
-      // state.first_name = "";
-      // state.last_name = "";
-      // state.email = "";
-      // state.profile_image = "";
-      // state.role = "";
-      // state.is_compleated = "";
-      // state.is_google = "";
+      state.UserInfo = {};
     },
     // Role
     setRole: (state, action) => {
