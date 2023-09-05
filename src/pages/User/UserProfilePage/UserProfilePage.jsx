@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
-import  MyinfoComponent  from "../../../components/Profile/MyinfoComponent";
+import MyinfoComponent from "../../../components/Profile/MyinfoComponent";
 import { PasswordSecurity } from "../../../components/Profile/PasswordSecurity";
 
 function UserProfilePage() {

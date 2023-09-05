@@ -17,8 +17,7 @@ function UserRoutes() {
   return (
     <Routes>
       <Route element={<PrivateRoutes/>}>
-     
-        <Route path='/signup' exact element={<SignUpPage />} />
+      <Route path='/signup' exact element={<SignUpPage />} />
       </Route>
       <Route element={<UserProtected />}>
         <Route path='/' element={<UserHomePage />} />

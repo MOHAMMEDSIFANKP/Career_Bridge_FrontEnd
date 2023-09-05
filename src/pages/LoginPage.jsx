@@ -67,7 +67,7 @@ function LoginPage() {
   async function fetchUserInfo(token) {
     try {
       const res = await UserInfoDetails(token.userInfoId);
-      const UserDetails = await UserDetail(token.user_id)
+      const UserDetails = await UserDetail(token.user_id);
       dispatch(
         setRole({
           JobFiledRedex: res.data.jobField.field_name,
@@ -99,7 +99,7 @@ function LoginPage() {
         streetaddress: res.data.streetaddress,
         city: res.data.city,
         state: res.data.state,
-      }
+      };
       if (userInformation) {
         dispatch(setUserDetails({ UserInfo: userInformation }));
       }
@@ -175,7 +175,7 @@ function LoginPage() {
       }
       setgUser([]);
     } catch (error) {
-      if (error.response) {
+      if (error.response && error.response.data) {
         toast.error(error.response.data.detail);
       } else {
         toast.error("An error occurred during signup.");
@@ -227,6 +227,9 @@ function LoginPage() {
                     }
                   />
                 </div>
+                <div className="flex justify-end ">
+                  <Link to="/forgotpassword" className="text-gray-500 text-sm pointer-events-auto">Forgot Password ?</Link>
+                </div>
                 <div className="flex justify-center">
                   <button
                     type="submit"
@@ -235,6 +238,7 @@ function LoginPage() {
                     Sign In
                   </button>
                 </div>
+               
               </form>
               <div className="flex justify-between my-3">
                 <hr className="m-5 w-44 border-1 border-purple-400" />
@@ -264,15 +268,13 @@ function LoginPage() {
                   className="ml-2 rounded-full h-8"
                 />
                 <span className="flex-1 text-center font-bold text-white">
-                  Continue with Google
+                  Continue with giT
                 </span>
               </div>
-              <div className="flex justify-between my-3">
-                <hr className="my-5 flex-grow border-t-1 border-purple-400" />
+              <div className="flex justify-center my-3 ">
                 <p className="text-gray-500 sm:text-sm px-3 text-xs pt-3">
                   <Link to="/choose"> Don't have an account?</Link>
                 </p>
-                <hr className="my-5 flex-grow border-t-1 border-purple-400" />
               </div>
             </div>
           </div>

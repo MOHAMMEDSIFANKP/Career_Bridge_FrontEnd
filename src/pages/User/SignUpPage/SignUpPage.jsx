@@ -137,6 +137,8 @@ function SignUpPage() {
       handleLoading();
       toast.success(res.data.msg);
       setgUser([]);
+      const token = JSON.stringify(res.data.token)
+      localStorage.setItem('token',token)
       navigate("/user/position");
     } catch (error) {
       handleLoading();

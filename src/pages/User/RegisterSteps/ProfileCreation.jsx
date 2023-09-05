@@ -3,19 +3,19 @@ import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import countriesList from "countries-list";
-import defaultprofileImg from '../../../assets/ProfileImg.jpeg'
+import defaultprofileImg from "../../../assets/ProfileImg.jpeg";
 import { useSelector } from "react-redux";
 import { UserInfo } from "../../../services/userApi";
 import { UserProfileUpdate } from "../../../services/userApi";
 import { UserIs_compleatedUpdate } from "../../../services/userApi";
 import { TokenRefresh } from "../../../services/userApi";
-import jwt_decode from 'jwt-decode'
+import jwt_decode from "jwt-decode";
 import Loader from "../../../components/Loading/Loading";
 
 function ProfileCreation() {
- const navigate = useNavigate()
+  const navigate = useNavigate();
   const [Form, setForm] = useState({
-    profileImg:null,
+    profileImg: null,
     country: "",
     streetaddress: "",
     city: "",
@@ -24,16 +24,16 @@ function ProfileCreation() {
   });
 
   const [error, seterror] = useState({
-    profileImg:false,
+    profileImg: false,
     country: false,
     streetaddress: false,
     city: false,
     state: false,
     zipcode: false,
   });
-    //  For loading
-    const [loading, setLoading] = useState(false);
-    const handleLoading = () => setLoading((cur) => !cur);
+  //  For loading
+  const [loading, setLoading] = useState(false);
+  const handleLoading = () => setLoading((cur) => !cur);
 
   const Validation = () => {
     if (Form.profileImg === null) {
@@ -61,28 +61,27 @@ function ProfileCreation() {
     name: countriesList.countries[countryCode].name,
     value: countryCode,
   }));
- 
 
   const Skill = useSelector((state) => state.user.Skills);
   const { JobFiledRedex, JobTitleRedex } = useSelector((state) => state.user);
   const { experiences } = useSelector((state) => state.user);
   const { Education } = useSelector((state) => state.user);
   const { Language } = useSelector((state) => state.user);
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem("token");
   const tokenData = JSON.parse(token);
   const accessToken = tokenData.refresh;
-  const decode = jwt_decode(token)
+  const decode = jwt_decode(token);
 
-  const ConformButton = async() =>{
+  const ConformButton = async () => {
     try {
       if (Validation()) {
         const pictureForm = new FormData();
         pictureForm.append("profile_image", Form.profileImg);
-        handleLoading()
+        handleLoading();
         await UserProfileUpdate(pictureForm, decode.user_id);
         const data = {
           jobField: { field_name: JobFiledRedex },
-          jobTitle: {field:10, title_name: JobTitleRedex },
+          jobTitle: { field: 10, title_name: JobTitleRedex },
           experience: experiences,
           education: Education,
           languages: Language,
@@ -93,33 +92,37 @@ function ProfileCreation() {
           state: Form.state,
           zipcode: Form.zipcode,
         };
-        const Token ={
-          refresh: accessToken
+        const Token = {
+          refresh: accessToken,
         };
         await UserInfo(data);
-        await UserIs_compleatedUpdate({is_compleated:true},decode.user_id)
-        await TokenRefresh(Token).then(res=>{
+        await UserIs_compleatedUpdate({ is_compleated: true }, decode.user_id);
+        await TokenRefresh(Token).then((res) => {
           const token = JSON.stringify(res.data);
           localStorage.setItem("token", token);
-        })
+        });
         handleLoading();
-        navigate('/user/')
+        navigate("/user/");
       }
-    }catch (error) {
+    } catch (error) {
       handleLoading();
-      if (error.response && error.response.data && error.response.data.length > 0) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.length > 0
+      ) {
         toast.error(error.response.data[0]);
-        navigate('/user/')
+        navigate("/user/");
       } else {
-        toast.error('Something went wrong.');
+        toast.error("Something went wrong.");
       }
       console.error("Error updating profile and user info:", error);
     }
-    }
-   
+  };
+
   return (
     <>
-     {loading && <Loader />}
+      {loading && <Loader />}
       <NavbarDefault />
       <ToastContainer />
       <div className="container  px-8 mt-10 lg:mt-32 sm:mt-14 mx-auto">
@@ -141,7 +144,11 @@ function ProfileCreation() {
             <div className="flex justify-center mb-6">
               <img
                 className="w-24 rounded-full border-purple-400 border-2 p-2"
-                src={Form.profileImg ? URL.createObjectURL(Form.profileImg) : defaultprofileImg}
+                src={
+                  Form.profileImg
+                    ? URL.createObjectURL(Form.profileImg)
+                    : defaultprofileImg
+                }
                 alt=""
               />
             </div>
@@ -180,7 +187,6 @@ function ProfileCreation() {
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
-               
               >
                 <option value="">Choose</option>
                 {Object.keys(countries).map((countryCode) => (
@@ -212,54 +218,54 @@ function ProfileCreation() {
               />
             </div>
             <div className="mx-2 mt-3 flex">
-             <div className="w-4/12 me-3">
-             <p className="text-black pb-1">City *</p>
-              <input
-                type="text"
-                name="city"
-                onChange={(e) => {
-                  setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, city: false });
-                }}
-                className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.city
-                    ? "focus:ring-red-200 border-2 border-red-400"
-                    : "border-gray-400"
-                }`}
-              />
-             </div>
-             <div className="w-4/12 me-3">
-             <p className="text-black pb-1">State *</p>
-              <input
-                type="text"
-                name="state"
-                onChange={(e) => {
-                  setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, state: false });
-                }}
-                className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.state
-                    ? "focus:ring-red-200 border-2 border-red-400"
-                    : "border-gray-400"
-                }`}
-              />
-             </div>
-             <div className="w-4/12">
-             <p className="text-black pb-1">Zip code *</p>
-              <input
-                type="number"
-                name="zipcode"
-                onChange={(e) => {
-                  setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, zipcode: false });
-                }}
-                className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.zipcode
-                    ? "focus:ring-red-200 border-2 border-red-400"
-                    : "border-gray-400"
-                }`}
-              />
-             </div>
+              <div className="w-4/12 me-3">
+                <p className="text-black pb-1">City *</p>
+                <input
+                  type="text"
+                  name="city"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, city: false });
+                  }}
+                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.city
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
+                />
+              </div>
+              <div className="w-4/12 me-3">
+                <p className="text-black pb-1">State *</p>
+                <input
+                  type="text"
+                  name="state"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, state: false });
+                  }}
+                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.state
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
+                />
+              </div>
+              <div className="w-4/12">
+                <p className="text-black pb-1">Zip code *</p>
+                <input
+                  type="number"
+                  name="zipcode"
+                  onChange={(e) => {
+                    setForm({ ...Form, [e.target.name]: e.target.value });
+                    seterror({ ...error, zipcode: false });
+                  }}
+                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.zipcode
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </div>

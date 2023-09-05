@@ -1,21 +1,25 @@
 import { userAxiosInstant } from "../utils/axiosUtils";
 
+// User signup
 const userSignup = (values) => {
   return userAxiosInstant.post("api/register/", values, {
     withCredentials: true,
   });
 };
 
+//  Get userInfo Details 
 const UserInfoDetails = (id)=>{
   return userAxiosInstant.get('api/UserInfoDetails/'+id+'/')
 }
 
+// Get User Details
 const UserDetail = (id) => {
   return userAxiosInstant.get('api/user-detail/'+id+'/', {
     withCredentials: true,
   })
 };
 
+// 
 const UserGoogleSignup = (value) => {
   const values = {
     email: value.email,
@@ -25,8 +29,10 @@ const UserGoogleSignup = (value) => {
     password: value.id,
   };
   return userAxiosInstant.post("api/googleregistration/", values, {
-    withCredentials: true,
-  });
+    withCredentials: true})
+    .catch((error) => {
+      throw error; 
+    });
 };
 
 const userSignin = (values) => {

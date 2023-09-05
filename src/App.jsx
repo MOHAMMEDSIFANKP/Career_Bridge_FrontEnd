@@ -7,7 +7,8 @@ import CompanyRoutes from './routes/company'
 import AdminRoutes from './routes/Admin'
 import PrivateRoutes from './ProtectedRoutes/PrivateRoutes'
 import MailConfirm from './pages/MailConfirm'
-
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
+import RestPassword from './pages/ForgotPassword/RestPassword'
 
 function App() {
 
@@ -20,6 +21,9 @@ function App() {
       <Route path='/login/' exact element={<LoginPage/>} />
       <Route path='/choose' exact element={<ChoosePage/>} />
       <Route path='/confirm' exact element={<MailConfirm />} />
+      <Route path='/resetpassword' exact element={<RestPassword />} />
+      <Route path='/forgotpassword' element={<ForgotPassword />} />
+
       </Route>
       <Route path='/user/*' element={<UserRoutes/>} />
       <Route path='/company/*' element={<CompanyRoutes/>} />
