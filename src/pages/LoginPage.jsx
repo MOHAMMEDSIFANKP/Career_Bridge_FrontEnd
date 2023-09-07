@@ -65,6 +65,27 @@ function LoginPage() {
     return Regex.test(email);
   }
   async function fetchUserInfo(token) {
+    if (!token.userInfoId) {
+      try {
+        const UserDetails = await UserDetail(token.user_id);
+        const userInformation = {
+          id: UserDetails.data.id,
+          profile_image: UserDetails.data.profile_image,
+          email: UserDetails.data.email,
+          first_name: UserDetails.data.first_name,
+          last_name: UserDetails.data.last_name,
+          is_active: UserDetails.data.is_active,
+          is_compleated: UserDetails.data.is_compleated,
+          id_admin: UserDetails.data.is_admin,
+          role: UserDetails.data.role,
+        };
+        if (userInformation) {
+          dispatch(setUserDetails({ UserInfo: userInformation }));
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    }
     try {
       const res = await UserInfoDetails(token.userInfoId);
       const UserDetails = await UserDetail(token.user_id);
@@ -118,12 +139,12 @@ function LoginPage() {
           const decoded = jwtDecode(token);
           if (decoded.role === "user") {
             localStorage.setItem("token", token);
-            if (decoded.is_compleated) {
-              navigate("/user/");
-            } else {
-              navigate("/user/position");
-            }
             fetchUserInfo(decoded);
+            if (decoded.is_compleated) {
+                navigate("/user/");
+              } else {
+                navigate("/user/position");
+            }
           } else if (decoded.role === "company") {
             localStorage.setItem("token", token);
             navigate("/company/");
@@ -228,7 +249,12 @@ function LoginPage() {
                   />
                 </div>
                 <div className="flex justify-end ">
-                  <Link to="/forgotpassword" className="text-gray-500 text-sm pointer-events-auto">Forgot Password ?</Link>
+                  <Link
+                    to="/forgotpassword"
+                    className="text-gray-500 text-sm pointer-events-auto"
+                  >
+                    Forgot Password ?
+                  </Link>
                 </div>
                 <div className="flex justify-center">
                   <button
@@ -238,7 +264,6 @@ function LoginPage() {
                     Sign In
                   </button>
                 </div>
-               
               </form>
               <div className="flex justify-between my-3">
                 <hr className="m-5 w-44 border-1 border-purple-400" />

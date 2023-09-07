@@ -86,7 +86,6 @@ function SignUpPage() {
           user
         );
         toast.success(response.data.msg);
-        navigate('/confirm')
         setUser({
           first_name: "",
           last_name: "",
@@ -96,6 +95,7 @@ function SignUpPage() {
         });
         setOther({ cpassword: "", check: false });
         handleLoading();
+        navigate('/confirm')
       } catch (error) {
         handleLoading();
         if (error.response && error.response.data) {

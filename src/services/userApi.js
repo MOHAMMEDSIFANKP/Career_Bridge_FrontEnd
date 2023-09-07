@@ -1,25 +1,17 @@
 import { userAxiosInstant } from "../utils/axiosUtils";
 
-// User signup
-const userSignup = (values) => {
-  return userAxiosInstant.post("api/register/", values, {
-    withCredentials: true,
-  });
+//------------------------------ POST METHODS-------------------------------------------
+
+// User Signin
+const userSignin = (values) => {
+  return userAxiosInstant
+    .post("api/token/", values, { withCredentials: true })
+    .catch((error) => {
+      throw error; 
+    });
 };
 
-//  Get userInfo Details 
-const UserInfoDetails = (id)=>{
-  return userAxiosInstant.get('api/UserInfoDetails/'+id+'/')
-}
-
-// Get User Details
-const UserDetail = (id) => {
-  return userAxiosInstant.get('api/user-detail/'+id+'/', {
-    withCredentials: true,
-  })
-};
-
-// 
+// User Google signup
 const UserGoogleSignup = (value) => {
   const values = {
     email: value.email,
@@ -35,14 +27,7 @@ const UserGoogleSignup = (value) => {
     });
 };
 
-const userSignin = (values) => {
-  return userAxiosInstant
-    .post("api/token/", values, { withCredentials: true })
-    .catch((error) => {
-      throw error; 
-    });
-};
-
+// User Google signin
 const UserGoogleSignin = (value) => {
   const values = {
     email: value.email,
@@ -50,6 +35,8 @@ const UserGoogleSignin = (value) => {
   };
   return userAxiosInstant.post("api/token/", values, { withCredentials: true });
 };
+
+// User Token refresh
 const TokenRefresh = (value) => {
   return userAxiosInstant.post("api/token/refresh/", value, {
     withCredentials: true,
@@ -57,24 +44,60 @@ const TokenRefresh = (value) => {
   .catch((error) => error.response);
 };
 
+// Create User into 
 const UserInfo = (value) => {
   return userAxiosInstant.post("api/UserInfoListCreateAPIView/", value, {
     withCredentials: true,
   })
 };
+
+
+
+//-----------------------------Get Methods--------------------------------------------
+
+//  Get userInfo Details 
+const UserInfoDetails = (id)=>{
+  return userAxiosInstant.get('api/UserInfoDetails/'+id+'/')
+}
+
+// Get User Details
+const UserDetail = (id) => {
+  return userAxiosInstant.get('api/user-detail/'+id+'/', {
+    withCredentials: true,
+  })
+};
+
+
+
+
+//--------------------------Put or Patch Methods (for Updation)-------------------------------
+
+// Update User Profile
 const UserProfileUpdate = (value, id) => {
   return userAxiosInstant.put("api/UserProfileUpdate/" + id + "/", value, {
     withCredentials: true,
   });
 };
+
+// Update User is_compleated
 const UserIs_compleatedUpdate = (value, id) => {
   return userAxiosInstant.put("api/Is_compleatedUpdate/" + id + "/", value, {
     withCredentials: true,
   })
   .catch((error) => error.response);
 };
+
+// Forgot Passsword (Reset Password)
+const Restpassword = (values, id) => {
+  return userAxiosInstant.put(`api/restpassword/${id}/`, values, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+
 export {
-  userSignup,
   userSignin,
   UserGoogleSignup,
   UserGoogleSignin,
@@ -84,4 +107,5 @@ export {
   UserProfileUpdate,
   UserIs_compleatedUpdate,
   TokenRefresh,
+  Restpassword,
 };
