@@ -10,10 +10,10 @@ function CompanyRoutes() {
       <Route element={<PrivateRoutes />}>
         <Route path="/signup" element={<Company_Register_Page />} />
       </Route>
-      {/* <Route element={<CompanyProtected />}> */}
+      <Route element={<CompanyProtected />}>
         <Route path="/" element={<CompanyHomePage />} />
         <Route path="/createcompany" element={<CompanyCreations />} />
-      {/* </Route> */}
+      </Route>
     </Routes>
   );
 }

@@ -21,8 +21,9 @@ function ProfileCreation() {
     city: "",
     state: "",
     zipcode: "",
+    cv: null,
   });
-
+console.log(Form);
   const [error, seterror] = useState({
     profileImg: false,
     country: false,
@@ -30,6 +31,7 @@ function ProfileCreation() {
     city: false,
     state: false,
     zipcode: false,
+    cv:false,
   });
   //  For loading
   const [loading, setLoading] = useState(false);
@@ -38,6 +40,9 @@ function ProfileCreation() {
   const Validation = () => {
     if (Form.profileImg === null) {
       seterror({ ...error, profileImg: true });
+      return false;
+    } else if (Form.cv === null) {
+      seterror({ ...error, cv: true });
       return false;
     } else if (Form.country.trim() === "") {
       seterror({ ...error, country: true });
@@ -77,9 +82,12 @@ function ProfileCreation() {
       if (Validation()) {
         const pictureForm = new FormData();
         pictureForm.append("profile_image", Form.profileImg);
+        const cvForm = new FormData();
+        cvForm.append("cv", Form.cv);
         handleLoading();
         await UserProfileUpdate(pictureForm, decode.user_id);
         const data = {
+          // cv : cvForm,
           jobField: { field_name: JobFiledRedex },
           jobTitle: { field: 10, title_name: JobTitleRedex },
           experience: experiences,
@@ -130,7 +138,7 @@ function ProfileCreation() {
         <div className="sm:mt-8 mt-5">
           <p className="font-bold text-2xl md:text-4xl font-serif">
             A few last details, then you can check and <br />
-            publish your profile.
+            publish your profile & CV.
           </p>
           <p className="mt-3">
             A professional photo helps you build trust with your clients. To
@@ -169,8 +177,25 @@ function ProfileCreation() {
                 }`}
               />
             </div>
+            {/* <div className="mx-2 mt-3">
+              <p className="text-black pb-1">Upload cv *</p>
+              <input
+                type="file"
+                accept=".pdf, .xlsx, .xls, .docx"
+                name="cv"
+                onChange={(e) => {
+                  setForm({ ...Form, [e.target.name]:  e.target.files[0] });
+                  seterror({ ...error, cv: false });
+                }}
+                className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                  error.cv
+                    ? "focus:ring-red-200 border-2 border-red-400"
+                    : "border-gray-400"
+                }`}
+              />
+            </div> */}
           </div>
-          <div className="sm:mt-10 ms:mt-0 w-full h-96 ">
+          <div className="sm:mt-10 ms:mt-0 w-full h-96 pt-5">
             <div className="mx-3 w-2/6">
               <label htmlFor="countrySelect" className="block text-black pb-1">
                 Country

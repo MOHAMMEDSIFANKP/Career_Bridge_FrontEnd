@@ -165,7 +165,7 @@ function Experience() {
             <div
               key={index}
               className="col-span-12 flex  md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-56 rounded-2xl relative"
-            >
+             >
               <div className="w-2/6 ms-6 mt-6 ">
                 <img src={FileImage} alt="" className="w-20 opacity-75" />
               </div>

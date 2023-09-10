@@ -8,12 +8,14 @@ function CompanyCreations() {
     companyname: "",
     companyProfile: null,
     industry: "",
-    companysize: "",
+    companysize: null,
     companytype: "",
     gstno: "",
     companydescripation: "",
   });
 
+  const [checkbox,setChecbox] = useState(false)
+console.log(checkbox);
   const [error, seterror] = useState({
     companyname: false,
     companyProfile: false,
@@ -22,8 +24,8 @@ function CompanyCreations() {
     companytype: false,
     gstno: false,
     companydescripation: false,
+    checkbox: false,
   });
-
   const CompanynameInputRef = useRef(null);
   const CompayProfileInput = useRef(null);
   const IndustryInput = useRef(null);
@@ -31,6 +33,7 @@ function CompanyCreations() {
   const GstnoInput = useRef(null);
   const companytypeInput = useRef(null);
   const CompanydescripationInput = useRef(null);
+  const CheckboxInput = useRef(null);
 
   useEffect(() => {
     CompanynameInputRef.current.focus();
@@ -41,18 +44,37 @@ function CompanyCreations() {
     if (companyDetail.companyname === "") {
       seterror({ ...error, companyname: true });
       CompanynameInputRef.current.focus();
+      return false
     } else if (companyDetail.industry === "") {
       seterror({ ...error, industry: true });
       IndustryInput.current.focus();
+      return false
     } else if (companyDetail.companyProfile === null) {
       seterror({ ...error, companyProfile: true });
       CompayProfileInput.current.focus();
+      return false
     }  else if (companyDetail.companysize === null) {
       seterror({ ...error, companysize: true });
       CompanysizeInput.current.focus();
+      return false
+    } else if (companyDetail.companytype === "") {
+      seterror({ ...error, companytype: true });
+      companytypeInput.current.focus();
+      return false
+    } else if (companyDetail.gstno === "") {
+      seterror({ ...error, gstno: true });
+      GstnoInput.current.focus();
+      return false
+    } else if (companyDetail.companydescripation === "") {
+      seterror({ ...error, companydescripation: true });
+      CompanydescripationInput.current.focus();
+      return false
+    }  else if (checkbox === false) {
+      seterror({ ...error, checkbox: true });
+      CompanydescripationInput.current.focus();
+      return false
     }
   };
-  console.log(companyDetail);
   return (
     <>
       <div className="h-screen ">
@@ -233,6 +255,7 @@ function CompanyCreations() {
             <div>
               <div className="mx-4 mb-4">
                 <input
+                ref={companytypeInput}
                   placeholder="Company Type"
                   name="companytype"
                   type="text"
@@ -252,6 +275,7 @@ function CompanyCreations() {
               </div>
               <div className="mx-4 mb-4">
                 <input
+                ref={GstnoInput}
                   placeholder="Gst No"
                   name="gstno"
                   type="text"
@@ -271,6 +295,7 @@ function CompanyCreations() {
               </div>
               <div className="mx-4 mb-3">
                 <textarea
+                ref={CompanydescripationInput}
                   name="companydescripation"
                   placeholder="Descripation"
                   id=""
@@ -279,7 +304,7 @@ function CompanyCreations() {
                   onChange={(e) => {
                     setCompanyDetail({
                       ...companyDetail,
-                      [e.target.name]: e.target.value,
+                      companydescripation: e.target.value,
                     }),
                       seterror({ ...error, companydescripation: false });
                   }}
@@ -292,7 +317,13 @@ function CompanyCreations() {
               </div>
               <div className="mx-7 flex">
                 <div>
-                  <input type="checkbox" />
+                  <input type="checkbox"
+                   ref={CheckboxInput} onChange={()=>setChecbox(!checkbox)} 
+                    className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                      error.checkbox
+                        ? "focus:ring-red-200 border-2 border-red-400"
+                        : "border-gray-400"
+                    }`}/>
                 </div>
                 <div className="ms-4">
                   <p className="text-gray-800 text-sm">
