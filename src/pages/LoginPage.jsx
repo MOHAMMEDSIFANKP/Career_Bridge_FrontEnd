@@ -120,6 +120,7 @@ function LoginPage() {
         streetaddress: res.data.streetaddress,
         city: res.data.city,
         state: res.data.state,
+        bio: res.data.bio,
       };
       if (userInformation) {
         dispatch(setUserDetails({ UserInfo: userInformation }));
