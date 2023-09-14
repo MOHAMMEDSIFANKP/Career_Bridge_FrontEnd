@@ -96,6 +96,25 @@ const Restpassword = (values, id) => {
     throw error; 
   });
 };
+// Update UserProfle (first_name,last_name)
+const UpdateUseaccount = (values, id) => {
+  return userAxiosInstant.put(`api/updateuseaccount/${id}/`, values, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+
+// Update Userinfo table
+const UpdateUserInfoDetails = (values, id) => {
+  return userAxiosInstant.put(`api/UserInfoDetails/${id}/`, values, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
 
 export {
   userSignin,
@@ -108,4 +127,6 @@ export {
   UserIs_compleatedUpdate,
   TokenRefresh,
   Restpassword,
+  UpdateUseaccount,
+  UpdateUserInfoDetails,
 };

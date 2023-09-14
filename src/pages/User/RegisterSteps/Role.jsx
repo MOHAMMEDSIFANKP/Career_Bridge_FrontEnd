@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Input } from "@material-tailwind/react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
-import { List, ListItem, Card } from "@material-tailwind/react";
+import { List, ListItem, Card,Input } from "@material-tailwind/react";
 import {
   AdminJobFieldList,
   AdminJobTitlelist,

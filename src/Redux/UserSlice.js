@@ -18,6 +18,14 @@ const userSlice = createSlice({
     setUserDetails: (state, action) => {
       state.UserInfo= action.payload.UserInfo;
     },
+    UpdateUserDetails: (state, action) =>{
+      state.UserInfo = {
+        ...state.UserInfo,
+        first_name: action.payload.first_name,
+        last_name: action.payload.last_name,
+        bio: action.payload.bio,
+      };
+    },
     LogoutDetails: (state, action) => {
       state.UserInfo = {};
     },
@@ -114,5 +122,6 @@ export const {
   ClearEducation,
   ClearLanguage,
   ClearSkills,
+  UpdateUserDetails,
 } = userSlice.actions;
 export default userSlice.reducer;
