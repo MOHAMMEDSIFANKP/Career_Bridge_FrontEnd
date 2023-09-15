@@ -2,81 +2,163 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import CompanyProfileImg from "../../../assets/CompanyProfile.png";
 import { Select, Option } from "@material-tailwind/react";
+import Loader from "../../../components/Loading/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import jwt_decode from "jwt-decode";
+
+// Service
+import { CompanyInfoCreate } from "../../../services/companyApi";
+import { useNavigate } from "react-router-dom";
+import { UserProfileUpdate } from "../../../services/userApi";
+import { UserIs_compleatedUpdate } from "../../../services/userApi";
+import { TokenRefresh } from "../../../services/userApi";
+// Redex
+import { useDispatch } from "react-redux";
+import { setCompanyDetails } from "../../../Redux/CompanySlice";
 
 function CompanyCreations() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // Get id
+  const token = localStorage.getItem("token");
+  const decode = jwt_decode(token);
+  const tokenData = JSON.parse(token);
+  const accessToken = tokenData.refresh;
+
   const [companyDetail, setCompanyDetail] = useState({
-    companyname: "",
+    company_name: "",
     companyProfile: null,
     industry: "",
-    companysize: null,
-    companytype: "",
-    gstno: "",
-    companydescripation: "",
+    company_size: null,
+    company_type: "",
+    gst: "",
+    description: "",
+    userId: decode.user_id,
   });
+  console.log(companyDetail);
+  const [checkbox, setChecbox] = useState(false);
 
-  const [checkbox,setChecbox] = useState(false)
-console.log(checkbox);
   const [error, seterror] = useState({
-    companyname: false,
+    company_name: false,
     companyProfile: false,
     industry: false,
-    companysize: false,
-    companytype: false,
-    gstno: false,
-    companydescripation: false,
+    company_size: false,
+    company_type: false,
+    gst: false,
+    description: false,
     checkbox: false,
   });
-  const CompanynameInputRef = useRef(null);
+  const company_nameInputRef = useRef(null);
   const CompayProfileInput = useRef(null);
   const IndustryInput = useRef(null);
-  const CompanysizeInput = useRef(null);
-  const GstnoInput = useRef(null);
-  const companytypeInput = useRef(null);
-  const CompanydescripationInput = useRef(null);
+  const company_sizeInput = useRef(null);
+  const gstInput = useRef(null);
+  const company_typeInput = useRef(null);
+  const descriptionInput = useRef(null);
   const CheckboxInput = useRef(null);
 
   useEffect(() => {
-    CompanynameInputRef.current.focus();
+    company_nameInputRef.current.focus();
     document.title = "Create Company | Career Bridge";
   }, []);
 
-  const FileSubmit = () => {
-    if (companyDetail.companyname === "") {
-      seterror({ ...error, companyname: true });
-      CompanynameInputRef.current.focus();
-      return false
+  //  For loading
+  const [loading, setLoading] = useState(false);
+  const handleLoading = () => setLoading((cur) => !cur);
+  // Validation
+  function Validation() {
+    if (companyDetail.company_name === "") {
+      seterror({ ...error, company_name: true });
+      company_nameInputRef.current.focus();
+      return false;
     } else if (companyDetail.industry === "") {
       seterror({ ...error, industry: true });
       IndustryInput.current.focus();
-      return false
+      return false;
     } else if (companyDetail.companyProfile === null) {
       seterror({ ...error, companyProfile: true });
       CompayProfileInput.current.focus();
-      return false
-    }  else if (companyDetail.companysize === null) {
-      seterror({ ...error, companysize: true });
-      CompanysizeInput.current.focus();
-      return false
-    } else if (companyDetail.companytype === "") {
-      seterror({ ...error, companytype: true });
-      companytypeInput.current.focus();
-      return false
-    } else if (companyDetail.gstno === "") {
-      seterror({ ...error, gstno: true });
-      GstnoInput.current.focus();
-      return false
-    } else if (companyDetail.companydescripation === "") {
-      seterror({ ...error, companydescripation: true });
-      CompanydescripationInput.current.focus();
-      return false
-    }  else if (checkbox === false) {
+      return false;
+    } else if (companyDetail.company_size === null) {
+      seterror({ ...error, company_size: true });
+      company_sizeInput.current.focus();
+      return false;
+    } else if (companyDetail.company_type === "") {
+      seterror({ ...error, company_type: true });
+      company_typeInput.current.focus();
+      return false;
+    } else if (companyDetail.gst === "") {
+      seterror({ ...error, gst: true });
+      gstInput.current.focus();
+      return false;
+    } else if (companyDetail.description === "") {
+      seterror({ ...error, description: true });
+      descriptionInput.current.focus();
+      return false;
+    } else if (checkbox === false) {
       seterror({ ...error, checkbox: true });
-      CompanydescripationInput.current.focus();
-      return false
+      CheckboxInput.current.focus();
+      return false;
+    }
+    return true;
+  }
+  const FileSubmit = async () => {
+    if (Validation()) {
+      try {
+        handleLoading();
+  
+        // Step 1: Create CompanyInfo
+        const res = await CompanyInfoCreate(companyDetail);
+  
+        // Step 2: Update UserIs_compleated
+        await UserIs_compleatedUpdate({ is_compleated: true }, companyDetail.userId);
+  
+        // Step 3: Update UserProfile
+        const pictureForm = new FormData();
+        pictureForm.append("profile_image", companyDetail.companyProfile);
+        const profile = await UserProfileUpdate(pictureForm, companyDetail.userId);
+  
+        // Step 4: Refresh Token
+        const Token = {
+          refresh: accessToken,
+        };
+        const res3 = await TokenRefresh(Token);
+        console.log(res3);
+        // Step 5: Update Redux Store
+        const token = JSON.stringify(res3.data);
+        localStorage.setItem("token", token);
+        const decode = jwt_decode(token);
+  
+        const data = {
+          ...res.data,
+          profile_image: profile.data.profile_image,
+          first_name: decode.first_name,
+          last_name: decode.last_name,
+          email: decode.email,
+          role: decode.role,
+          is_compleated: decode.is_compleated,
+          is_active: decode.is_active,
+          is_admin: decode.is_admin,
+        };
+        
+        dispatch(setCompanyDetails({ CompanyInfo: data }));
+  
+        handleLoading();
+        navigate("/company/");
+      } catch (error) {
+        console.log(error);
+        handleLoading();
+        toast.error("Something went wrong");
+      }
     }
   };
+  
+
   return (
     <>
+      <ToastContainer />
+      {loading && <Loader />}
       <div className="h-screen ">
         <div>
           <NavbarDefault />
@@ -90,19 +172,19 @@ console.log(checkbox);
               <div>
                 <div className="mx-4 mb-4">
                   <input
-                    name="companyname"
+                    name="company_name"
                     placeholder="Company Name"
                     type="text"
-                    ref={CompanynameInputRef}
+                    ref={company_nameInputRef}
                     onChange={(e) => {
                       setCompanyDetail({
                         ...companyDetail,
                         [e.target.name]: e.target.value,
                       });
-                      seterror({ ...error, companyname: false });
+                      seterror({ ...error, company_name: false });
                     }}
                     className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                      error.companyname
+                      error.company_name
                         ? "focus:ring-red-200 border-2 border-red-300"
                         : "border-gray-400"
                     }`}
@@ -188,19 +270,19 @@ console.log(checkbox);
                 </div>
                 <div className="mx-4 mb-4">
                   <Select
-                  ref={CompanysizeInput}
-                    name="companysize"
+                    ref={company_sizeInput}
+                    name="company_size"
                     id=""
                     label="Choose Company Size"
                     onChange={(value) => {
                       setCompanyDetail({
                         ...companyDetail,
-                        companysize: value,
+                        company_size: value,
                       });
-                      seterror({ ...error, companysize: false });
+                      seterror({ ...error, company_size: false });
                     }}
                     className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm  focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                      error.companysize
+                      error.company_size
                         ? "focus:ring-red-200 border-2 border-red-400"
                         : "border-gray-400"
                     }`}
@@ -254,40 +336,99 @@ console.log(checkbox);
             </div>
             <div>
               <div className="mx-4 mb-4">
-                <input
-                ref={companytypeInput}
-                  placeholder="Company Type"
-                  name="companytype"
-                  type="text"
-                  onChange={(e) => {
+                <Select
+                  ref={company_typeInput}
+                  name="company_type"
+                  id=""
+                  label="Choose Company Type"
+                  onChange={(value) => {
                     setCompanyDetail({
                       ...companyDetail,
-                      [e.target.name]: e.target.value,
+                      company_type: value,
                     });
-                    seterror({ ...error, companytype: false });
+                    seterror({ ...error, company_type: false });
                   }}
-                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                    error.companytype
+                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm  focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.company_type
                       ? "focus:ring-red-200 border-2 border-red-400"
                       : "border-gray-400"
                   }`}
-                />
+                >
+                  <Option value="Corporation">Corporation</Option>
+                  <Option value="Limited Liability Company (LLC)">
+                    Limited Liability Company (LLC)
+                  </Option>
+                  <Option value="Partnership">Partnership</Option>
+                  <Option value="Sole Proprietorship">
+                    Sole Proprietorship
+                  </Option>
+                  <Option value="Nonprofit Organization">
+                    Nonprofit Organization
+                  </Option>
+                  <Option value="Cooperative">Cooperative</Option>
+                  <Option value="Franchise">Franchise</Option>
+                  <Option value="Joint Venture">Joint Venture</Option>
+                  <Option value="Publicly Traded Company">
+                    Publicly Traded Company
+                  </Option>
+                  <Option value="Private Company">Private Company</Option>
+                  <Option value="Family-Owned Business">
+                    Family-Owned Business
+                  </Option>
+                  <Option value="Startup">Startup</Option>
+                  <Option value="Holding Company">Holding Company</Option>
+                  <Option value="Subsidiary">Subsidiary</Option>
+                  <Option value="Professional Corporation (PC)">
+                    Professional Corporation (PC)
+                  </Option>
+                  <Option value="Social Enterprise">Social Enterprise</Option>
+                  <Option value="B Corporation (Benefit Corporation)">
+                    B Corporation (Benefit Corporation)
+                  </Option>
+                  <Option value="C Corporation">C Corporation</Option>
+                  <Option value="S Corporation">S Corporation</Option>
+                  <Option value="Limited Partnership (LP)">
+                    Limited Partnership (LP)
+                  </Option>
+                  <Option value="Limited Liability Partnership (LLP)">
+                    Limited Liability Partnership (LLP)
+                  </Option>
+                  <Option value="Real Estate Investment Trust (REIT)">
+                    Real Estate Investment Trust (REIT)
+                  </Option>
+                  <Option value="Cooperative Corporation">
+                    Cooperative Corporation
+                  </Option>
+                  <Option value="Mutual Fund">Mutual Fund</Option>
+                  <Option value="Government-Owned Enterprise">
+                    Government-Owned Enterprise
+                  </Option>
+                  <Option value="Freelance/Sole Proprietor">
+                    Freelance/Sole Proprietor
+                  </Option>
+                  <Option value="Online Business">Online Business</Option>
+                  <Option value="Manufacturing Company">
+                    Manufacturing Company
+                  </Option>
+                  <Option value="Retail Company">Retail Company</Option>
+                  <Option value="Technology Company">Technology Company</Option>
+                </Select>
               </div>
               <div className="mx-4 mb-4">
                 <input
-                ref={GstnoInput}
+                  ref={gstInput}
                   placeholder="Gst No"
-                  name="gstno"
+                  name="gst"
                   type="text"
                   onChange={(e) => {
                     setCompanyDetail({
                       ...companyDetail,
                       [e.target.name]: e.target.value,
                     });
-                    seterror({ ...error, gstno: false });
+                    seterror({ ...error, gst: false });
                   }}
                   className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                    error.gstno
+                    error.gst
                       ? "focus:ring-red-200 border-2 border-red-400"
                       : "border-gray-400"
                   }`}
@@ -295,8 +436,8 @@ console.log(checkbox);
               </div>
               <div className="mx-4 mb-3">
                 <textarea
-                ref={CompanydescripationInput}
-                  name="companydescripation"
+                  ref={descriptionInput}
+                  name="description"
                   placeholder="Descripation"
                   id=""
                   cols="full"
@@ -304,12 +445,12 @@ console.log(checkbox);
                   onChange={(e) => {
                     setCompanyDetail({
                       ...companyDetail,
-                      companydescripation: e.target.value,
+                      description: e.target.value,
                     }),
-                      seterror({ ...error, companydescripation: false });
+                      seterror({ ...error, description: false });
                   }}
                   className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                    error.companydescripation
+                    error.description
                       ? "focus:ring-red-200 border-2 border-red-400"
                       : "border-gray-400"
                   }`}
@@ -317,13 +458,16 @@ console.log(checkbox);
               </div>
               <div className="mx-7 flex">
                 <div>
-                  <input type="checkbox"
-                   ref={CheckboxInput} onChange={()=>setChecbox(!checkbox)} 
+                  <input
+                    type="checkbox"
+                    ref={CheckboxInput}
+                    onChange={() => setChecbox(!checkbox)}
                     className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
                       error.checkbox
                         ? "focus:ring-red-200 border-2 border-red-400"
                         : "border-gray-400"
-                    }`}/>
+                    }`}
+                  />
                 </div>
                 <div className="ms-4">
                   <p className="text-gray-800 text-sm">

@@ -51,8 +51,6 @@ const UserInfo = (value) => {
   })
 };
 
-
-
 //-----------------------------Get Methods--------------------------------------------
 
 //  Get userInfo Details 
@@ -116,6 +114,55 @@ const UpdateUserInfoDetails = (values, id) => {
   });
 };
 
+// Edit Experience
+const ExperienceDetails = (values, id) => {
+  return userAxiosInstant.put(`api/ExperienceDetails/${id}/`, values, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+
+// Edit Educations
+const EducationDetails = (values, id) => {
+  return userAxiosInstant.put(`api/EducationDetails/${id}/`, values, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+//------------------------------Delete Methods------------------------------//
+// Delete skill in Userinfo table
+const Remove_skill = (values) => {
+  return userAxiosInstant.post("api/remove_skill/", values, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+
+const DeleteExperienceDetails = (id) => {
+  return userAxiosInstant.delete(`api/ExperienceDetails/${id}/`, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+
+
+const DeleteEducationDetails = (id) => {
+  return userAxiosInstant.delete(`api/EducationDetails/${id}/`, {
+    withCredentials: true,
+  })
+  .catch((error) => {
+    throw error; 
+  });
+};
+
 export {
   userSignin,
   UserGoogleSignup,
@@ -129,4 +176,11 @@ export {
   Restpassword,
   UpdateUseaccount,
   UpdateUserInfoDetails,
+  ExperienceDetails,
+  EducationDetails,
+  // delete methods
+  Remove_skill,
+  DeleteExperienceDetails,
+  DeleteEducationDetails,
+
 };

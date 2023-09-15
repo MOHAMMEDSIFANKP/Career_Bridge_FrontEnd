@@ -12,16 +12,17 @@ import Select from "react-select";
 import {
   AdminJobFieldList,
   AdminJobTitlelist,
-} from "../../../services/adminApi";
-import { UpdateUseaccount } from "../../../services/userApi";
-import { UpdateUserInfoDetails } from "../../../services/userApi";
+} from "../../../../services/adminApi";
+import { UpdateUseaccount } from "../../../../services/userApi";
+import { UpdateUserInfoDetails } from "../../../../services/userApi";
 
 // Redux
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { UpdateUserDetails } from "../../../Redux/UserSlice";
-import { setRole } from "../../../Redux/UserSlice";
+import { UpdateUserDetails } from "../../../../Redux/UserSlice";
+import { setRole } from "../../../../Redux/UserSlice";
 
+// Toast
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -97,19 +98,26 @@ const AccountEdit = ({ isOpen, onClose }) => {
     }
     return true;
   };
-
+// Change first_name and last_name
   const ConfirmButton = async () => {
     if (Validation()) {
       try {
         const res = await UpdateUseaccount(Form, UserInfo.id);
         if (res.status === 200) {
-          toast.success("Updated Successfully");
+         
           dispatch(
             UpdateUserDetails({
               first_name: res.data.first_name,
               last_name: res.data.last_name,
+              bio: UserInfo.bio,
+              streetaddress: UserInfo.streetaddress,
+              city: UserInfo.city,
+              state: UserInfo.state,
+              zipcode: UserInfo.zipcode,
+              cv: UserInfo.cv,
             })
           );
+          toast.success("Updated Successfully");
         }
       } catch (error) {
         toast.error("something wrong");

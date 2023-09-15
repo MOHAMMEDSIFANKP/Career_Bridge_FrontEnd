@@ -24,6 +24,11 @@ const userSlice = createSlice({
         first_name: action.payload.first_name,
         last_name: action.payload.last_name,
         bio: action.payload.bio,
+        streetaddress: action.payload.streetaddress,
+        city: action.payload.city,
+        state: action.payload.state,
+        zipcode: action.payload.zipcode,
+        cv: action.payload.cv,
       };
     },
     LogoutDetails: (state, action) => {

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
-import MyinfoComponent from "../../../components/Profile/MyinfoComponent";
+import MyinfoComponent from "../../../components/Profile/MyinfoComponent/MyinfoComponent";
 import { PasswordSecurity } from "../../../components/Profile/PasswordSecurity";
 import { Tooltip, Button } from "@material-tailwind/react";
-
 function UserProfilePage() {
   const [option, setOption] = useState("myinfo");
   return (

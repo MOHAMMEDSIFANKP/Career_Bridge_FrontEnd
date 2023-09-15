@@ -12,7 +12,22 @@ import { TokenRefresh } from "../../../services/userApi";
 import jwt_decode from "jwt-decode";
 import Loader from "../../../components/Loading/Loading";
 
+// Redux
+import { useDispatch } from "react-redux";
+import {
+  setUserDetails,
+  setExperiences,
+  SetEducation,
+  SetLanguage,
+  SetSkills,
+  CleatExperiences,
+  ClearEducation,
+  ClearLanguage,
+  ClearSkills,
+} from "../../../Redux/UserSlice";
+
 function ProfileCreation() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [Form, setForm] = useState({
     profileImg: null,
@@ -21,9 +36,8 @@ function ProfileCreation() {
     city: "",
     state: "",
     zipcode: "",
-    cv: null,
   });
-console.log(Form);
+
   const [error, seterror] = useState({
     profileImg: false,
     country: false,
@@ -31,7 +45,7 @@ console.log(Form);
     city: false,
     state: false,
     zipcode: false,
-    cv:false,
+    cv: false,
   });
   //  For loading
   const [loading, setLoading] = useState(false);
@@ -40,9 +54,6 @@ console.log(Form);
   const Validation = () => {
     if (Form.profileImg === null) {
       seterror({ ...error, profileImg: true });
-      return false;
-    } else if (Form.cv === null) {
-      seterror({ ...error, cv: true });
       return false;
     } else if (Form.country.trim() === "") {
       seterror({ ...error, country: true });
@@ -82,12 +93,9 @@ console.log(Form);
       if (Validation()) {
         const pictureForm = new FormData();
         pictureForm.append("profile_image", Form.profileImg);
-        const cvForm = new FormData();
-        cvForm.append("cv", Form.cv);
         handleLoading();
-        await UserProfileUpdate(pictureForm, decode.user_id);
+        const resimg = await UserProfileUpdate(pictureForm, decode.user_id);
         const data = {
-          // cv : cvForm,
           jobField: { field_name: JobFiledRedex },
           jobTitle: { field: 10, title_name: JobTitleRedex },
           experience: experiences,
@@ -103,11 +111,50 @@ console.log(Form);
         const Token = {
           refresh: accessToken,
         };
-        await UserInfo(data);
+        const resp = await UserInfo(data);
         await UserIs_compleatedUpdate({ is_compleated: true }, decode.user_id);
         await TokenRefresh(Token).then((res) => {
           const token = JSON.stringify(res.data);
           localStorage.setItem("token", token);
+          const decode = jwt_decode(token);
+          const userInformation = {
+            id: decode.user_id,
+            profile_image: resimg.data.profile_image,
+            email: decode.email,
+            first_name: decode.first_name,
+            last_name: decode.last_name,
+            is_active: decode.is_active,
+            is_compleated: decode.is_compleated,
+            id_admin: decode.is_admin,
+            role: decode.role,
+            streetaddress: resp.data.streetaddress,
+            userinfoid: resp.data.id,
+            city: resp.data.city,
+            state: resp.data.state,
+            zipcode: resp.data.zipcode,
+            bio: resp.data.bio,
+            cv: resp.data.cv,
+          };
+          if (userInformation) {
+            dispatch(CleatExperiences());
+            dispatch(ClearEducation());
+            dispatch(ClearLanguage());
+            dispatch(ClearSkills());
+            dispatch(setUserDetails({ UserInfo: userInformation }));
+
+            resp.data.experience.map((values, index) => {
+              dispatch(setExperiences(values));
+            });
+            resp.data.education.map((values, index) => {
+              dispatch(SetEducation(values));
+            });
+            resp.data.languages.map((values, index) => {
+              dispatch(SetLanguage(values));
+            });
+            resp.data.skills.map((values, index) => {
+              dispatch(SetSkills(values));
+            });
+          }
         });
         handleLoading();
         navigate("/user/");

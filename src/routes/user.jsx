@@ -19,7 +19,7 @@ function UserRoutes() {
       <Route element={<PrivateRoutes/>}>
       <Route path='/signup' exact element={<SignUpPage />} />
       </Route>
-      {/* <Route element={<UserProtected />}> */}
+      <Route element={<UserProtected />}>
         <Route path='/' element={<UserHomePage />} />
         <Route path='/position' element={<Position/>}/>
         <Route path='/role' element={<Role/>} />
@@ -29,7 +29,7 @@ function UserRoutes() {
         <Route path='/profile' element={<UserProfilePage/>}/>
         <Route path='/skills' element={<Skills/>}/>
         <Route path='/profilecreation' element={<ProfileCreation/>}/>
-      {/* </Route> */}
+      </Route>
     </Routes>
   );
 }

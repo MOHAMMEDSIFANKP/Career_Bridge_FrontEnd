@@ -104,9 +104,6 @@ function CompanyRegister_Page() {
       }
   };
 
-  
-  
-
 
   //   After form submition
   const FormHandlerSignup = async (e) => {
@@ -126,7 +123,9 @@ function CompanyRegister_Page() {
                   username: ''
               });
               setOther({ cpassword: '', check: false })
+              console.log(response);
               handleLoading();
+              navigate('/confirm')
 
           } catch (error) {
               handleLoading();
