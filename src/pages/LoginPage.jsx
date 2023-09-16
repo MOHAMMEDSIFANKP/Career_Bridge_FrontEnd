@@ -21,6 +21,8 @@ import {
   SetSkills,
   setUserDetails,
 } from "../Redux/UserSlice";
+import { GetCompanyDetails } from "../services/companyApi";
+import { setCompanyDetails } from "../Redux/CompanySlice";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ function LoginPage() {
       } catch (error) {
         console.error("An error occurred:", error);
       }
-    }else{
+    } else {
       try {
         const res = await UserInfoDetails(token.userInfoId);
         const UserDetails = await UserDetail(token.user_id);
@@ -132,9 +134,57 @@ function LoginPage() {
         console.error("An error occurred:", error);
       }
     }
-    
   }
-
+  async function FechCompanyInfo(token) {
+    try {
+      if (!token.companyInfoId) {
+        const UserDetails = await UserDetail(token.user_id);
+        const userInformation = {
+          id: UserDetails.data.id,
+          profile_image: UserDetails.data.profile_image,
+          email: UserDetails.data.email,
+          first_name: UserDetails.data.first_name,
+          last_name: UserDetails.data.last_name,
+          is_active: UserDetails.data.is_active,
+          is_compleated: UserDetails.data.is_compleated,
+          id_admin: UserDetails.data.is_admin,
+          role: UserDetails.data.role,
+        };
+        if (userInformation) {
+          dispatch(setCompanyDetails({ CompanyInfo: userInformation }));
+        }
+      } else {
+        const UserDetails = await UserDetail(token.user_id);
+        const CompanyDetails = await GetCompanyDetails(token.companyInfoId);
+        console.log(UserDetails);
+        console.log(CompanyDetails);
+        const userInformation = {
+          id: UserDetails.data.id,
+          profile_image: UserDetails.data.profile_image,
+          email: UserDetails.data.email,
+          first_name: UserDetails.data.first_name,
+          last_name: UserDetails.data.last_name,
+          is_active: UserDetails.data.is_active,
+          is_compleated: UserDetails.data.is_compleated,
+          id_admin: UserDetails.data.is_admin,
+          role: UserDetails.data.role,
+          companyid: CompanyDetails.data.id,
+          company_name: CompanyDetails.data.company_name,
+          industry: CompanyDetails.data.industry,
+          company_size: CompanyDetails.data.company_size,
+          company_type: CompanyDetails.data.company_type,
+          gst: CompanyDetails.data.gst,
+          description: CompanyDetails.data.description,
+          is_verify: CompanyDetails.data.is_verify,
+        };
+        if (userInformation) {
+          dispatch(setCompanyDetails({ CompanyInfo: userInformation }));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const FormHandlerLogin = async (e) => {
     e.preventDefault();
     if (Validation()) {
@@ -147,13 +197,18 @@ function LoginPage() {
             localStorage.setItem("token", token);
             fetchUserInfo(decoded);
             if (decoded.is_compleated) {
-                navigate("/user/");
-              } else {
-                navigate("/user/position");
+              navigate("/user/");
+            } else {
+              navigate("/user/position");
             }
           } else if (decoded.role === "company") {
             localStorage.setItem("token", token);
-            navigate("/company/");
+            FechCompanyInfo(decoded);
+            if (decoded.is_compleated) {
+              navigate("/company/");
+            } else {
+              navigate("/company/createcompany");
+            }
           } else {
             toast.error("Invalid role");
           }

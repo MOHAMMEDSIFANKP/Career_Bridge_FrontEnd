@@ -103,14 +103,14 @@ function Position() {
         <div className="z-20 lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
           <div className="bg-white md:h-20 h-16 w-full shadow-xl border flex justify-end">
             <div className="flex">
-              <div className="w-24 me-4 flex">
+              {/* <div className="w-24 me-4 flex">
                 <button
                   onClick={() => navigate("/user/profile")}
                   className="  text-purple-500"
                 >
                   Skip for now
                 </button>
-              </div>
+              </div> */}
               <div className="w-24 ms:pt-5 mt-3 sm:mt-5">
                 <button
                   onClick={SelectionSubmit}

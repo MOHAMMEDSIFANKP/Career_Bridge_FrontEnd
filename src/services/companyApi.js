@@ -20,4 +20,9 @@ const CompanyInfoCreate = (values) => {
     throw error;
   });
 };
-export { CompanyGoogleSignup, CompanyInfoCreate };
+
+//------------------------------------Get methods--------------------------------------/
+const GetCompanyDetails = (id) => {
+  return CompanyAxiosInstant.get(`companydetails${id}`);
+};
+export { CompanyGoogleSignup, CompanyInfoCreate, GetCompanyDetails };

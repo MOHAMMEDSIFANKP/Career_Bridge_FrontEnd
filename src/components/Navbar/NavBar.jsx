@@ -14,6 +14,7 @@ import "./NavBar.css";
 import defaultprofile from "../../assets/defaultprofile.jpeg";
 import { useNavigate , Link} from "react-router-dom";
 
+// Redux
 import {
   LogoutDetails,
   ClearPosition,
@@ -23,10 +24,9 @@ import {
   ClearLanguage,
   ClearSkills,
 } from "../../Redux/UserSlice";
-
-// Redux
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { LogoutCompanyDetails } from "../../Redux/CompanySlice";
 
 export function NavbarDefault() {
   const { UserInfo } = useSelector((state) => state.user);
@@ -35,6 +35,7 @@ export function NavbarDefault() {
   const dispatch = useDispatch();
 
   const logout = () => {
+    dispatch(LogoutCompanyDetails());
     dispatch(LogoutDetails());
     dispatch(ClearPosition());
     dispatch(ClearRole());
@@ -42,6 +43,7 @@ export function NavbarDefault() {
     dispatch(ClearEducation());
     dispatch(ClearLanguage());
     dispatch(ClearSkills());
+    
     localStorage.removeItem("token");
     navigate("/login");
   };
@@ -56,7 +58,7 @@ export function NavbarDefault() {
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Link
-      to ="/user/profile"
+      to ={UserInfo.is_compeated === true ? "/user/profile" : ""}
         as="li"
         variant="small"
         color="blue-gray"
@@ -143,11 +145,15 @@ export function NavbarDefault() {
                   alt=""
                 />
               </MenuItem>
-              <MenuItem className="text-center capitalize "onClick={()=>navigate('/user/profile')}>
-                {UserInfo
+              {UserInfo.email ? (<MenuItem className="text-center capitalize " onClick={() => navigate(UserInfo.is_compleated ? '/user/profile' : '')}>
+                {UserInfo.first_name
                   ? `${UserInfo.first_name} ${UserInfo.last_name}`
                   : "Unauthorize"}
-              </MenuItem>
+              </MenuItem>) : (<MenuItem className="text-center capitalize " >
+                {UserInfo.first_name
+                  ? `${UserInfo.first_name} ${UserInfo.last_name}`
+                  : "Unauthorize"}
+              </MenuItem>)}
               <hr className="mx-4" />
               <MenuItem className="my-1 text-center" onClick={logout}>
                 Logout

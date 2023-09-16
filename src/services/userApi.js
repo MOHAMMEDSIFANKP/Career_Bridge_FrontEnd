@@ -78,8 +78,8 @@ const UserProfileUpdate = (value, id) => {
 };
 
 // Update User is_compleated
-const UserIs_compleatedUpdate = (value, id) => {
-  return userAxiosInstant.put("api/Is_compleatedUpdate/" + id + "/", value, {
+const UserIs_compleatedUpdate = (id) => {
+  return userAxiosInstant.put("api/Is_compleatedUpdate/" + id + "/", {
     withCredentials: true,
   })
   .catch((error) => error.response);

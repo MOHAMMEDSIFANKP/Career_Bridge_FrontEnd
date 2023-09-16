@@ -115,6 +115,7 @@ function ProfileCreation() {
         await UserIs_compleatedUpdate({ is_compleated: true }, decode.user_id);
         await TokenRefresh(Token).then((res) => {
           const token = JSON.stringify(res.data);
+          console.log(token);
           localStorage.setItem("token", token);
           const decode = jwt_decode(token);
           const userInformation = {

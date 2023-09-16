@@ -12,19 +12,16 @@ import { CompanyInfoCreate } from "../../../services/companyApi";
 import { useNavigate } from "react-router-dom";
 import { UserProfileUpdate } from "../../../services/userApi";
 import { UserIs_compleatedUpdate } from "../../../services/userApi";
-import { TokenRefresh } from "../../../services/userApi";
 // Redex
 import { useDispatch } from "react-redux";
 import { setCompanyDetails } from "../../../Redux/CompanySlice";
 
 function CompanyCreations() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Get id
   const token = localStorage.getItem("token");
   const decode = jwt_decode(token);
-  const tokenData = JSON.parse(token);
-  const accessToken = tokenData.refresh;
 
   const [companyDetail, setCompanyDetail] = useState({
     company_name: "",
@@ -36,7 +33,6 @@ function CompanyCreations() {
     description: "",
     userId: decode.user_id,
   });
-  console.log(companyDetail);
   const [checkbox, setChecbox] = useState(false);
 
   const [error, seterror] = useState({
@@ -108,25 +104,14 @@ function CompanyCreations() {
       try {
         handleLoading();
   
-        // Step 1: Create CompanyInfo
         const res = await CompanyInfoCreate(companyDetail);
   
-        // Step 2: Update UserIs_compleated
-        await UserIs_compleatedUpdate({ is_compleated: true }, companyDetail.userId);
-  
-        // Step 3: Update UserProfile
+        const res2 = await UserIs_compleatedUpdate(companyDetail.userId);
         const pictureForm = new FormData();
         pictureForm.append("profile_image", companyDetail.companyProfile);
         const profile = await UserProfileUpdate(pictureForm, companyDetail.userId);
   
-        // Step 4: Refresh Token
-        const Token = {
-          refresh: accessToken,
-        };
-        const res3 = await TokenRefresh(Token);
-        console.log(res3);
-        // Step 5: Update Redux Store
-        const token = JSON.stringify(res3.data);
+        const token = JSON.stringify(res2.data.token);
         localStorage.setItem("token", token);
         const decode = jwt_decode(token);
   
@@ -141,9 +126,7 @@ function CompanyCreations() {
           is_active: decode.is_active,
           is_admin: decode.is_admin,
         };
-        
         dispatch(setCompanyDetails({ CompanyInfo: data }));
-  
         handleLoading();
         navigate("/company/");
       } catch (error) {

@@ -9,7 +9,7 @@ const companySlice = createSlice({
   initialState,
   reducers: {
     setCompanyDetails: (state, action) => {
-      state.CompanyInfo = { ...action.payload.CompanyInfo };
+      state.CompanyInfo = action.payload.CompanyInfo;
     },
     LogoutCompanyDetails: (state, action) => {
       state.CompanyInfo = {};
