@@ -156,8 +156,6 @@ function LoginPage() {
       } else {
         const UserDetails = await UserDetail(token.user_id);
         const CompanyDetails = await GetCompanyDetails(token.companyInfoId);
-        console.log(UserDetails);
-        console.log(CompanyDetails);
         const userInformation = {
           id: UserDetails.data.id,
           profile_image: UserDetails.data.profile_image,
@@ -175,6 +173,11 @@ function LoginPage() {
           company_type: CompanyDetails.data.company_type,
           gst: CompanyDetails.data.gst,
           description: CompanyDetails.data.description,
+          streetaddress: CompanyDetails.data.streetaddress,
+          constry: CompanyDetails.data.constry,
+          state: CompanyDetails.data.state,
+          district: CompanyDetails.data.district,
+          zipcode: CompanyDetails.data.zipcode,
           is_verify: CompanyDetails.data.is_verify,
         };
         if (userInformation) {

@@ -23,6 +23,24 @@ const CompanyInfoCreate = (values) => {
 
 //------------------------------------Get methods--------------------------------------/
 const GetCompanyDetails = (id) => {
-  return CompanyAxiosInstant.get(`companydetails${id}`);
+  return CompanyAxiosInstant.get(`companydetails/${id}/`, {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
 };
-export { CompanyGoogleSignup, CompanyInfoCreate, GetCompanyDetails };
+
+//-----------------------------------Put or Patch methods-------------------------------/
+const EditCompanyDetails = (value, id) => {
+  return CompanyAxiosInstant.put(`companydetails/${id}/`, value, {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
+export {
+  CompanyGoogleSignup,
+  CompanyInfoCreate,
+  GetCompanyDetails,
+  EditCompanyDetails,
+};

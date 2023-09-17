@@ -12,7 +12,7 @@ import {
 } from "@material-tailwind/react";
 import "./NavBar.css";
 import defaultprofile from "../../assets/defaultprofile.jpeg";
-import { useNavigate , Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 // Redux
 import {
@@ -29,7 +29,10 @@ import { useSelector } from "react-redux";
 import { LogoutCompanyDetails } from "../../Redux/CompanySlice";
 
 export function NavbarDefault() {
+  // UserInfo Redux
   const { UserInfo } = useSelector((state) => state.user);
+  // CompanyInfo Redux
+  const { CompanyInfo } = useSelector((state) => state.company);
   const [openNav, setOpenNav] = React.useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,7 +46,7 @@ export function NavbarDefault() {
     dispatch(ClearEducation());
     dispatch(ClearLanguage());
     dispatch(ClearSkills());
-    
+
     localStorage.removeItem("token");
     navigate("/login");
   };
@@ -58,7 +61,7 @@ export function NavbarDefault() {
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Link
-      to ={UserInfo.is_compeated === true ? "/user/profile" : ""}
+        to={UserInfo.is_compeated === true ? "/user/profile" : ""}
         as="li"
         variant="small"
         color="blue-gray"
@@ -79,32 +82,17 @@ export function NavbarDefault() {
           </p>
         </div>
       </Link>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1"
-      >
+      <Typography as="li" variant="small" color="blue-gray" className="p-1">
         <a href="#" className="flex items-center font-bold">
           Account
         </a>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1"
-      >
+      <Typography as="li" variant="small" color="blue-gray" className="p-1">
         <a href="#" className="flex items-center font-bold">
           Blocks
         </a>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1"
-      >
+      <Typography as="li" variant="small" color="blue-gray" className="p-1">
         <a href="#" className="flex items-center font-bold" onClick={logout}>
           Logout
         </a>
@@ -131,29 +119,71 @@ export function NavbarDefault() {
             }}
           >
             <MenuHandler>
-              <img
-                src={UserInfo == "" ? UserInfo.profile_image : defaultprofile}
-                className="w-8 rounded-full border-2 border-purple-300"
-                alt=""
-              />
+              {UserInfo.profile_image ? (
+                <img
+                  src={
+                    UserInfo.profile_image
+                      ? UserInfo.profile_image
+                      : defaultprofile
+                  }
+                  className="w-8 rounded-full border-2 border-purple-300"
+                  alt=""
+                />
+              ) : (
+                <img
+                  src={
+                    CompanyInfo.profile_image ? CompanyInfo.profile_image : ""
+                  }
+                  className="w-8 p-[2px] rounded-full border-2 border-purple-300"
+                  alt=""
+                />
+              )}
             </MenuHandler>
             <MenuList className="rounded-xl text-black">
               <MenuItem className="flex justify-center items-center ">
-                <img
-                  src={UserInfo == "" ? UserInfo.profile_image : defaultprofile}
-                  className="w-16 rounded-full border-2 border-purple-400"
-                  alt=""
-                />
+                {UserInfo.profile_image ? (
+                  <img
+                    src={
+                      UserInfo.profile_image
+                        ? UserInfo.profile_image
+                        : defaultprofile
+                    }
+                    className="w-16 rounded-full border-2 border-purple-400"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={
+                      CompanyInfo.profile_image
+                        ? CompanyInfo.profile_image
+                        : defaultprofile
+                    }
+                    className="w-16 p-[3px] rounded-full border-2 border-purple-400"
+                    alt=""
+                  />
+                )}
               </MenuItem>
-              {UserInfo.email ? (<MenuItem className="text-center capitalize " onClick={() => navigate(UserInfo.is_compleated ? '/user/profile' : '')}>
-                {UserInfo.first_name
-                  ? `${UserInfo.first_name} ${UserInfo.last_name}`
-                  : "Unauthorize"}
-              </MenuItem>) : (<MenuItem className="text-center capitalize " >
-                {UserInfo.first_name
-                  ? `${UserInfo.first_name} ${UserInfo.last_name}`
-                  : "Unauthorize"}
-              </MenuItem>)}
+              {UserInfo.email ? (
+                <MenuItem
+                  className="text-center capitalize "
+                  onClick={() =>
+                    navigate(UserInfo.is_compleated ? "/user/profile" : "")
+                  }
+                >
+                  {UserInfo.first_name
+                    ? `${UserInfo.first_name} ${UserInfo.last_name}`
+                    : "Unauthorize"}
+                </MenuItem>
+              ) : (
+                <MenuItem className="text-center capitalize "
+                onClick={() =>
+                  navigate(CompanyInfo.is_compleated ? "/company/profile" : "")
+                }>
+                  {CompanyInfo.first_name
+                    ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
+                    : "Unauthorize"}
+                </MenuItem>
+              )}
               <hr className="mx-4" />
               <MenuItem className="my-1 text-center" onClick={logout}>
                 Logout
@@ -161,44 +191,83 @@ export function NavbarDefault() {
             </MenuList>
           </Menu>
         </div>
-
-        <IconButton
-          variant="text"
-          className="ml-auto h-6 w-6  pb-5 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-          ripple={false}
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              className="h-6 w-6 "
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
+        <Menu>
+          <MenuHandler
+            className="ml-auto rounded-full border border-purple-400 p-[3px] w-7 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+          >
+            {UserInfo.profile_image ? (
+              <img
+                src={
+                  UserInfo.profile_image
+                    ? UserInfo.profile_image
+                    : defaultprofile
+                }
+                className="w-16  rounded-full border-2 border-purple-400"
+                alt=""
               />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
+            ) : (
+              <img
+                src={
+                  CompanyInfo.profile_image
+                    ? CompanyInfo.profile_image
+                    : defaultprofile
+                }
+                className="w-16 p-[3px] rounded-full border-2 border-purple-400"
+                alt=""
               />
-            </svg>
-          )}
-        </IconButton>
+            )}
+          </MenuHandler>
+          <MenuList>
+            <MenuList className="rounded-xl text-black">
+              <MenuItem className="flex justify-center items-center ">
+                {UserInfo.profile_image ? (
+                  <img
+                    src={
+                      UserInfo.profile_image
+                        ? UserInfo.profile_image
+                        : defaultprofile
+                    }
+                    className="w-16 rounded-full border-2 border-purple-400"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={
+                      CompanyInfo.profile_image
+                        ? CompanyInfo.profile_image
+                        : defaultprofile
+                    }
+                    className="w-16 p-[3px] rounded-full border-2 border-purple-400"
+                    alt=""
+                  />
+                )}
+              </MenuItem>
+              {UserInfo.email ? (
+                <MenuItem
+                  className="text-center capitalize "
+                  onClick={() =>
+                    navigate(UserInfo.is_compleated ? "/user/profile" : "")
+                  }
+                >
+                  {UserInfo.first_name
+                    ? `${UserInfo.first_name} ${UserInfo.last_name}`
+                    : "Unauthorize"}
+                </MenuItem>
+              ) : (
+                <MenuItem className="text-center capitalize ">
+                  {CompanyInfo.first_name
+                    ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
+                    : "Unauthorize"}
+                </MenuItem>
+              )}
+              <hr className="mx-4" />
+              <MenuItem className="my-1 text-center" onClick={logout}>
+                Logout
+              </MenuItem>
+            </MenuList>
+            yyyy
+          </MenuList>
+        </Menu>
       </div>
       <MobileNav open={openNav}>
         <div className="container mx-auto">{navList}</div>
