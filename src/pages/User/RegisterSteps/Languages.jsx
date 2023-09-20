@@ -3,7 +3,6 @@ import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { AddLanguageModal } from "../../../components/user/LanguageModal/AddLanguageModal";
 import DeleteImg from "../../../assets/DeleteImg.png";
 import { useNavigate } from "react-router-dom";
-import countriesList from "countries-list";
 import { ToastContainer, toast } from "react-toastify";
 
 // Redux
@@ -78,7 +77,7 @@ function Languages() {
             </div>
           ))}
           <div onClick={handleOpen} className="mt-10">
-            <div className="flex gap-3 border-purple-400 w-48 h-10 justify-center items-center rounded-full font-bold text-purple-400 border-2">
+            <div className="cursor-pointer flex gap-3 border-purple-400 w-48 h-10 justify-center items-center rounded-full font-bold text-purple-400 border-2">
               <div>+</div>
               <div>Add languages</div>
             </div>

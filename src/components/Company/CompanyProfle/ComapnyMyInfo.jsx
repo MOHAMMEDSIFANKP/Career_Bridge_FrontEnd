@@ -1,4 +1,5 @@
 import AccountComponents from "./AccountComponents/AccountComponents"
+import CompanyAddressComponents from "./AccountComponents/CompanyAddressComponents"
 import CompanyComponents from "./AccountComponents/CompanyComponents"
 
 function ComapnyMyInfo() {
@@ -6,6 +7,7 @@ function ComapnyMyInfo() {
     <>
     <AccountComponents />
     <CompanyComponents/>
+    <CompanyAddressComponents/>
     </>
   )
 }

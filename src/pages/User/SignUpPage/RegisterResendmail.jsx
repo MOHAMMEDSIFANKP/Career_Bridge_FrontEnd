@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Loader from "../components/Loading/Loading";
+import Loader from "../../../components/Loading/Loading";
 import { ToastContainer, toast } from "react-toastify";
-import MailOpen from "../assets/EmailImg/EmailOpen.png";
+import MailOpen from "../../../assets/EmailImg/EmailOpen.png";
 import { Link, useNavigate } from "react-router-dom";
-import { UserUrl } from "../constants/constants";
+import { UserUrl } from "../../../constants/constants";
 import axios from "axios";
 
-function MailConfirm() {
+function RegisterResendmail() {
   const navigate = useNavigate();
   const [Email,setEmail] = useState({email:''})
   // Loading
@@ -25,20 +25,16 @@ function MailConfirm() {
     handleLoading();
     try {
       const response = await axios.post(
-        UserUrl + "/api/forgotpassword/",
+        UserUrl + "/api/Resend_registration_link/",
         Email
       );
       if (response.data.status === "success") {
         console.log(response);
         handleLoading();
         toast.success(response.data.msg);
-        // setemail({ email: "" });
-        localStorage.setItem("UserId", response.data.user);
-        localStorage.removeItem("email");
       } else {
         handleLoading();
         toast.error(response.data.msg);
-        // setemail({ email: "" });
       }
     } catch (error) {
       handleLoading();
@@ -74,20 +70,19 @@ function MailConfirm() {
             </p>
           </div>
           <div
-            onClick={() => navigate("/forgotpassword")}
             className="text-sm sm:mt-0 mt-4 text-purple-400 font-bold flex justify-center"
           >
-            <p className="cursor-pointer"> Change email</p>
+            <Link to="/user/signup" onClick={()=>localStorage.removeItem('email')}> Change email</Link>
           </div>
           <div className="flex justify-center ">
             <div className="flex justify-between sm:text-lg text-sm">
-              <button
+            <button
                 onClick={ReSend}
                 className="rounded-full border-purple-400 border-2 font-bold sm:px-10 px-6  my-2 text-purple-400 xs:me-0 ms-3"
               >
                 Resend Email
               </button>
-              <button
+            <button
                 onClick={Gmail}
                 className="text-white bg-purple-400 rounded-full sm:px-6 px-4 ms-5 my-2 xs:me-0 me-3 font-bold"
               >
@@ -101,4 +96,4 @@ function MailConfirm() {
   );
 }
 
-export default MailConfirm;
+export default RegisterResendmail;

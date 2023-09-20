@@ -6,7 +6,8 @@ import UserRoutes from './routes/user'
 import CompanyRoutes from './routes/company'
 import AdminRoutes from './routes/Admin'
 import PrivateRoutes from './ProtectedRoutes/PrivateRoutes'
-import MailConfirm from './pages/MailConfirm'
+import MailConfirm from './pages/User/SignUpPage/RegisterResendmail'
+import MailShowpage from './pages/ForgotPassword/Mailshowpage'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
 import RestPassword from './pages/ForgotPassword/RestPassword'
 
@@ -20,7 +21,8 @@ function App() {
       <Route path='/' exact element={<UnknownHomePage/>} />
       <Route path='/login/' exact element={<LoginPage/>} />
       <Route path='/choose' exact element={<ChoosePage/>} />
-      <Route path='/confirm' exact element={<MailConfirm />} />
+      <Route path='/register-resendmail' exact element={<MailConfirm />} />
+      <Route path='/forgot-resendmail' exact element={<MailShowpage />} />
       <Route path='/resetpassword' exact element={<RestPassword />} />
       <Route path='/forgotpassword' element={<ForgotPassword />} />
 

@@ -61,7 +61,7 @@ function AddressComponents() {
    try {
     if (Validation()){
         const res = await UpdateUserInfoDetails(Form,UserInfo.userinfoid)
-        console.log(res);
+        toast.success("Address updated successfully")
         dispatch(
             UpdateUserDetails({
               first_name: UserInfo.first_name,
@@ -100,7 +100,7 @@ function AddressComponents() {
                 <p className="font-bold m-2">Address</p>
               </div>
               <div
-                className="m-3 flex justify-center items-center border-purple-400 border rounded-full w-8 h-8"
+                className="m-3 cursor-pointer flex justify-center items-center border-purple-400 border rounded-full w-8 h-8"
                 onClick={EditButton}
               >
                 <img src={EditIcon} alt="" className="w-5" />
@@ -128,7 +128,7 @@ function AddressComponents() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-9 h-9 font-bold text-purple-400 me-3 mt-1"
+                  className="cursor-pointer w-9 h-9 font-bold text-purple-400 me-3 mt-1"
                 >
                   <path
                     strokeLinecap="round"

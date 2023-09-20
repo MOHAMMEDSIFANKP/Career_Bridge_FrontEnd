@@ -60,7 +60,7 @@ function ExperienceComponents() {
             >
               <div className="h-8  mt-2  me-2 flex justify-end sticky top-2 bg-white">
                 <div
-                  className="w-8 flex justify-center items-center rounded-full border-purple-400 border "
+                  className="cursor-pointer w-8 flex justify-center items-center rounded-full border-purple-400 border "
                   onClick={() => {
                     EdithandleOpen();
                     setEditId({ ...EditId, id: experience.id, index: index });
@@ -69,7 +69,7 @@ function ExperienceComponents() {
                   <img src={EditIcon} className="w-5" alt="" />
                 </div>
                 <div
-                  className="w-8 flex ms-3 justify-center items-center rounded-full border-purple-400 border "
+                  className="cursor-pointer w-8 flex ms-3 justify-center items-center rounded-full border-purple-400 border "
                   onClick={() => {
                     DeleterhandleOpen();
                     setEditId({ ...EditId, id: experience.id, index: index });

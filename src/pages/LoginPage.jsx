@@ -174,9 +174,9 @@ function LoginPage() {
           gst: CompanyDetails.data.gst,
           description: CompanyDetails.data.description,
           streetaddress: CompanyDetails.data.streetaddress,
-          constry: CompanyDetails.data.constry,
+          country: CompanyDetails.data.country,
           state: CompanyDetails.data.state,
-          district: CompanyDetails.data.district,
+          city: CompanyDetails.data.city,
           zipcode: CompanyDetails.data.zipcode,
           is_verify: CompanyDetails.data.is_verify,
         };

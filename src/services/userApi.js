@@ -79,7 +79,7 @@ const UserProfileUpdate = (value, id) => {
 
 // Update User is_compleated
 const UserIs_compleatedUpdate = (id) => {
-  return userAxiosInstant.put("api/Is_compleatedUpdate/" + id + "/", {
+  return userAxiosInstant.put(`api/Is_compleatedUpdate/${id}/`, {
     withCredentials: true,
   })
   .catch((error) => error.response);

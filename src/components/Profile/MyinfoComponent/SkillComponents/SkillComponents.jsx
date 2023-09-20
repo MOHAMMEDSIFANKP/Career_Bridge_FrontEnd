@@ -72,7 +72,7 @@ function SkillComponents() {
         <div className="mx-3 my-2 mb-3 bg-purple-50 rounded-xl py-2">
           <div className="flex flex-wrap ">
             {Skills.map((skills, index) => (
-              <p className="border rounded-full px-3 py-1 mx-2 my-1 bg-purple-400 text-white">
+              <p className="cursor-default border rounded-full px-3 py-1 mx-2 my-1 bg-purple-400 text-white">
                 {skills.skills}
                 <span
                   className="ms-1 font-bold text-sm cursor-pointer"

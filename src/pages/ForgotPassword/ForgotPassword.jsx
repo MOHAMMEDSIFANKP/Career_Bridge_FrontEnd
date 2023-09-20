@@ -56,8 +56,7 @@ function ForgotPassword() {
           toast.success(response.data.msg)
           setemail({email:''})
           localStorage.setItem('UserId',response.data.user)
-          localStorage.setItem('email',email.email)
-          navigate('/confirm')
+          navigate('/forgot-resendmail')
         }else{
           handleLoading()
           toast.error(response.data.msg)
@@ -75,10 +74,11 @@ function ForgotPassword() {
       {loading && <Loader />}
       <ToastContainer />
       <div className="h-screen grid grid-rows-[.08fr]">
-        <div>
+        <div className="flex justify-between">
           <h1 className="font-bold text-2xl text-purple-600 mt-5 ml-9">
             Career Bridge
           </h1>
+          <Link to="/login" className="mt-4 me-3">Login</Link>
         </div>
         <div className="flex justify-center items-center">
           <div className="bg-white  w-full sm:w-10/12 md:w-6/12 xl:w-3/12 rounded-2xl sm:border border-purple-400">

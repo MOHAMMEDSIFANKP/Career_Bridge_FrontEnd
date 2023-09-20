@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { AdminSkillsList } from "../../../services/adminApi";
 import { useNavigate } from "react-router-dom";
 import { MenuItem } from "@material-tailwind/react";
-
+import Select from "react-select";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -67,6 +67,12 @@ function Skills() {
     dispatch(DeleteSkills(index))
   };
 
+  const option = filterFields.map((skill, index) => ({
+    value: skill.skills,
+    id: skill.id,
+    label:skill.skills
+  }))
+ console.log(option);
   // From array checking Limit end or not
   const checkSkills = (skill,id) => {
     if (Form.length >= 10) {
@@ -111,7 +117,7 @@ function Skills() {
           <div className="mt-3 w-full lg:w-5/6 xl:w-7/12">
             <div className="border-2 rounded-xl border-gray-300 flex flex-wrap items-center py-1">
               {Form.map((skill, index) => (
-                <div className="flex my-1 items-center rounded-full text-white ms-2 bg-purple-300">
+                <div className="cursor-default flex my-1 items-center rounded-full text-white ms-2 bg-purple-300">
                   <div>
                     {" "}
                     <p key={index} className="ps-3">
@@ -119,39 +125,18 @@ function Skills() {
                     </p>
                   </div>
                   <div
-                    className="ps-2 pe-3 font-bold text-xl"
+                    className="ps-2 pe-3 font-bold text-xl cursor-pointer"
                     onClick={() => DeleteFunc(skill,index)}
                   >
                     x{" "}
                   </div>
                 </div>
               ))}
-
-              <input
-                type="text"
-                name=""
-                onChange={(e) => setKeyword(e.target.value)}
-                onClick={ShowFUnc}
-                placeholder="Enter skills here"
-                className="ms-4 w-32 placeholder-gray-800 placeholder:text-sm  focus:border-x-white focus:outline-none focus:ring focus:ring-white "
-              />
+                <Select options={option} onChange={(handleChange)=>{
+                  checkSkills(handleChange.label,handleChange.id);
+                }} className="ms-3 "></Select>
             </div>
 
-            {show && (
-              <div className="absolute overflow-auto w-4/5 sm:w-2/5 md:w-2/6 border bg-white rounded-lg mt-1 shadow-xl">
-                {filterFields.map((skill, index) => (
-                  <MenuItem
-                    className="hover:text-purple-300 py-2 text-center hover:font-bold"
-                    key={index}
-                    onClick={(e) => {
-                      ShowFUnc(), checkSkills(skill.skills,skill.id);
-                    }}
-                  >
-                    {skill.skills}
-                  </MenuItem>
-                ))}
-              </div>
-            )}
             <div className="font-bold text-gray-800 text-xs text-right mt-4">
               Max 10 Skills
             </div>
@@ -172,7 +157,7 @@ function Skills() {
                       )
                     );
                   }}
-                  className="flex rounded-full border-2 text-purple-400 border-purple-400 px-3 mb-2 mr-2"
+                  className="cursor-pointer flex rounded-full border-2 text-purple-400 border-purple-400 px-3 mb-2 mr-2"
                 >
                   <div className="text-2xl me-1">
                     <p>+</p>

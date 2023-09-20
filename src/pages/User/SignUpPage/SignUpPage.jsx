@@ -85,6 +85,8 @@ function SignUpPage() {
           import.meta.env.VITE_BASE_USER_URL + "/api/register/",
           user
         );
+        localStorage.setItem('email',user.email)
+        console.log(response);
         toast.success(response.data.msg);
         setUser({
           first_name: "",
@@ -95,7 +97,7 @@ function SignUpPage() {
         });
         setOther({ cpassword: "", check: false });
         handleLoading();
-        navigate('/confirm')
+        navigate('/register-resendmail')
       } catch (error) {
         handleLoading();
         if (error.response && error.response.data) {

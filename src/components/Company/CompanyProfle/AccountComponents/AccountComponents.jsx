@@ -6,11 +6,13 @@ import Defaultprofile from "../../../../assets/ProfileImg.jpeg";
 // Redux
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { UpdateCompanyDetails } from "../../../../Redux/CompanySlice";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Service
 import { UpdateUseaccount } from "../../../../services/userApi";
-import { UpdateCompanyDetails } from "../../../../Redux/CompanySlice";
+
 
 function AccountComponents() {
   const dispatch = useDispatch();
@@ -68,14 +70,16 @@ function AccountComponents() {
               gst: CompanyInfo.gst,
               description: CompanyInfo.description,
               streetaddress: CompanyInfo.streetaddress,
-              contry: CompanyInfo.contry,
+              country: CompanyInfo.country,
               state: CompanyInfo.state,
-              district: CompanyInfo.district,
+              city: CompanyInfo.city,
               zipcode: CompanyInfo.zipcode,
+              is_verify: CompanyInfo.is_verify,
             })
           );
         }
       } catch (error) {
+        setEdit(!edit)
         console.log(error);
         toast.error("Something wrong");
       }
@@ -127,7 +131,7 @@ function AccountComponents() {
               </div>
             </div>
             <div className="mt-3">
-              <p className="text-sm">company</p>
+              <p className="text-sm capitalize">Full name</p>
               <p className="font-bold text-xl capitalize">
                 {CompanyInfo.first_name} {CompanyInfo.last_name}
               </p>
@@ -177,7 +181,7 @@ function AccountComponents() {
             <div className="mt-3 grid grid-rows-2 gap-2">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-sm mb-1">First Name (required)</p>
+                  <p className="text-sm mb-1 text-gray-600">First Name (required)</p>
                   <input
                     ref={first_nameInput}
                     type="text"
@@ -196,7 +200,7 @@ function AccountComponents() {
                   />
                 </div>
                 <div>
-                  <p className="text-sm mb-1">Last Name (required)</p>
+                  <p className="text-sm mb-1 text-gray-600">Last Name (required)</p>
                   <input
                     ref={last_nameInput}
                     type="text"
@@ -216,7 +220,7 @@ function AccountComponents() {
                 </div>
               </div>
               <div>
-                <p className="text-sm mb-1">Email</p>
+                <p className="text-sm mb-1 text-gray-600">Email</p>
                 <input
                   readOnly
                   ref={emailInput}

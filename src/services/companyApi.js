@@ -20,7 +20,14 @@ const CompanyInfoCreate = (values) => {
     throw error;
   });
 };
-
+// 
+const CompanyPostlistCreate= (values) =>{
+  return CompanyAxiosInstant.post("companyPostlistCreateapiview/", values, {
+    withCredentials:true,
+  }).catch((error) => {
+    throw error;
+  });
+}
 //------------------------------------Get methods--------------------------------------/
 const GetCompanyDetails = (id) => {
   return CompanyAxiosInstant.get(`companydetails/${id}/`, {
@@ -41,6 +48,7 @@ const EditCompanyDetails = (value, id) => {
 export {
   CompanyGoogleSignup,
   CompanyInfoCreate,
+  CompanyPostlistCreate,
   GetCompanyDetails,
   EditCompanyDetails,
 };

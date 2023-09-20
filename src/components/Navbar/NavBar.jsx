@@ -119,6 +119,7 @@ export function NavbarDefault() {
             }}
           >
             <MenuHandler>
+              <div className="w-8 flex items-center justify-center h-8 rounded-full border-2 border-purple-300">
               {UserInfo.profile_image ? (
                 <img
                   src={
@@ -126,21 +127,23 @@ export function NavbarDefault() {
                       ? UserInfo.profile_image
                       : defaultprofile
                   }
-                  className="w-8 rounded-full border-2 border-purple-300"
+                  className="w-8 rounded-full"
                   alt=""
                 />
               ) : (
                 <img
                   src={
-                    CompanyInfo.profile_image ? CompanyInfo.profile_image : ""
+                    CompanyInfo.profile_image ? CompanyInfo.profile_image : defaultprofile
                   }
-                  className="w-8 p-[2px] rounded-full border-2 border-purple-300"
+                  className="w-8 p-[2px] rounded-full"
                   alt=""
                 />
               )}
+              </div>
             </MenuHandler>
             <MenuList className="rounded-xl text-black">
               <MenuItem className="flex justify-center items-center ">
+                <div className="w-16 h-16 rounded-full border-2 border-purple-400">
                 {UserInfo.profile_image ? (
                   <img
                     src={
@@ -148,7 +151,7 @@ export function NavbarDefault() {
                         ? UserInfo.profile_image
                         : defaultprofile
                     }
-                    className="w-16 rounded-full border-2 border-purple-400"
+                    className="w-16 rounded-full"
                     alt=""
                   />
                 ) : (
@@ -158,10 +161,11 @@ export function NavbarDefault() {
                         ? CompanyInfo.profile_image
                         : defaultprofile
                     }
-                    className="w-16 p-[3px] rounded-full border-2 border-purple-400"
+                    className="w-16 p-[3px] rounded-full"
                     alt=""
                   />
                 )}
+                </div>
               </MenuItem>
               {UserInfo.email ? (
                 <MenuItem
@@ -175,14 +179,24 @@ export function NavbarDefault() {
                     : "Unauthorize"}
                 </MenuItem>
               ) : (
-                <MenuItem className="text-center capitalize "
-                onClick={() =>
-                  navigate(CompanyInfo.is_compleated ? "/company/profile" : "")
-                }>
-                  {CompanyInfo.first_name
-                    ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
-                    : "Unauthorize"}
-                </MenuItem>
+                <>
+                  <MenuItem
+                    className="text-center capitalize "
+                    onClick={() =>
+                      navigate(
+                        CompanyInfo.is_compleated ? "/company/profile" : ""
+                      )
+                    }
+                  >
+                    {CompanyInfo.first_name
+                      ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
+                      : "Unauthorize"}
+                  </MenuItem>
+                  <hr className="mx-4" />
+                  <MenuItem className="text-center capitalize "
+                  onClick={()=>navigate('/company/dashboard/')}>Dashboard</MenuItem>
+                  
+                </>
               )}
               <hr className="mx-4" />
               <MenuItem className="my-1 text-center" onClick={logout}>
@@ -192,9 +206,7 @@ export function NavbarDefault() {
           </Menu>
         </div>
         <Menu>
-          <MenuHandler
-            className="ml-auto rounded-full border border-purple-400 p-[3px] w-7 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-          >
+          <MenuHandler className="ml-auto rounded-full border border-purple-400 p-[3px] w-7 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden">
             {UserInfo.profile_image ? (
               <img
                 src={

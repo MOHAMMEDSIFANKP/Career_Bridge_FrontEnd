@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { useNavigate } from "react-router-dom";
 import { List, ListItem, Card,Input } from "@material-tailwind/react";
+import Loader from "../../../components/Loading/Loading";
+// service
 import {
   AdminJobFieldList,
   AdminJobTitlelist,
 } from "../../../services/adminApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+// React Query
+import { useQuery } from "react-query";
 // Redex
 import { useDispatch } from "react-redux";
 import { setRole } from "../../../Redux/UserSlice";
@@ -56,10 +59,22 @@ function Role() {
       item.title_name.toLowerCase().includes(selectedTitle.toLowerCase())
   );
 
-  useEffect(() => {
+    //---------------------------- React quary---------------------------------------//
+    const { data, isLoading, isError } = useQuery("joblist", getJoblist);
     document.title = "Add your Role | Career Bridge";
-    getJoblist();
-  }, []);
+    if (isLoading) {
+      return (
+          <Loader />
+      );
+    }
+  
+    if (isError) {
+      return (
+          <h1>There was an error fetching data</h1>
+      );
+    }
+    //---------------------------- React quary---------------------------------------//
+  
 
   const NextButton = () => {
     if (selectedField === "" || selectedTitle === "") {

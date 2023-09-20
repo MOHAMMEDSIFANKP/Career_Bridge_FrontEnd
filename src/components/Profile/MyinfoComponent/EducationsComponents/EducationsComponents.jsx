@@ -71,11 +71,11 @@ const handleDltModal = () => {
               className="w-52 border  border-gray-400 rounded-2xl ms-3"
             >
               <div className="h-8  mt-2  me-2 flex justify-end sticky top-2 bg-white">
-                <div className="w-8 flex justify-center items-center rounded-full border-purple-400 border "
+                <div className="cursor-pointer w-8 flex justify-center items-center rounded-full border-purple-400 border "
                 onClick={()=>{handleEditModal(),setId({id:educations.id,index:index})}}>
                   <img src={EditIcon} className="w-5" alt="" />
                 </div>
-                <div className="w-8 flex ms-3 justify-center items-center rounded-full border-purple-400 border "
+                <div className="cursor-pointer w-8 flex ms-3 justify-center items-center rounded-full border-purple-400 border "
                 onClick={()=>{handleDltModal(),setId({id:educations.id,index:index})}}>
                   <img src={DeleteImg} className="w-5" alt="" />
                 </div>

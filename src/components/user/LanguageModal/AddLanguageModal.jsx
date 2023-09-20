@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import LanguageList from "countries-list";
 import { useState } from "react";
+import Select from "react-select";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -23,6 +24,17 @@ const AddLanguageModal = ({ isOpen, onClose }) => {
     value: LangCode,
   }));
 
+  const options = languages.map((lang, index) => ({
+    value: lang.name,
+    label: lang.name,
+  }));
+  const options2 = [
+    { value: "Basic", label: "Basic" },
+    { value: "Conversational", label: "Conversational" },
+    { value: "Fluent", label: "Fluent" },
+    { value: "Native or Bilingual", label: "Native or Bilingual" },
+  ];
+
   const Validation = () => {
     if (Form.language.trim() === "") {
       seterror({ ...error, language: true });
@@ -37,10 +49,10 @@ const AddLanguageModal = ({ isOpen, onClose }) => {
   const ConfirmButton = () => {
     if (Validation()) {
       dispatch(SetLanguage(Form));
-      onClose(); 
+      setForm({ language: "", proficiency: "" })
+      onClose();
     }
   };
-  
 
   return (
     <Dialog open={isOpen} handler={onClose}>
@@ -51,43 +63,34 @@ const AddLanguageModal = ({ isOpen, onClose }) => {
             <label htmlFor="countrySelect" className="block text-black pb-1">
               Language
             </label>
-            <select
-              name="language"
-              onChange={(e) => {
-                setForm({ ...Form, [e.target.name]: e.target.value });
+
+            <Select
+              options={options}
+              onChange={(handleChange) => {
+                setForm({ ...Form, language: handleChange.value });
                 seterror({ ...error, language: false });
               }}
-              class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+              className={`border w-full rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
                 error.language
                   ? "focus:ring-red-200 border-2 border-red-400"
                   : "border-gray-400"
               }`}
-            >
-               <option value=''>Choose an option</option>
-              {languages.map((lang, index) => (
-                <option key={index} value={lang.name}>{lang.name}</option>
-              ))}
-            </select>
+            ></Select>
           </div>
-          <div className="">
+          <div >
             <p className="text-black pb-1">Proficiency *</p>
-            <select
-              name="proficiency"
-              onChange={(e) => {
-                setForm({ ...Form, [e.target.name]: e.target.value });
+            <Select
+              options={options2}
+              onChange={(handleChange) => {
+                setForm({ ...Form, proficiency: handleChange.value });
                 seterror({ ...error, proficiency: false });
               }}
-              class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+              className={`border w-full rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
                 error.proficiency
                   ? "focus:ring-red-200 border-2 border-red-400"
                   : "border-gray-400"
               }`}
-            >  <option value=''>Choose an option</option>
-              <option value="Basic">Basic </option>
-              <option value="Conversational">Conversational</option>
-              <option value="Fluent">Fluent</option>
-              <option value="Native or Bilingual">Native or Bilingual</option>
-            </select>
+            ></Select>
           </div>
         </div>
       </DialogBody>

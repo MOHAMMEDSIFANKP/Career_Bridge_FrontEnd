@@ -6,7 +6,7 @@ import {
   DialogFooter,
   Button,
 } from "@material-tailwind/react";
-import countriesList from "countries-list";
+import { Country, State, City } from "country-state-city";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
@@ -16,7 +16,7 @@ import EditImage from "../../../assets/Edit.png";
 import DeleteImg from "../../../assets/DeleteImg.png";
 import { ExperienceEditModal } from "../../../components/user/ExperienceModals/ExperienceEditModal";
 import { DeleteExpModal } from "../../../components/user/ExperienceModals/DeleteExpModal";
-
+import Select from "react-select";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -69,16 +69,39 @@ function Experience() {
     setModalStates(!modalStates);
   };
 
-  const DeleteModal=(index)=>{
-    setId(index)
-    setDltOpen(!Dltopen)
+  const DeleteModal = (index) => {
+    setId(index);
+    setDltOpen(!Dltopen);
   };
+  //  ----------------county and state filtring-------------------------/
 
-
-  const countries = Object.keys(countriesList.countries).map((countryCode) => ({
-    name: countriesList.countries[countryCode].name,
-    value: countryCode,
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    save: country.name,
+    label: country.name,
   }));
+  const stateOptions = selectedCountry
+    ? State.getStatesOfCountry(selectedCountry.value).map((state) => ({
+        value: state.isoCode,
+        label: state.name,
+      }))
+    : [];
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    setForm({ ...Form, country: selectedOption.label });
+    seterror({ ...error, country: false });
+    setSelectedState(null);
+
+  };
+  const handleStateChange = (selectedOption) => {
+    setSelectedState(selectedOption);
+    setForm({ ...Form, state: selectedOption.label });
+    seterror({ ...error, state: false });
+
+  };
+  //  ----------------county and state filtring-------------------------/
 
   useEffect(() => {
     document.title = "Add your Experience | Career Bridge";
@@ -94,11 +117,11 @@ function Experience() {
     } else if (Form.company.trim() === "") {
       seterror({ ...error, company: true });
       return false;
-    } else if (Form.state.trim() === "") {
-      seterror({ ...error, state: true });
-      return false;
-    } else if (Form.country.trim() === "") {
+    }else if (Form.country.trim() === "") {
       seterror({ ...error, country: true });
+      return false;
+    }  else if (Form.state.trim() === "") {
+      seterror({ ...error, state: true });
       return false;
     } else if (Form.startdate.trim() === "") {
       seterror({ ...error, startdate: true });
@@ -121,7 +144,7 @@ function Experience() {
   };
 
   const NextButton = () => {
-    if (!experiences[0]=='') {
+    if (!experiences[0] == "") {
       navigate("/user/education");
     } else {
       toast.warn("Add Your experience");
@@ -165,7 +188,7 @@ function Experience() {
             <div
               key={index}
               className="col-span-12 flex  md:col-span-6 shadow-xl lg:col-span-4 border md:h-56 h-56 rounded-2xl relative"
-             >
+            >
               <div className="w-2/6 ms-6 mt-6 ">
                 <img src={FileImage} alt="" className="w-20 opacity-75" />
               </div>
@@ -179,9 +202,11 @@ function Experience() {
                       <img src={EditImage} alt="" className="w-4" />
                     </div>
                   </button>
-                  <div onClick={()=>DeleteModal(index)} className="flex justify-center items-center rounded-full border border-purple-400 w-8 h-8 mt-2 me-3">
+                  <div
+                    onClick={() => DeleteModal(index)}
+                    className="flex justify-center items-center rounded-full border border-purple-400 w-8 h-8 mt-2 me-3"
+                  >
                     <img src={DeleteImg} className="w-5" alt="" />
-                   
                   </div>
                 </div>
                 <div className="text-center">
@@ -261,8 +286,33 @@ function Experience() {
             </div>
             <div className="mx-2 grid grid-cols-2 gap-4">
               <div>
+                <label
+                  htmlFor="countrySelect"
+                  className="block text-black pb-1"
+                >
+                  Country
+                </label>
+                <Select
+                value={selectedCountry}
+                  options={countryOptions}
+                  onChange={handleCountryChange}
+                  className={`border w-full rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.country
+                      ? "focus:ring-red-200 border-2 border-red-400"
+                      : "border-gray-400"
+                  }`}
+                ></Select>
+              </div>
+              <div>
                 <p className="text-black pb-1">State</p>
-                <input
+                <Select options={stateOptions}
+                onChange={handleStateChange}
+                className={`border w-full  rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                  error.state
+                    ? "focus:ring-red-200 border-2 border-red-400"
+                    : "border-gray-400"
+                }`}></Select>
+                {/* <input
                   type="text"
                   name="state"
                   placeholder="Ex: London"
@@ -275,40 +325,7 @@ function Experience() {
                       ? "focus:ring-red-200 border-2 border-red-400"
                       : "border-gray-400"
                   }`}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="countrySelect"
-                  className="block text-black pb-1"
-                >
-                  Country
-                </label>
-                <select
-                  name="country"
-                  id="countrySelect"
-                  onChange={(e) => {
-                    setForm({ ...Form, [e.target.name]: e.target.value });
-                    seterror({ ...error, country: false });
-                  }}
-                  class={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                    error.country
-                      ? "focus:ring-red-200 border-2 border-red-400"
-                      : "border-gray-400"
-                  }`}
-                  className="border w-full py-2 border-gray-400 bg-white rounded-lg text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100"
-                >
-                  {Object.keys(countries).map((countryCode) => (
-                    <option
-                      key={countryCode}
-                      value={countries[countryCode].name}
-                      className="m-10"
-                      style={{ paddingLeft: "10px !importent" }}
-                    >
-                      {countries[countryCode].name}
-                    </option>
-                  ))}
-                </select>
+                /> */}
               </div>
             </div>
             <div className="mx-3 grid grid-cols-2 gap-5">
@@ -376,7 +393,7 @@ function Experience() {
         </DialogFooter>
       </Dialog>
       <ExperienceEditModal id={id} isOpen={modalStates} onClose={toggleModal} />
-      <DeleteExpModal id={id} isOpen={Dltopen} onClose={DeleteModal}/>
+      <DeleteExpModal id={id} isOpen={Dltopen} onClose={DeleteModal} />
 
       <div className="z-20 lg:h-64 lg:mt-3 md:h-72 md:mt-2 flex items-end fixed bottom-0 left-0 right-0">
         <div className="bg-white md:h-20 h-16 w-full shadow-xl border ">

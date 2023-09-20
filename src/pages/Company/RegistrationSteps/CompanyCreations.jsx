@@ -105,7 +105,6 @@ function CompanyCreations() {
         handleLoading();
   
         const res = await CompanyInfoCreate(companyDetail);
-  
         const res2 = await UserIs_compleatedUpdate(companyDetail.userId);
         const pictureForm = new FormData();
         pictureForm.append("profile_image", companyDetail.companyProfile);
@@ -116,7 +115,14 @@ function CompanyCreations() {
         const decode = jwt_decode(token);
   
         const data = {
-          ...res.data,
+          id: res.data.userId,
+          companyid:res.data.id,
+          company_name:res.data.company_name,
+          company_size:res.data.company_size,
+          company_type:res.data.company_type,
+          gst:res.data.gst,
+          description:res.data.description,
+          industry:res.data.industry,
           profile_image: profile.data.profile_image,
           first_name: decode.first_name,
           last_name: decode.last_name,

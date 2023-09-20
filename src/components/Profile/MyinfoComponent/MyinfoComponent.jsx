@@ -55,7 +55,7 @@ function MyinfoComponent() {
           <div>
             <div
               onClick={handleOpen}
-              className="w-8 h-8 rounded-full border border-purple-400 me-4 mt-4 flex justify-center items-center"
+              className="cursor-pointer w-8 h-8 rounded-full border border-purple-400 me-4 mt-4 flex justify-center items-center"
             >
               <img src={EditIcon} className="w-5" alt="" />
             </div>

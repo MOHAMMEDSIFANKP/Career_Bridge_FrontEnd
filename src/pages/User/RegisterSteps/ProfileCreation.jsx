@@ -11,6 +11,8 @@ import { UserIs_compleatedUpdate } from "../../../services/userApi";
 import { TokenRefresh } from "../../../services/userApi";
 import jwt_decode from "jwt-decode";
 import Loader from "../../../components/Loading/Loading";
+import { Country, State, City } from "country-state-city";
+import Select from "react-select";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -61,11 +63,11 @@ function ProfileCreation() {
     } else if (Form.streetaddress.trim() === "") {
       seterror({ ...error, streetaddress: true });
       return false;
-    } else if (Form.city.trim() === "") {
-      seterror({ ...error, city: true });
-      return false;
     } else if (Form.state.trim() === "") {
       seterror({ ...error, state: true });
+      return false;
+    } else if (Form.city.trim() === "") {
+      seterror({ ...error, city: true });
       return false;
     } else if (Form.zipcode.trim() === "") {
       seterror({ ...error, zipcode: true });
@@ -78,14 +80,57 @@ function ProfileCreation() {
     value: countryCode,
   }));
 
+  //  ----------------county , state and city filtring-------------------------/
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    save: country.name,
+    label: country.name,
+  }));
+  const stateOptions = selectedCountry
+    ? State.getStatesOfCountry(selectedCountry.value).map((state) => ({
+        value: state.isoCode,
+        label: state.name,
+      }))
+    : [];
+
+  const cityOptions = selectedState
+    ? City.getCitiesOfState(selectedCountry.value, selectedState.value).map(
+        (city) => ({
+          value: city.name,
+          label: city.name,
+        })
+      )
+    : [];
+
+  console.log(Form);
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    setForm({ ...Form, country: selectedOption.label });
+    seterror({ ...error, country: false });
+    setSelectedState(null);
+    setSelectedCity(null);
+  };
+  const handleStateChange = (selectedOption) => {
+    setForm({ ...Form, state: selectedOption.label });
+    seterror({ ...error, state: false });
+    setSelectedState(selectedOption);
+    setSelectedCity(null);
+  };
+
+  const handleCityChange = (selectedOption) => {
+    setSelectedCity(selectedOption);
+    setForm({ ...Form, city: selectedOption.label });
+    seterror({ ...error, city: false });
+  };
   const Skill = useSelector((state) => state.user.Skills);
   const { JobFiledRedex, JobTitleRedex } = useSelector((state) => state.user);
   const { experiences } = useSelector((state) => state.user);
   const { Education } = useSelector((state) => state.user);
   const { Language } = useSelector((state) => state.user);
   const token = localStorage.getItem("token");
-  const tokenData = JSON.parse(token);
-  const accessToken = tokenData.refresh;
   const decode = jwt_decode(token);
 
   const ConformButton = async () => {
@@ -108,55 +153,49 @@ function ProfileCreation() {
           state: Form.state,
           zipcode: Form.zipcode,
         };
-        const Token = {
-          refresh: accessToken,
-        };
         const resp = await UserInfo(data);
-        await UserIs_compleatedUpdate({ is_compleated: true }, decode.user_id);
-        await TokenRefresh(Token).then((res) => {
-          const token = JSON.stringify(res.data);
-          console.log(token);
-          localStorage.setItem("token", token);
-          const decode = jwt_decode(token);
-          const userInformation = {
-            id: decode.user_id,
-            profile_image: resimg.data.profile_image,
-            email: decode.email,
-            first_name: decode.first_name,
-            last_name: decode.last_name,
-            is_active: decode.is_active,
-            is_compleated: decode.is_compleated,
-            id_admin: decode.is_admin,
-            role: decode.role,
-            streetaddress: resp.data.streetaddress,
-            userinfoid: resp.data.id,
-            city: resp.data.city,
-            state: resp.data.state,
-            zipcode: resp.data.zipcode,
-            bio: resp.data.bio,
-            cv: resp.data.cv,
-          };
-          if (userInformation) {
-            dispatch(CleatExperiences());
-            dispatch(ClearEducation());
-            dispatch(ClearLanguage());
-            dispatch(ClearSkills());
-            dispatch(setUserDetails({ UserInfo: userInformation }));
+        const res2 = await UserIs_compleatedUpdate(decode.user_id);
+        const token = JSON.stringify(res2.data.token);
+        localStorage.setItem("token", token);
+        const decode2 = jwt_decode(token);
+        const userInformation = {
+          id: decode2.user_id,
+          profile_image: resimg.data.profile_image,
+          email: decode2.email,
+          first_name: decode2.first_name,
+          last_name: decode2.last_name,
+          is_active: decode2.is_active,
+          is_compleated: decode2.is_compleated,
+          id_admin: decode2.is_admin,
+          role: decode2.role,
+          streetaddress: resp.data.streetaddress,
+          userinfoid: resp.data.id,
+          city: resp.data.city,
+          state: resp.data.state,
+          zipcode: resp.data.zipcode,
+          bio: resp.data.bio,
+          cv: resp.data.cv,
+        };
+        if (userInformation) {
+          dispatch(CleatExperiences());
+          dispatch(ClearEducation());
+          dispatch(ClearLanguage());
+          dispatch(ClearSkills());
+          dispatch(setUserDetails({ UserInfo: userInformation }));
 
-            resp.data.experience.map((values, index) => {
-              dispatch(setExperiences(values));
-            });
-            resp.data.education.map((values, index) => {
-              dispatch(SetEducation(values));
-            });
-            resp.data.languages.map((values, index) => {
-              dispatch(SetLanguage(values));
-            });
-            resp.data.skills.map((values, index) => {
-              dispatch(SetSkills(values));
-            });
-          }
-        });
+          resp.data.experience.map((values, index) => {
+            dispatch(setExperiences(values));
+          });
+          resp.data.education.map((values, index) => {
+            dispatch(SetEducation(values));
+          });
+          resp.data.languages.map((values, index) => {
+            dispatch(SetLanguage(values));
+          });
+          resp.data.skills.map((values, index) => {
+            dispatch(SetSkills(values));
+          });
+        }
         handleLoading();
         navigate("/user/");
       }
@@ -195,18 +234,20 @@ function ProfileCreation() {
             pay you through us - which is why we need your personal information.
           </p>
         </div>
-        <div className="sm:flex">
+        <div className="sm:flex ">
           <div className="mt-10 ">
             <div className="flex justify-center mb-6">
-              <img
-                className="w-24 rounded-full border-purple-400 border-2 p-2"
-                src={
-                  Form.profileImg
-                    ? URL.createObjectURL(Form.profileImg)
-                    : defaultprofileImg
-                }
-                alt=""
-              />
+              <div className="border-purple-400 border-2 p-1 rounded-full h-24 w-24 flex justify-center ">
+                <img
+                  className="w-24 rounded-full "
+                  src={
+                    Form.profileImg
+                      ? URL.createObjectURL(Form.profileImg)
+                      : defaultprofileImg
+                  }
+                  alt=""
+                />
+              </div>
             </div>
             <div className="flex justify-center mt-3">
               <input
@@ -225,54 +266,23 @@ function ProfileCreation() {
                 }`}
               />
             </div>
-            {/* <div className="mx-2 mt-3">
-              <p className="text-black pb-1">Upload cv *</p>
-              <input
-                type="file"
-                accept=".pdf, .xlsx, .xls, .docx"
-                name="cv"
-                onChange={(e) => {
-                  setForm({ ...Form, [e.target.name]:  e.target.files[0] });
-                  seterror({ ...error, cv: false });
-                }}
-                className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                  error.cv
-                    ? "focus:ring-red-200 border-2 border-red-400"
-                    : "border-gray-400"
-                }`}
-              />
-            </div> */}
           </div>
           <div className="sm:mt-10 ms:mt-0 w-full h-96 pt-5">
             <div className="mx-3 w-2/6">
               <label htmlFor="countrySelect" className="block text-black pb-1">
                 Country
               </label>
-              <select
-                name="country"
-                id="countrySelect"
-                onChange={(e) => {
-                  setForm({ ...Form, [e.target.name]: e.target.value });
-                  seterror({ ...error, country: false });
-                }}
-                className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+              <Select
+                value={selectedCountry}
+                onChange={handleCountryChange}
+                options={countryOptions}
+                placeholder="Choose"
+                className={`border bg-gray-200 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
                   error.country
                     ? "focus:ring-red-200 border-2 border-red-400"
                     : "border-gray-400"
                 }`}
-              >
-                <option value="">Choose</option>
-                {Object.keys(countries).map((countryCode) => (
-                  <option
-                    key={countryCode}
-                    value={countries[countryCode].name}
-                    className="m-10"
-                    style={{ paddingLeft: "10px !importent" }}
-                  >
-                    {countries[countryCode].name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
             <div className="mx-2 mt-3">
               <p className="text-black pb-1">Street Address *</p>
@@ -292,32 +302,28 @@ function ProfileCreation() {
             </div>
             <div className="mx-2 mt-3 flex">
               <div className="w-4/12 me-3">
-                <p className="text-black pb-1">City *</p>
-                <input
-                  type="text"
-                  name="city"
-                  onChange={(e) => {
-                    setForm({ ...Form, [e.target.name]: e.target.value });
-                    seterror({ ...error, city: false });
-                  }}
-                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                    error.city
+                <p className="text-black pb-1">State *</p>
+                <Select
+                  value={selectedState}
+                  onChange={handleStateChange}
+                  options={stateOptions}
+                  placeholder="Select a State"
+                  className={`border bg-gray-200 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.state
                       ? "focus:ring-red-200 border-2 border-red-400"
                       : "border-gray-400"
                   }`}
                 />
               </div>
               <div className="w-4/12 me-3">
-                <p className="text-black pb-1">State *</p>
-                <input
-                  type="text"
-                  name="state"
-                  onChange={(e) => {
-                    setForm({ ...Form, [e.target.name]: e.target.value });
-                    seterror({ ...error, state: false });
-                  }}
-                  className={`border w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                    error.state
+                <p className="text-black pb-1">City *</p>
+                <Select
+                  value={selectedCity}
+                  onChange={handleCityChange}
+                  options={cityOptions}
+                  placeholder="Select a City"
+                  className={`border bg-gray-200 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                    error.city
                       ? "focus:ring-red-200 border-2 border-red-400"
                       : "border-gray-400"
                   }`}
@@ -325,6 +331,7 @@ function ProfileCreation() {
               </div>
               <div className="w-4/12">
                 <p className="text-black pb-1">Zip code *</p>
+
                 <input
                   type="number"
                   name="zipcode"

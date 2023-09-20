@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 // Redex
 import { useDispatch } from "react-redux";
 import { UpdateUserDetails } from "../../../../Redux/UserSlice";
@@ -16,7 +17,6 @@ import "react-toastify/dist/ReactToastify.css";
 function CvComponents() {
   const dispatch = useDispatch();
   const [Cv, setCv] = useState(null);
-
   // Redux distructure
   const { UserInfo } = useSelector((state) => state.user);
 
@@ -33,6 +33,7 @@ function CvComponents() {
         CvForm.append("cv", Cv);
         const res = await UpdateUserInfoDetails(CvForm, UserInfo.userinfoid);
         if (res.status === 200) {
+          toast.success("Cv updated succesfully")
           dispatch(
             UpdateUserDetails({
               first_name: UserInfo.first_name,

@@ -26,7 +26,7 @@ const companySlice = createSlice({
         streetaddress: action.payload.streetaddress,
         contry: action.payload.contry,
         state: action.payload.state,
-        district: action.payload.district,
+        city: action.payload.city,
         zipcode: action.payload.zipcode,
       };
     },
