@@ -76,7 +76,7 @@ export function NavbarDefault() {
         </div>
         <div className="ms-4">
           <p className="font-bold text-purple-400">
-            {UserInfo
+            {UserInfo.first_name
               ? `${UserInfo.first_name} ${UserInfo.last_name}`
               : "Unauthorize"}
           </p>
@@ -277,13 +277,12 @@ export function NavbarDefault() {
                 Logout
               </MenuItem>
             </MenuList>
-            yyyy
           </MenuList>
         </Menu>
       </div>
-      <MobileNav open={openNav}>
+      {/* <MobileNav open={openNav}>
         <div className="container mx-auto">{navList}</div>
-      </MobileNav>
+      </MobileNav> */}
     </Navbar>
   );
 }

@@ -7,8 +7,11 @@ import {
   MenuItem,
   Button,
 } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 import PostListingComponents from "./PostListingComponents/PostListingComponents";
+import { useSelector } from "react-redux";
 function PostList() {
+  const { CompanyInfo } = useSelector((state) => state.company);
   const [open, setOpen] = useState(false);
   useEffect(() => {
     document.title = "Your Post | Career Bridge";
@@ -22,16 +25,25 @@ function PostList() {
             <div>
               <p className="font-bold text-2xl ms-10 mt-4">Post list</p>
               <p className="ms-10">See information about all posts</p>
-              <button onClick={handleOpen} className="ms-10 mt-2">
+              {CompanyInfo.is_verify ? (<button onClick={handleOpen} className="ms-10 mt-2">
                 <p className="text-white font-bold text-3xl rounded-full bg-purple-300 w-9">
                   +
                 </p>
-              </button>
+              </button>):""}
             </div>
             <div>sorted by</div>
           </div>
           <div>
-            <PostListingComponents />
+           {CompanyInfo.is_verify ? ( <PostListingComponents />):(
+            <div className="bg-purple-50 mx-10 my-10 rounded-2xl border h-[30rem] flex justify-center items-center">
+             <div>
+             <p className="font-bold text-gray-600 text-3xl capitalize">Company not verified</p>
+              <div className="flex justify-center items-center bg-purple-400 text-white font-bold mt-3 rounded-full mx-20 py-2">
+              <Link to="/company/profile" className="">Goto Profile</Link>
+              </div>
+             </div>
+            </div>
+           )}
           </div>
         </div>
       </div>

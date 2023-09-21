@@ -36,7 +36,13 @@ const GetCompanyDetails = (id) => {
     throw error;
   });
 };
-
+const GetListOfCompanyPost = (id) =>{
+  return CompanyAxiosInstant.get(`listofcompanypost/${id}/`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
 //-----------------------------------Put or Patch methods-------------------------------/
 const EditCompanyDetails = (value, id) => {
   return CompanyAxiosInstant.put(`companydetails/${id}/`, value, {
@@ -50,5 +56,6 @@ export {
   CompanyInfoCreate,
   CompanyPostlistCreate,
   GetCompanyDetails,
+  GetListOfCompanyPost,
   EditCompanyDetails,
 };

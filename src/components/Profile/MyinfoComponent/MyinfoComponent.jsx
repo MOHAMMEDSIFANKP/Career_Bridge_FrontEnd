@@ -64,14 +64,16 @@ function MyinfoComponent() {
         </div>
         <div className="mx-5 flex mb-4 pb-3 items-center ms-4 mt-2 bg-purple-50 rounded-xl">
           <div className="w-1/5">
-            <div className="mt-4 ms-2">
+            <div className="mt-4 ms-2 ">
+              <div className="xl:ms-10 border-2 flex justify-center items-center border-purple-400 h-24 w-24 rounded-full">
               <img
-                className="w-48 md:w-24 p-1 -ms-6 md:ms-0 border border-purple-400 rounded-full"
+                className="w-full h-full p-1 rounded-full"
                 src={
-                  UserInfo === null ? Defaultprofile : UserInfo.profile_image
+                  UserInfo.profile_image === null ? Defaultprofile : UserInfo.profile_image
                 }
                 alt="Profile image"
               />
+              </div>
             </div>
           </div>
           <div className="mt-3">

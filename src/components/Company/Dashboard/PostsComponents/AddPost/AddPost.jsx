@@ -201,7 +201,8 @@ export function AddPost({ open, handleOpen }) {
 
   if (isError) {
     return (
-        <h1>There was an error fetching data</h1>
+      <h1 className="text-center font-bold text-2xl mt-5 text-gray-700">There was an error fetching data</h1>
+
     );
   }
   //---------------------------- React quary---------------------------------------//

@@ -2,8 +2,71 @@ import React, { useState } from "react";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import ComapnyMyInfo from "../../../components/Company/CompanyProfle/ComapnyMyInfo";
 import { Tooltip } from "@material-tailwind/react";
+import Loader from "../../../components/Loading/Loading";
+// Service
+import { UserDetail } from "../../../services/userApi";
+import { GetCompanyDetails } from "../../../services/companyApi";
+// Redux
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCompanyDetails } from "../../../Redux/CompanySlice";
+// React Query
+import { useQuery } from "react-query";
+
 function CompanyProfile() {
   const [option, setOption] = useState("myinfo");
+  const dispatch = useDispatch();
+  const { CompanyInfo } = useSelector((state) => state.company);
+  async function FechCompanyInfo() {
+    try {
+      const UserDetails = await UserDetail(CompanyInfo.id);
+    const CompanyDetails = await GetCompanyDetails(CompanyInfo.companyid);
+    const userInformation = {
+      id: UserDetails.data.id,
+      profile_image: UserDetails.data.profile_image,
+      email: UserDetails.data.email,
+      first_name: UserDetails.data.first_name,
+      last_name: UserDetails.data.last_name,
+      is_active: UserDetails.data.is_active,
+      is_compleated: UserDetails.data.is_compleated,
+      id_admin: UserDetails.data.is_admin,
+      role: UserDetails.data.role,
+      companyid: CompanyDetails.data.id,
+      company_name: CompanyDetails.data.company_name,
+      industry: CompanyDetails.data.industry,
+      company_size: CompanyDetails.data.company_size,
+      company_type: CompanyDetails.data.company_type,
+      gst: CompanyDetails.data.gst,
+      description: CompanyDetails.data.description,
+      streetaddress: CompanyDetails.data.streetaddress,
+      country: CompanyDetails.data.country,
+      state: CompanyDetails.data.state,
+      city: CompanyDetails.data.city,
+      zipcode: CompanyDetails.data.zipcode,
+      is_verify: CompanyDetails.data.is_verify,
+    };
+    if (userInformation) {
+      dispatch(setCompanyDetails({ CompanyInfo: userInformation }));
+    }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+    //---------------------------- React quary---------------------------------------//
+    const { data, isLoading, isError } = useQuery("fechcompanyinfo", FechCompanyInfo);
+    if (isLoading) {
+      return (
+          <Loader />
+      );
+    }
+  
+    if (isError) {
+      return (
+          <h1>There was an error fetching data</h1>
+      );
+    }
+    //---------------------------- React quary---------------------------------------//
+  
   return (
     <>
       <div className="h-screen">
