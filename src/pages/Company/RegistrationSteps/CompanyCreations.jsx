@@ -106,6 +106,7 @@ function CompanyCreations() {
   
         const res = await CompanyInfoCreate(companyDetail);
         const res2 = await UserIs_compleatedUpdate(companyDetail.userId);
+        console.log(res);
         const pictureForm = new FormData();
         pictureForm.append("profile_image", companyDetail.companyProfile);
         const profile = await UserProfileUpdate(pictureForm, companyDetail.userId);

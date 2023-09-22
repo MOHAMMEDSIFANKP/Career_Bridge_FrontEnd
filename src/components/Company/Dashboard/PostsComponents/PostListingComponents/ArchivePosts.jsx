@@ -7,8 +7,7 @@ import { GetListOfCompanyPost } from "../../../../../services/companyApi";
 import { useQuery } from "react-query";
 // Redux
 import { useSelector } from "react-redux";
-
-function PostListingComponents() {
+function ArchivePosts() {
   const { CompanyInfo } = useSelector((state) => state.company);
 
   const [view, setview] = useState({ view: "", index: "" });
@@ -84,10 +83,12 @@ function PostListingComponents() {
             </button>
           </div>
           {Searcheddata.length > 0 ? (
-            Searcheddata.filter((Post) => !Post.is_blocked && !Post.is_deleted).map((Post, index) => (
+            Searcheddata.filter(
+              (Post) => Post.is_deleted
+            ).map((Post, index) => (
               <div
                 key={index}
-                className="grid grid-rows-[5rem,1fr] cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow"
+                className="grid grid-rows-[5rem,1fr] cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4 bg-red-50 rounded-2xl shadow"
                 onClick={() => SelectedItem(Post.id)}
               >
                 <div className="flex justify-between ">
@@ -100,21 +101,8 @@ function PostListingComponents() {
                     </p>
                   </div>
                   <div>
-                    <button className="mt-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 text-purple-400 me-3"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                        />
-                      </svg>
+                    <button className="mt-3 border py-1 px-2 me-4 rounded-md bg-green-400 text-white font-bold">
+                     Unblock
                     </button>
                   </div>
                 </div>
@@ -159,7 +147,7 @@ function PostListingComponents() {
                     {Post.companyinfo.city}
                   </p>
                 </div>
-                <div className="ms-9 mt-1 flex  flex-wrap">
+                <div className="ms-9 mt-1 flex flex-wrap">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -209,7 +197,7 @@ function PostListingComponents() {
         </>
       ) : (
         <>
-          <div className="border mx-10 mt-5  rounded-xl shadow">
+          <div className="border mx-10 mt-5 bg-red-50 rounded-xl shadow">
             <div className="ms-10 mt-3 flex justify-between">
               <div>
                 <p className="capitalize font-bold ">
@@ -356,4 +344,4 @@ function PostListingComponents() {
   );
 }
 
-export default PostListingComponents;
+export default ArchivePosts;

@@ -20,8 +20,8 @@ const CompanyInfoCreate = (values) => {
     throw error;
   });
 };
-// 
-const CompanyPostlistCreate= (values) =>{
+
+const CompanyPostlistCreate = (values) =>{
   return CompanyAxiosInstant.post("companyPostlistCreateapiview/", values, {
     withCredentials:true,
   }).catch((error) => {
