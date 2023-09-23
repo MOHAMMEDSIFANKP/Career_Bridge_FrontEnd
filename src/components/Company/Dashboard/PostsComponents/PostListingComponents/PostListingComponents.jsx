@@ -1,32 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "../../../../Loading/Loading";
-// Service
+import { useSelector, useDispatch } from "react-redux";
+import { EditPostComponent } from "../EditPostComponent/EditPostComponent";
 import { GetListOfCompanyPost } from "../../../../../services/companyApi";
-
-// React Query
-import { useQuery } from "react-query";
-// Redux
-import { useSelector } from "react-redux";
+import { DeletePost } from "../DeletePost/DeletePost";
 
 function PostListingComponents() {
-  const { CompanyInfo } = useSelector((state) => state.company);
+  const dispatch = useDispatch();
+  const { Posts, CompanyInfo } = useSelector((state) => state.company);
 
-  const [view, setview] = useState({ view: "", index: "" });
+  const [view, setView] = useState({ view: false, id: "", index: "" });
   const [Search, setSearch] = useState("");
   const [Searcheddata, setSearcheddata] = useState([]);
-  const [Selectedpost, SetselectedPost] = useState();
-  const [CompanyPosts, setCompanyPosts] = useState([]);
+  const [Selectedpost, setSelectedPost] = useState(null);
 
-  const SelectedItem = (id) => {
-    setview({ ...view, view: !view.view, index: id });
-    const sel = CompanyPosts.find((post) => post.id === id);
-    SetselectedPost(sel);
+  useEffect(() => {
+    if (Search.trim() === "") {
+      setSearcheddata(Posts);
+    }
+  }, [Search, Posts]);
+
+  const SelectedItem = (id, index) => {
+    const sel = Posts.find((post) => post.id === id);
+    setSelectedPost(sel);
+    setView({ view: true, id: id, index: index });
   };
+  // Edit Modal
+  const handleOpen = () => setOpen(!open);
+  const [open, setOpen] = useState(false);
+  // Delete Modal
+  const handleOpenDelete = () => setOpenDelete(!openDelete);
+  const [openDelete, setOpenDelete] = useState(false);
 
-  // Searching Datas
   const handleSearch = (e) => {
     setSearch(e.target.value);
-    const searchData = CompanyPosts.filter((post) => {
+    const searchData = Posts.filter((post) => {
       const jobCategoryMatch = post.job_category.field_name
         .toLowerCase()
         .includes(Search.toLowerCase());
@@ -40,28 +48,25 @@ function PostListingComponents() {
     });
     setSearcheddata(searchData);
   };
-  // Feching company post in backend
+
   async function GetCompanyPost() {
-    const res = await GetListOfCompanyPost(CompanyInfo.companyid);
-    setCompanyPosts(res.data);
     if (Search.trim() === "") {
-      setSearcheddata(res.data);
+      setSearcheddata(Posts);
     }
   }
+  // Rest View
+  const resetView = () => {
+    setView({ view: false, id: "", index: "" });
+  };
+  // Update data after deleting
+  const updateSearcheddata = (newSearcheddata) => {
+    setSearcheddata(newSearcheddata);
+  };
+  
+  useEffect(() => {
+    GetCompanyPost();
+  }, []);
 
-  //---------------------------- React quary---------------------------------------//
-  const { data, isLoading, isError } = useQuery("posts", GetCompanyPost);
-  if (isLoading) {
-    return <Loader />;
-  }
-  if (isError) {
-    return (
-      <h1 className="text-center font-bold text-2xl mt-5 text-gray-700">
-        There was an error fetching data
-      </h1>
-    );
-  }
-  //---------------------------- React quary---------------------------------------//
   return (
     <>
       {!view.view ? (
@@ -77,18 +82,20 @@ function PostListingComponents() {
             <button
               className="-ms-4 border py-2 px-3 rounded-lg bg-purple-400 font-bold text-white"
               onClick={() => {
-                setSearch(""), setSearcheddata(CompanyPosts);
+                setSearch(""), setSearcheddata(Posts);
               }}
             >
               Clear
             </button>
           </div>
           {Searcheddata.length > 0 ? (
-            Searcheddata.filter((Post) => !Post.is_blocked && !Post.is_deleted).map((Post, index) => (
+            Searcheddata.filter(
+              (Post) => !Post.is_blocked && !Post.is_deleted
+            ).map((Post, index) => (
               <div
                 key={index}
                 className="grid grid-rows-[5rem,1fr] cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow"
-                onClick={() => SelectedItem(Post.id)}
+                onClick={() => SelectedItem(Post.id, index)}
               >
                 <div className="flex justify-between ">
                   <div className="mt-5">
@@ -100,7 +107,7 @@ function PostListingComponents() {
                     </p>
                   </div>
                   <div>
-                    <button className="mt-3">
+                    <button className="mt-3" onClick={handleOpen}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -116,8 +123,24 @@ function PostListingComponents() {
                         />
                       </svg>
                     </button>
+                    <button onClick={handleOpenDelete}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 text-red-400 me-2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                </div>
+                </div>{" "}
                 <div className="flex ms-9">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -206,6 +229,11 @@ function PostListingComponents() {
               Result not found
             </p>
           )}
+          {Posts.length==0?(
+            <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
+            <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl"><span cl>Add Your Post</span></p>
+          </div>
+          ):""}
         </>
       ) : (
         <>
@@ -220,8 +248,8 @@ function PostListingComponents() {
                 </p>
               </div>
               <div
-                className="me-7"
-                onClick={() => setview({ ...view, view: !view })}
+                className="me-7 cursor-pointer"
+                onClick={() => setView({ ...view, view: !view })}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -352,6 +380,22 @@ function PostListingComponents() {
           </div>
         </>
       )}
+      <DeletePost
+        isOpen={openDelete}
+        view={view}
+        onClose={handleOpenDelete}
+        resetView={resetView}
+        updateSearcheddata={updateSearcheddata}
+        Selectedpost={Selectedpost}
+      />
+      <EditPostComponent
+        open={open}
+        handleOpen={handleOpen}
+        Selectedpost={Selectedpost}
+        view={view}
+        resetView={resetView}
+        Searcheddata={Searcheddata}
+      />
     </>
   );
 }

@@ -21,8 +21,8 @@ import {
   SetSkills,
   setUserDetails,
 } from "../Redux/UserSlice";
-import { GetCompanyDetails } from "../services/companyApi";
-import { setCompanyDetails } from "../Redux/CompanySlice";
+import { GetCompanyDetails, GetListOfCompanyPost } from "../services/companyApi";
+import { setCompanyDetails, setPosts } from "../Redux/CompanySlice";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -39,6 +39,31 @@ function LoginPage() {
   useEffect(() => {
     emailInputRef.current.focus();
     document.title = "Login | Career Bridge";
+    const searchParams = new URLSearchParams(window.location.search);
+    const tokens = searchParams.get("token");
+    if (tokens) {
+      const decoded = jwtDecode(tokens);
+      console.log(decoded);
+      if (decoded.role === "user") {
+        localStorage.setItem("token", tokens);
+        fetchUserInfo(decoded);
+        if (decoded.is_compleated) {
+          navigate("/user/");
+        } else {
+          navigate("/user/position");
+        }
+      } else if (decoded.role === "company") {
+        localStorage.setItem("token", tokens);
+        FechCompanyInfo(decoded);
+        if (decoded.is_compleated) {
+          navigate("/company/");
+        } else {
+          navigate("/company/createcompany");
+        }
+      } else {
+        toast.error("Invalid role");
+      }
+    }
   }, []);
 
   // Validations
@@ -156,6 +181,7 @@ function LoginPage() {
       } else {
         const UserDetails = await UserDetail(token.user_id);
         const CompanyDetails = await GetCompanyDetails(token.companyInfoId);
+        const CompanyPost = await GetListOfCompanyPost(token.companyInfoId)
         const userInformation = {
           id: UserDetails.data.id,
           profile_image: UserDetails.data.profile_image,
@@ -182,6 +208,9 @@ function LoginPage() {
         };
         if (userInformation) {
           dispatch(setCompanyDetails({ CompanyInfo: userInformation }));
+          CompanyPost.data.map((values, index) => {
+            dispatch(setPosts(values));
+          });
         }
       }
     } catch (error) {

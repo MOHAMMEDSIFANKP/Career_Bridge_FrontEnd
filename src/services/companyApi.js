@@ -43,6 +43,14 @@ const GetListOfCompanyPost = (id) =>{
     throw error;
   });
 }
+const CompanyPostDetails = (id) =>{
+  return CompanyAxiosInstant.get(`companypostdetails/${id}/`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+
 //-----------------------------------Put or Patch methods-------------------------------/
 const EditCompanyDetails = (value, id) => {
   return CompanyAxiosInstant.put(`companydetails/${id}/`, value, {
@@ -51,11 +59,30 @@ const EditCompanyDetails = (value, id) => {
     throw error;
   });
 };
+
+const EditCompanyPostDetails = (value, id) => {
+  return CompanyAxiosInstant.put(`companypostupdate/${id}/`, value, {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
+const CompanyPostBolckUnblock = (value, id) => {
+  return CompanyAxiosInstant.put(`companypostbolckUnblock/${id}/`, value, {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
+
 export {
   CompanyGoogleSignup,
   CompanyInfoCreate,
   CompanyPostlistCreate,
   GetCompanyDetails,
   GetListOfCompanyPost,
+  CompanyPostDetails,
   EditCompanyDetails,
+  EditCompanyPostDetails,
+  CompanyPostBolckUnblock,
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Button,
   Dialog,
@@ -15,17 +15,15 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../Loading/Loading";
-import { CompanyPostDetails, CompanyPostlistCreate } from "../../../../../services/companyApi";
+import { CompanyPostDetails, EditCompanyPostDetails, GetListOfCompanyPost } from "../../../../../services/companyApi";
 // Redux
-import { useDispatch, useSelector } from "react-redux";
-import { UpdateCompanyDetails, setPosts } from "../../../../../Redux/CompanySlice";
-
-// React Query
-import { useQuery } from "react-query";
-
-export function AddPost({ open, handleOpen }) {
-  const dispatch = useDispatch()
+import { useSelector, useDispatch } from "react-redux";
+import { EditPosts } from "../../../../../Redux/CompanySlice";
+export function EditPostComponent({ open, handleOpen, Selectedpost, view ,Searcheddata,resetView}) {
+  const dispatch = useDispatch();
   const { CompanyInfo } = useSelector((state) => state.company);
+  const { Posts } = useSelector((state) => state.company);
+
   const [Form, setForm] = useState({
     companyinfo: "",
     work_time: "",
@@ -60,31 +58,45 @@ export function AddPost({ open, handleOpen }) {
   const [SelectedJobfield, setSelectedJobfield] = useState({});
   const [SelectedJobTitle, setSelectedJobTitle] = useState({});
   const [SelectedSkills, setSelectedSkills] = useState([]);
-  const options = Jobfield.map((job) => ({
-    value: job.field_name,
-    id: job.id,
-    label: job.field_name,
-  }));
-  const option2 = JobTitle.filter(
-    (role) => role.field === SelectedJobfield.id
-  ).map((job) => ({
-    value: job.title_name,
-    id: job.id,
-    label: job.title_name,
-  }));
-  const options3 = skill.map((s) => ({
-    value: s.skills,
-    id: s.id,
-    skills: s.skills,
-    label: s.skills,
-  }));
-  const handleSkillsChange = (selectedOption) => {
+  const options = useMemo(() => {
+    return Jobfield.map((job) => ({
+      value: job.field_name,
+      id: job.id,
+      label: job.field_name,
+    }));
+  }, [Jobfield]);
+  const option2 = useMemo(() => {
+    return JobTitle.filter((role) => role.field === SelectedJobfield.id).map((job) => ({
+      value: job.title_name,
+      id: job.id,
+      label: job.title_name,
+    }));
+  }, [JobTitle, SelectedJobfield]);
+  const options3 = useMemo(() => {
+    return skill.map((s) => ({
+      value: s.skills,
+      id: s.id,
+      skills: s.skills,
+      label: s.skills,
+    }));
+  }, [skill]);
+  const handleSkillsChange = useCallback((selectedOption) => {
     if (!SelectedSkills.find((item) => item.value === selectedOption.value)) {
       setSelectedSkills([...SelectedSkills, selectedOption]);
       setForm({ ...Form, skills: [...Form.skills, selectedOption.id] });
       seterror({ ...error, skills: false });
     }
-  };
+  }, [SelectedSkills, Form, error]);
+
+  // Remove Skills
+  const RemoveSkills = useCallback((skillIdToRemove) => {
+    const updatedSelectedSkills = SelectedSkills.filter(
+      (skill) => skill.id !== skillIdToRemove
+    );
+    const updatedSkillIds = updatedSelectedSkills.map((skill) => skill.id);
+    setForm({ ...Form, skills: updatedSkillIds });
+    setSelectedSkills(updatedSelectedSkills);
+  }, [SelectedSkills, Form]);
 
   // Get data
   async function getJoblist() {
@@ -105,7 +117,7 @@ export function AddPost({ open, handleOpen }) {
   //-------------------------End Role searching---------------------------------//
 
   // Validation
-  function Validation() {
+  const Validation = useCallback(() => {
     if (Form.work_time === "") {
       toast.error("Work time should not be blank");
       return false;
@@ -135,8 +147,8 @@ export function AddPost({ open, handleOpen }) {
       return false;
     }
     return true;
-  }
-  const Submited = async () => {
+  }, [Form, error]);
+  const Submited = useCallback(async () => {
     if (Validation()) {
       handleLoading();
       try {
@@ -151,10 +163,11 @@ export function AddPost({ open, handleOpen }) {
           education: Form.education,
           description: Form.description,
         };
-        const res = await CompanyPostlistCreate(data);
-        if (res.status === 201) {
-          const res2 =  await CompanyPostDetails(res.data.id)
-          dispatch(setPosts(res2.data))
+        const res = await EditCompanyPostDetails(data,Selectedpost.id);
+        if (res.status === 200) {
+          const res = await GetListOfCompanyPost(CompanyInfo.companyid);
+          Searcheddata = res.data
+          resetView();
           setForm({
             companyinfo: "",
             work_time: "",
@@ -169,10 +182,15 @@ export function AddPost({ open, handleOpen }) {
           setSelectedJobTitle({});
           setSelectedJobfield({});
           setSelectedSkills([]);
+          const res2 = await CompanyPostDetails(Selectedpost.id)
+         
+          dispatch(EditPosts({index:view.index, updatedPosts:res2.data}))
+          toast.success("Post updated successfully");
           handleOpen();
         }
         handleLoading();
       } catch (error) {
+        console.log(error);
         setForm({
           companyinfo: "",
           work_time: "",
@@ -189,26 +207,59 @@ export function AddPost({ open, handleOpen }) {
         setSelectedSkills([]);
         handleOpen();
         handleLoading();
-        console.log(error);
       }
     }
-  };
-  //---------------------------- React quary---------------------------------------//
-  const { data, isLoading, isError } = useQuery("joblist", getJoblist);
-  if (isLoading) {
-    return (
-        <Loader />
-    );
-  }
+  }, [Form, error, Selectedpost, CompanyInfo]);
 
-  if (isError) {
-    return (
-      <h1 className="text-center font-bold text-2xl mt-5 text-gray-700">There was an error fetching data</h1>
-
-    );
-  }
-  //---------------------------- React quary---------------------------------------//
-
+  useEffect(() => {
+    if (open) {
+      setForm({
+        companyinfo: Selectedpost.companyinfo.id,
+        work_time: Selectedpost.work_time || "",
+        Jobtitle: Selectedpost.Jobtitle.id || "",
+        
+        job_category: Selectedpost.job_category.id || null,
+        level_of_experience: Selectedpost.level_of_experience || "",
+        year_of_experience: Selectedpost.year_of_experience || null,
+        education: Selectedpost.education || "",
+        description: Selectedpost.description || "",
+        skills: Selectedpost.skills.map((skill) => skill.id),
+      });
+      setSelectedJobTitle({
+        value: Selectedpost.Jobtitle.title_name,
+        label: Selectedpost.Jobtitle.title_name,
+        id: Selectedpost.id,
+      });
+      setSelectedJobfield({
+        value: Selectedpost.job_category.field_name,
+        label: Selectedpost.job_category.field_name,
+        id: Selectedpost.id,
+      });
+      setSelectedSkills(
+        Selectedpost.skills.map((skill) => ({
+          value: skill.skills,
+          id: skill.id,
+          label: skill.skills,
+        }))
+      );
+    }else{
+      setForm({
+        companyinfo: "",
+        work_time: "",
+        Jobtitle: "",
+        skills: [],
+        job_category: "",
+        level_of_experience: "",
+        year_of_experience: null,
+        education: "",
+        description: "",
+      });
+      setSelectedJobTitle({});
+      setSelectedJobfield({});
+      setSelectedSkills([]);
+    }
+    getJoblist();
+  }, [open,Selectedpost]);
 
   return (
     <>
@@ -216,7 +267,7 @@ export function AddPost({ open, handleOpen }) {
         {loading && <Loader />}
         <ToastContainer />
         <DialogHeader>Getting started</DialogHeader>
-        <DialogBody>
+        <DialogBody className="overflow-y-auto h-[40rem]">
           <div className="">
             <div className="grid grid-rows-[3rem,1fr] mx-6">
               <div>
@@ -324,6 +375,12 @@ export function AddPost({ open, handleOpen }) {
                       className="border my-1 bg-purple-300 rounded-full text-white mx-1 px-2 font-bold pt-1"
                     >
                       {value.value}
+                      <span
+                        className="font-bold text-xl cursor-pointer ms-2"
+                        onClick={() => RemoveSkills(value.id)}
+                      >
+                        x
+                      </span>
                     </p>
                   ))}
 
@@ -411,6 +468,7 @@ export function AddPost({ open, handleOpen }) {
                       Year of experience :
                     </p>
                     <input
+                      defaultValue={Form.year_of_experience}
                       onChange={(e) =>
                         setForm({ ...Form, year_of_experience: e.target.value })
                       }
@@ -425,12 +483,13 @@ export function AddPost({ open, handleOpen }) {
                 )}
               </div>
               <div>
-                <p className="mb-1 mt-2 text-gray-500">
+                <p className="mb-1 mt-2  text-gray-500">
                   Education Qualifiaction :
                 </p>
                 <textarea
                   cols="50"
                   rows="4"
+                  defaultValue={Form.education}
                   onChange={(e) => {
                     setForm({ ...Form, education: e.target.value }),
                       seterror({ ...error, education: false });
@@ -447,6 +506,7 @@ export function AddPost({ open, handleOpen }) {
                 <textarea
                   cols="50"
                   rows="4"
+                  defaultValue={Form.description}
                   onChange={(e) => {
                     setForm({ ...Form, description: e.target.value }),
                       seterror({ ...error, description: false });
@@ -462,17 +522,19 @@ export function AddPost({ open, handleOpen }) {
           </div>
         </DialogBody>
         <DialogFooter>
-          <button onClick={handleOpen} className="mr-1 font-bold -mt-4">
-            <span>Cancel</span>
-          </button>
-          <button
-            variant="gradient"
-            color="green"
-            className="ms-2 me-5 -mt-4 bg-purple-400 text-white font-bold px-3 py-1 rounded-2xl"
-            onClick={Submited}
-          >
-            <span>Confirm</span>
-          </button>
+          <div>
+            <button onClick={handleOpen} className="mr-1 font-bold -mt-4">
+              <span>Cancel</span>
+            </button>
+            <button
+              variant="gradient"
+              color="green"
+              className="ms-2 me-5 -mt-4 bg-purple-400 text-white font-bold px-3 py-1 rounded-2xl"
+              onClick={Submited}
+            >
+              <span>Confirm</span>
+            </button>
+          </div>
         </DialogFooter>
       </Dialog>
     </>

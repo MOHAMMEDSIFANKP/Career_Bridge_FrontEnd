@@ -14,7 +14,7 @@ function PostList() {
     document.title = "Your Post | Career Bridge";
   }, []);
   const handleOpen = () => setOpen(!open);
-  console.log(TypesofPost);
+  console.log('sifan daxo');
   return (
     <>
       <div className="flex justify-center">

@@ -26,7 +26,7 @@ import {
 } from "../../Redux/UserSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { LogoutCompanyDetails } from "../../Redux/CompanySlice";
+import { LogoutCompanyDetails, CleartPosts } from "../../Redux/CompanySlice";
 
 export function NavbarDefault() {
   // UserInfo Redux
@@ -39,6 +39,7 @@ export function NavbarDefault() {
 
   const logout = () => {
     dispatch(LogoutCompanyDetails());
+    dispatch(CleartPosts())
     dispatch(LogoutDetails());
     dispatch(ClearPosition());
     dispatch(ClearRole());
