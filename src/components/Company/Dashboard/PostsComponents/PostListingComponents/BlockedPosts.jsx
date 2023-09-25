@@ -17,8 +17,6 @@ function BlockedPosts() {
     setSelectedPost(sel);
     setView({ view: true, index: id });
   };
-  // Edit Modal
-  const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(!open);
   // Searching Datas
@@ -38,6 +36,8 @@ function BlockedPosts() {
     });
     setSearcheddata(searchData);
   };
+
+
   useEffect(() => {
     if (Search.trim() === "") {
       setSearcheddata(Posts);
@@ -84,11 +84,11 @@ function BlockedPosts() {
 
                     <div>
                       <div className="font-bold text-2xl border rounded-2xl px-3 mt-5 me-4">
-                      <Chip
+                        <Chip
                           variant="ghost"
                           size="md"
-                          value ="B l o c k e d"
-                          color= "red"
+                          value="B l o c k e d"
+                          color="red"
                         />
                       </div>
                     </div>
@@ -184,10 +184,17 @@ function BlockedPosts() {
               Result not found
             </p>
           )}
+          {Posts.filter((Post) => Post.is_blocked).length === 0 ? (
+            <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
+              <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl">
+                <span>Blocked posts id emptyfound</span>
+              </p>
+            </div>
+          ) : null}
         </>
       ) : (
         <>
-          <div className="border mx-10 mt-5  rounded-xl shadow">
+          <div className="border mx-10 mt-5 bg-yellow-100 rounded-xl shadow">
             <div className="ms-10 mt-3 flex justify-between">
               <div>
                 <p className="capitalize font-bold ">
@@ -330,6 +337,7 @@ function BlockedPosts() {
           </div>
         </>
       )}
+
     </>
   );
 }

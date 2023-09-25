@@ -13,7 +13,7 @@ import {
   GetListOfCompanyPost,
 } from "../../../../../services/companyApi";
 import { CleartPosts, setPosts } from "../../../../../Redux/CompanySlice";
-const DeletePost = ({
+const Unblock = ({
   isOpen,
   view,
   onClose,
@@ -27,22 +27,20 @@ const DeletePost = ({
     try {
       const data = {
         is_blocked: "false",
-        is_deleted: "true",
+        is_deleted: "false",
       };
       const res = await CompanyPostBolckUnblock(data, Selectedpost.id);
 
       if (res.status === 200) {
         resetView();
         const res2 = await GetListOfCompanyPost(CompanyInfo.companyid);
-        updateSearcheddata(res2.data)
+        updateSearcheddata(res2.data);
         dispatch(CleartPosts());
-        res2.data.map((post,index) => {
+        res2.data.map((post, index) => {
           dispatch(setPosts(post));
         });
         const res3 = await CompanyPostDetails(Selectedpost.id);
         toast.success("Post Deleted successfully");
-
-       
       }
     } catch (error) {
       console.log(error);
@@ -52,10 +50,10 @@ const DeletePost = ({
   return (
     <>
       <Dialog open={isOpen} handler={onClose} size={"xs"}>
-        <DialogHeader>Remove Post</DialogHeader>
+        <DialogHeader>Block Post</DialogHeader>
         <DialogBody>
           <p>
-            Are you sure you want to remove '
+            Are you sure you want to block '
             <span className="font-bold">
               {Selectedpost?.Jobtitle.title_name}
             </span>
@@ -82,4 +80,4 @@ const DeletePost = ({
     </>
   );
 };
-export { DeletePost };
+export { Unblock };

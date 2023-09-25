@@ -27,6 +27,7 @@ import {
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { LogoutCompanyDetails, CleartPosts } from "../../Redux/CompanySlice";
+import NavBarSearching from "../NavBarSearching/NavBarSearching";
 
 export function NavbarDefault() {
   // UserInfo Redux
@@ -108,10 +109,12 @@ export function NavbarDefault() {
           as="a"
           href="#"
           className="mr-4 cursor-pointer py-2 font-bold text-2xl"
-        >
+        onClick={()=>navigate('/user/')}>
           Career Bridge
         </Typography>
-
+       <div className="ms-7 md:ms-[18rem] 2xl:-me-[18rem] xl:-me-[18rem] md:w-3/12 w-4/12">
+       <NavBarSearching />
+       </div>
         <div className="hidden lg:block">
           <Menu
             animate={{

@@ -65,7 +65,12 @@ const UserDetail = (id) => {
   })
 };
 
-
+// Get User Details
+const UserRelatedJobs = (id) => {
+  return userAxiosInstant.get(`api/userrelatedjobs/${id}`, {
+    withCredentials: true,
+  })
+};
 
 
 //--------------------------Put or Patch Methods (for Updation)-------------------------------
@@ -170,6 +175,7 @@ export {
   UserInfoDetails,
   UserInfo,
   UserDetail,
+  UserRelatedJobs,
   UserProfileUpdate,
   UserIs_compleatedUpdate,
   TokenRefresh,

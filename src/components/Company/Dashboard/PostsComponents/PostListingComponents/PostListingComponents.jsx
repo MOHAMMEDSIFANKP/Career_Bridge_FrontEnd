@@ -3,7 +3,7 @@ import Loader from "../../../../Loading/Loading";
 import { useSelector, useDispatch } from "react-redux";
 import { EditPostComponent } from "../EditPostComponent/EditPostComponent";
 import { GetListOfCompanyPost } from "../../../../../services/companyApi";
-import { DeletePost } from "../DeletePost/DeletePost";
+import { DeletePost } from "../BlockUnblock/DeletePost";
 
 function PostListingComponents() {
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ function PostListingComponents() {
   const updateSearcheddata = (newSearcheddata) => {
     setSearcheddata(newSearcheddata);
   };
-  
+
   useEffect(() => {
     GetCompanyPost();
   }, []);
@@ -229,11 +229,14 @@ function PostListingComponents() {
               Result not found
             </p>
           )}
-          {Posts.length==0?(
+          {Posts.filter((Post) => !Post.is_blocked && !Post.is_deleted)
+            .length === 0 ? (
             <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
-            <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl"><span cl>Add Your Post</span></p>
-          </div>
-          ):""}
+              <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl">
+                <span>Add Your Post</span>
+              </p>
+            </div>
+          ) : null}
         </>
       ) : (
         <>

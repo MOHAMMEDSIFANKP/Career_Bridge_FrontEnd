@@ -1,4 +1,12 @@
-import React, { useState } from "react";
+import {
+  Card,
+  Typography,
+  List,
+  ListItem,
+  ListItemPrefix,
+  ListItemSuffix,
+  Chip,
+} from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
   ShoppingBagIcon,
@@ -7,28 +15,25 @@ import {
   InboxIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
-import { AdminNavBar } from "../../components/Admin/AdminNavBar&Sidebar/AdminNavBar";
-import { AdminSideBar } from "../../components/Admin/AdminNavBar&Sidebar/AdminSideBar";
-import { AdminDrawer } from "../../components/Admin/AdminNavBar&Sidebar/AdminDrawer";
-import Admin_UserManagement from "../../components/Admin/Admin_UserManagement/Admin_UserManagement";
-import Admin_CompanyManagement from "../../components/Admin/Admin_CompanyManagement/Admin_CompanyManagement";
-function AdminHomePage() {
-  const [SelectedList,setSelectedList] = useState('')
-  const Selections= (data)=>{
-    setSelectedList(data)
-  }
+
+export function AdminSideBar({ Selections }) {
   return (
-    <div className="h-screen grid grid-rows-[4rem]">
-      <div>
-        <AdminNavBar />
+    <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
+      <div className="mb-2 p-4">
+        <Typography variant="h5" color="blue-gray">
+          Sidebar
+        </Typography>
       </div>
-      <div className="grid grid-cols-[6rem,1fr] xl:grid-cols-[20rem,1fr]">
-        <div>
-          <div className="flex justify-center items-center  xl:mt-0 mt-4 visible xl:invisible">
-            <div className="shadow px-5 py-5 text-gray-800 rounded-xl grid grid-rows-5 xl:gap-0 gap-10 ">
-            <PresentationChartBarIcon className="h-5 w-5" onClick={()=>setSelectedList('Dashboard')}/>
+      <List>
+        <ListItem onClick={()=>{Selections('Dashboard')}}>
+          <ListItemPrefix>
+            <PresentationChartBarIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Dashboard
+        </ListItem>
+        <ListItem onClick={()=>{Selections('Users')}}>
+          <ListItemPrefix>
             <svg
-            onClick={()=>setSelectedList('Users')}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -36,8 +41,12 @@ function AdminHomePage() {
             >
               <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
             </svg>
+          </ListItemPrefix>
+          Users
+        </ListItem>
+        <ListItem onClick={()=>{Selections('Company')}}>
+          <ListItemPrefix>
             <svg
-             onClick={()=>setSelectedList('Company')}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -49,27 +58,43 @@ function AdminHomePage() {
                 clipRule="evenodd"
               />
             </svg>
-            <InboxIcon className="h-5 w-5"  onClick={()=>setSelectedList('Inbox')}/>
-            <Cog6ToothIcon className="h-5 w-5"  onClick={()=>setSelectedList('Settings')}/>
+          </ListItemPrefix>
+          Company
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <InboxIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Inbox
+          <ListItemSuffix>
+            <Chip
+              value="14"
+              size="sm"
+              variant="ghost"
+              color="blue-gray"
+              className="rounded-full"
+            />
+          </ListItemSuffix>
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <UserCircleIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Profile
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
+            <Cog6ToothIcon className="h-5 w-5" />
+          </ListItemPrefix>
+          Settings
+        </ListItem>
+        <ListItem>
+          <ListItemPrefix>
             <PowerIcon className="h-5 w-5" />
-            </div>
-          </div>
-          <div className="invisible xl:visible xl:-mt-[11rem]">
-            <AdminSideBar Selections={Selections}/>
-          </div>
-        </div>
-        <div>
-          {SelectedList==='Dashboard'?(
-            <>Dashboards</>
-          ):SelectedList==='Users'?(
-            <Admin_UserManagement/>
-          ):SelectedList==='Company'?(
-            <Admin_CompanyManagement/>
-          ):''}
-        </div>
-      </div>
-    </div>
+          </ListItemPrefix>
+          Log Out
+        </ListItem>
+      </List>
+    </Card>
   );
 }
-
-export default AdminHomePage;

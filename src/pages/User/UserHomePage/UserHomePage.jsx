@@ -1,18 +1,49 @@
 import React, { useState } from "react";
-import { NavbarDefault } from "../../../components/Navbar/NavBar"
+import { NavbarDefault } from "../../../components/Navbar/NavBar";
+import HomeJoblist from "../../../components/user/Home/HomeJoblist";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function UserHomePage() {
-  const [select, setSelect] = useState('home')
+  const navigate = useNavigate()
+  const { UserInfo, JobTitleRedex ,Education,Skills,experiences} = useSelector((state) => state.user);
+  let WidthLine = '';
+  let percentageText = '';
+ 
+  if (UserInfo.cv) {
+    WidthLine = 'w-6/6';
+    percentageText = 100;
+  } else if (UserInfo.bio) {
+    WidthLine = 'w-5/6';
+    percentageText = 90;
+  } else if (Skills.length > 0) {
+    WidthLine = 'w-4/6';
+    percentageText = 80;
+  } else if (experiences.length > 0) {
+    WidthLine = 'w-4/6';
+    percentageText = 70;
+  } else if (Education.length > 0) {
+    WidthLine = 'w-3/6';
+    percentageText = 60;
+  } else if (UserInfo) {
+    WidthLine = 'w-2/6';
+    percentageText = 50;
+  }
+  const [selected, setSelect] = useState("home");
   return (
     <>
-      <div className="h-screen grid grid-rows-[5rem,]">
-        <div>
+      <div className="h-screen w-full grid grid-rows-[5rem,1fr] gap-1 md:gap-10">
+        <div className="sticky top-0">
           <NavbarDefault />
         </div>
-        <div className="grid grid-cols-[10rem,1fr,14rem] container xl:mx-auto mx-10 mt-10">
-          <div className="grid grid-rows-[3rem,3rem,3rem] gap-2">
-            <div className="border cursor-pointer rounded-3xl shadow flex justify-center items-center hover:bg-gray-100 hover:text-purple-400 font-bold"
-            onClick={()=>setSelect('home')}>
+        <div className="grid grid-cols-[10rem,1fr,10rem] container xl:mx-auto xl:px-0 px-10 ">
+          <div className="grid grid-rows-[3rem,3rem,3rem] gap-2 sticky">
+            <div
+              className={`border cursor-pointer rounded-3xl shadow flex justify-center items-center hover:bg-gray-100 font-bold ${
+                selected === "home" ? "bg-gray-200 border border-gray-300" : ""
+              }`}
+              onClick={() => setSelect("home")}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -29,8 +60,12 @@ function UserHomePage() {
               </svg>
               <p className="ms-4 ont-bold text-sm text-gray-800">Home</p>
             </div>
-            <div className="border cursor-pointer rounded-3xl shadow flex justify-center items-center hover:bg-gray-100 hover:text-purple-400 font-bold"
-            onClick={()=>setSelect('company')}>
+            <div
+              className={`border cursor-pointer rounded-3xl shadow flex justify-center items-center hover:bg-gray-100 font-bold ${
+                selected === "jobs" ? "bg-gray-200 border border-gray-300" : ""
+              }`}
+              onClick={() => setSelect("jobs")}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -48,8 +83,14 @@ function UserHomePage() {
 
               <p className="ms-4 ont-bold text-sm text-gray-800">Jobs</p>
             </div>
-            <div className="border cursor-pointer rounded-3xl shadow flex justify-center items-center hover:bg-gray-100 hover:text-purple-400 font-bold"
-            onClick={()=>setSelect('company')}>
+            <div
+              className={`border cursor-pointer rounded-3xl shadow flex justify-center items-center hover:bg-gray-100 font-bold ${
+                selected === "company"
+                  ? "bg-gray-200 border border-gray-300"
+                  : ""
+              }`}
+              onClick={() => setSelect("company")}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -67,8 +108,39 @@ function UserHomePage() {
               <p className="ms-4 ont-bold text-sm text-gray-800">Company</p>
             </div>
           </div>
-          <div>2</div>
-          <div>3</div>
+          <div className="h-[50rem]  scrollbar-none overflow-y-auto ">
+            {selected === "home" ? (
+              <HomeJoblist />
+            ) : selected === "jobs" ? (
+              <div>jobs</div>
+            ) : (
+              <div>company</div>
+            )}
+          </div>
+          <div className="flex justify-center">
+            <div className="border hover:bg-gray-100 cursor-pointer w-full h-52 rounded-xl shadow-md grid grid-rows-[6rem,1fr,1fr]"
+            onClick={()=>navigate('/user/profile')}>
+              <div className="flex justify-center mt-3">
+                <div className="w-20 h-20 rounded-full border-purple-400 border">
+                  <img
+                    src={UserInfo?.profile_image}
+                    className="rounded-full"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div className="">
+                <p className="font-bold capitalize text-center pt-1">
+                  {UserInfo.first_name} {UserInfo.last_name}
+                </p>
+                <p className="text-sm text-center">{JobTitleRedex}</p>
+              </div>
+              <div className="pt-5">
+              <hr className={`border border-purple-400 mx-2 ${WidthLine}`}/>
+              <p className="text-sm text-center text-purple-400 font-bold">{percentageText}%</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

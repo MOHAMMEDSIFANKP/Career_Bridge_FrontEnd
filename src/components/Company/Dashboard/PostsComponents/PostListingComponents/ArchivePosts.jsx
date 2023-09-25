@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { EditPostComponent } from "../EditPostComponent/EditPostComponent";
 import { Chip } from "@material-tailwind/react";
+import { Unblock } from "../BlockUnblock/UnblockPost";
 
 function ArchivePosts() {
   // Redux destructure
@@ -18,7 +19,7 @@ function ArchivePosts() {
     setSelectedPost(sel);
     setView({ view: true, index: id });
   };
-  // Edit Modal
+  // Unblock Modal
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(!open);
@@ -38,6 +39,15 @@ function ArchivePosts() {
       return jobCategoryMatch || skillsMatch || titleNameMatch;
     });
     setSearcheddata(searchData);
+  };
+
+  // Rest View
+  const resetView = () => {
+    setView({ view: false, id: "", index: "" });
+  };
+  // Update data after deleting
+  const updateSearcheddata = (newSearcheddata) => {
+    setSearcheddata(newSearcheddata);
   };
   useEffect(() => {
     if (Search.trim() === "") {
@@ -82,15 +92,21 @@ function ArchivePosts() {
                         {Post.companyinfo.company_name}
                       </p>
                     </div>
-                    <div></div>
-                    <div className="me-3 mt-3">
+                   <div className="flex">
+                   <div className="me-3 mt-3">
                       <Chip
                         variant="ghost"
                         size="md"
-                        value="A r c h i v e d"
+                        value="A r c h i v e d "
                         color="yellow"
                       />
                     </div>
+                    <div>
+                      <button className="rounded-md mt-3 me-3 text-white font-bold px-2 py-1 bg-green-400" onClick={handleOpen}>
+                        Unblock
+                      </button>
+                    </div>
+                   </div>
                   </div>{" "}
                   <div className="flex ms-9">
                     <svg
@@ -183,10 +199,17 @@ function ArchivePosts() {
               Result not found
             </p>
           )}
+          {Posts.filter((Post) => Post.is_deleted).length === 0 ? (
+            <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
+              <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl">
+                <span>Archive posts id empty</span>
+              </p>
+            </div>
+          ) : null}
         </>
       ) : (
         <>
-          <div className="border mx-10 mt-5  rounded-xl shadow">
+          <div className="border mx-10 mt-5 bg-red-50 rounded-xl shadow">
             <div className="ms-10 mt-3 flex justify-between">
               <div>
                 <p className="capitalize font-bold ">
@@ -329,6 +352,14 @@ function ArchivePosts() {
           </div>
         </>
       )}
+            <Unblock
+        isOpen={open}
+        view={view}
+        onClose={handleOpen}
+        resetView={resetView}
+        updateSearcheddata={updateSearcheddata}
+        Selectedpost={Selectedpost}
+      />
     </>
   );
 }
