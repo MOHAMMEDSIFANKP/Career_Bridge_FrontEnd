@@ -35,6 +35,13 @@ const CompanyList = () => {
     throw error;
   });
 };
+const AdminNotification = () => {
+  return adminAxiosInstant.get('adminnotification/',  {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
 
 // ---------------------------------------Put or Patch Methoda-------------------------------//
 const UserBlockUnBlock = (values,id) => {
@@ -51,5 +58,12 @@ const VerifyAndBlock = (values,id) => {
     throw error;
   });
 };
+const AdminNotificationRead = (values,id) => {
+  return adminAxiosInstant.patch(`adminnotificationread/${id}/`, values ,{
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
 
-export { AdminSignin, GetLanguages, AdminJobFieldList, AdminJobTitlelist ,AdminSkillsList,UsersList,CompanyList,UserBlockUnBlock,VerifyAndBlock};
+export { AdminSignin, GetLanguages, AdminJobFieldList, AdminJobTitlelist ,AdminSkillsList,AdminNotification,UsersList,CompanyList,UserBlockUnBlock,VerifyAndBlock,AdminNotificationRead};

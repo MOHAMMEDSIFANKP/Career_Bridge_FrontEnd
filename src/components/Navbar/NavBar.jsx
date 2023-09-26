@@ -40,7 +40,7 @@ export function NavbarDefault() {
 
   const logout = () => {
     dispatch(LogoutCompanyDetails());
-    dispatch(CleartPosts())
+    dispatch(CleartPosts());
     dispatch(LogoutDetails());
     dispatch(ClearPosition());
     dispatch(ClearRole());
@@ -109,107 +109,120 @@ export function NavbarDefault() {
           as="a"
           href="#"
           className="mr-4 cursor-pointer py-2 font-bold text-2xl"
-        onClick={()=>navigate('/user/')}>
+          onClick={() => navigate("/user/")}
+        >
           Career Bridge
         </Typography>
-       <div className="ms-7 md:ms-[18rem] 2xl:-me-[18rem] xl:-me-[18rem] md:w-3/12 w-4/12">
-       <NavBarSearching />
-       </div>
-        <div className="hidden lg:block">
-          <Menu
-            animate={{
-              mount: { y: 0 },
-              unmount: { y: 25 },
-            }}
-          >
-            <MenuHandler>
-              <div className="w-8 flex items-center justify-center h-8 rounded-full border-2 border-purple-300">
-              {UserInfo.profile_image ? (
-                <img
-                  src={
-                    UserInfo.profile_image
-                      ? UserInfo.profile_image
-                      : defaultprofile
-                  }
-                  className="w-8 rounded-full"
-                  alt=""
-                />
-              ) : (
-                <img
-                  src={
-                    CompanyInfo.profile_image ? CompanyInfo.profile_image : defaultprofile
-                  }
-                  className="w-8 p-[2px] rounded-full"
-                  alt=""
-                />
-              )}
-              </div>
-            </MenuHandler>
-            <MenuList className="rounded-xl text-black">
-              <MenuItem className="flex justify-center items-center ">
-                <div className="w-16 h-16 rounded-full border-2 border-purple-400">
-                {UserInfo.profile_image ? (
-                  <img
-                    src={
-                      UserInfo.profile_image
-                        ? UserInfo.profile_image
-                        : defaultprofile
-                    }
-                    className="w-16 rounded-full"
-                    alt=""
-                  />
-                ) : (
-                  <img
-                    src={
-                      CompanyInfo.profile_image
-                        ? CompanyInfo.profile_image
-                        : defaultprofile
-                    }
-                    className="w-16 p-[3px] rounded-full"
-                    alt=""
-                  />
-                )}
+        <div className="flex w-3/12  justify-end items-center">
+          <div className="md:w-full me-2 hidden lg:block w-4/12">
+            <NavBarSearching />
+          </div>
+          <div className="hidden lg:block ">
+            <Menu
+              animate={{
+                mount: { y: 0 },
+                unmount: { y: 25 },
+              }}
+            >
+              <MenuHandler>
+                <div className="w-8 flex items-center justify-center h-8 rounded-full border-2 border-purple-300">
+                  {UserInfo.profile_image ? (
+                    <img
+                      src={
+                        UserInfo.profile_image
+                          ? UserInfo.profile_image
+                          : defaultprofile
+                      }
+                      className="w-8 rounded-full"
+                      alt=""
+                    />
+                  ) : (
+                    <img
+                      src={
+                        CompanyInfo.profile_image
+                          ? CompanyInfo.profile_image
+                          : defaultprofile
+                      }
+                      className="w-8 p-[2px] rounded-full"
+                      alt=""
+                    />
+                  )}
                 </div>
-              </MenuItem>
-              {UserInfo.email ? (
-                <MenuItem
-                  className="text-center capitalize "
-                  onClick={() =>
-                    navigate(UserInfo.is_compleated ? "/user/profile" : "")
-                  }
-                >
-                  {UserInfo.first_name
-                    ? `${UserInfo.first_name} ${UserInfo.last_name}`
-                    : "Unauthorize"}
+              </MenuHandler>
+              <MenuList className="rounded-xl text-black">
+                <MenuItem className="flex justify-center items-center ">
+                  <div className="w-16 h-16 rounded-full border-2 border-purple-400">
+                    {UserInfo.profile_image ? (
+                      <img
+                        src={
+                          UserInfo.profile_image
+                            ? UserInfo.profile_image
+                            : defaultprofile
+                        }
+                        className="w-16 rounded-full"
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        src={
+                          CompanyInfo.profile_image
+                            ? CompanyInfo.profile_image
+                            : defaultprofile
+                        }
+                        className="w-16 p-[3px] rounded-full"
+                        alt=""
+                      />
+                    )}
+                  </div>
                 </MenuItem>
-              ) : (
-                <>
+                {UserInfo.email ? (
                   <MenuItem
                     className="text-center capitalize "
                     onClick={() =>
-                      navigate(
-                        CompanyInfo.is_compleated ? "/company/profile" : ""
-                      )
+                      navigate(UserInfo.is_compleated ? "/user/profile" : "")
                     }
                   >
-                    {CompanyInfo.first_name
-                      ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
+                    {UserInfo.first_name
+                      ? `${UserInfo.first_name} ${UserInfo.last_name}`
                       : "Unauthorize"}
                   </MenuItem>
-                  <hr className="mx-4" />
-                  <MenuItem className="text-center capitalize "
-                  onClick={()=>navigate('/company/dashboard/')}>Dashboard</MenuItem>
-                  
-                </>
-              )}
-              <hr className="mx-4" />
-              <MenuItem className="my-1 text-center" onClick={logout}>
-                Logout
-              </MenuItem>
-            </MenuList>
-          </Menu>
+                ) : (
+                  <>
+                    <MenuItem
+                      className="text-center capitalize "
+                      onClick={() =>
+                        navigate(
+                          CompanyInfo.is_compleated ? "/company/profile" : ""
+                        )
+                      }
+                    >
+                      {CompanyInfo.first_name
+                        ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
+                        : "Unauthorize"}
+                    </MenuItem>
+                    <hr className="mx-4" />
+                    <MenuItem
+                      className="text-center capitalize "
+                      onClick={() => navigate("/company/dashboard/")}
+                    >
+                      Dashboard
+                    </MenuItem>
+                  </>
+                )}
+                <hr className="mx-4" />
+                <MenuItem className="my-1 text-center" onClick={logout}>
+                  Logout
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </div>
         </div>
-        <Menu>
+       <div className="lg:hidden grid  grid-cols-[1fr,3rem] w-1/4">
+       <div className="md:w-full me-2  w-full">
+            <NavBarSearching />
+          </div>
+       <div className="w-full flex justify-end items-center">
+       <Menu>
           <MenuHandler className="ml-auto rounded-full border border-purple-400 p-[3px] w-7 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden">
             {UserInfo.profile_image ? (
               <img
@@ -283,6 +296,8 @@ export function NavbarDefault() {
             </MenuList>
           </MenuList>
         </Menu>
+       </div>
+       </div>
       </div>
       {/* <MobileNav open={openNav}>
         <div className="container mx-auto">{navList}</div>

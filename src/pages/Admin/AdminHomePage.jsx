@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import {
   PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
   Cog6ToothIcon,
   InboxIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
 import { AdminNavBar } from "../../components/Admin/AdminNavBar&Sidebar/AdminNavBar";
 import { AdminSideBar } from "../../components/Admin/AdminNavBar&Sidebar/AdminSideBar";
-import { AdminDrawer } from "../../components/Admin/AdminNavBar&Sidebar/AdminDrawer";
 import Admin_UserManagement from "../../components/Admin/Admin_UserManagement/Admin_UserManagement";
 import Admin_CompanyManagement from "../../components/Admin/Admin_CompanyManagement/Admin_CompanyManagement";
+import AdminNotifications from "../../components/Admin/AdminNotifications/AdminNotifications";
 function AdminHomePage() {
-  const [SelectedList,setSelectedList] = useState('')
+  const [SelectedList,setSelectedList] = useState('Dashboard')
   const Selections= (data)=>{
     setSelectedList(data)
   }
+
+ 
   return (
     <div className="h-screen grid grid-rows-[4rem]">
       <div>
@@ -64,8 +64,10 @@ function AdminHomePage() {
           ):SelectedList==='Users'?(
             <Admin_UserManagement/>
           ):SelectedList==='Company'?(
-            <Admin_CompanyManagement/>
-          ):''}
+            <Admin_CompanyManagement />
+          ):SelectedList==='Inbox'?(
+            <AdminNotifications Selections={Selections}/>
+            ):""}
         </div>
       </div>
     </div>
