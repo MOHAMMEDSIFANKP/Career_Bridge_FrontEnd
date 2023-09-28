@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   CompanyInfo: {},
-  Posts: [],
 };
 
 const companySlice = createSlice({
@@ -31,21 +30,7 @@ const companySlice = createSlice({
         zipcode: action.payload.zipcode,
       };
     },
-    // Post
-    setPosts: (state, action) => {
-      state.Posts.push(action.payload);
-    },
-    EditPosts: (state, action) => {
-      const { index, updatedPosts } = action.payload;
-      state.Posts[index] = updatedPosts;
-    },
-    DetetePosts: (state, action) => {
-      const index = action.payload;
-      state.Posts.splice(index, 1);
-    },
-    CleartPosts: (state) => {
-      state.Posts = [];
-    },
+   
     LogoutCompanyDetails: (state, action) => {
       state.CompanyInfo = {};
     },
@@ -56,9 +41,6 @@ export const {
   setCompanyDetails,
   LogoutCompanyDetails,
   UpdateCompanyDetails,
-  setPosts,
-  EditPosts,
-  DetetePosts,
-  CleartPosts,
+
 } = companySlice.actions;
 export default companySlice.reducer;

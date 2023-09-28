@@ -17,12 +17,9 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../Loading/Loading";
 import { CompanyPostDetails, EditCompanyPostDetails, GetListOfCompanyPost } from "../../../../../services/companyApi";
 // Redux
-import { useSelector, useDispatch } from "react-redux";
-import { EditPosts } from "../../../../../Redux/CompanySlice";
-export function EditPostComponent({ open, handleOpen, Selectedpost, view ,Searcheddata,resetView}) {
-  const dispatch = useDispatch();
+import { useSelector } from "react-redux";
+export function EditPostComponent({ open, handleOpen, Selectedpost, view ,updateSearcheddata,resetView}) {
   const { CompanyInfo } = useSelector((state) => state.company);
-  const { Posts } = useSelector((state) => state.company);
 
   const [Form, setForm] = useState({
     companyinfo: "",
@@ -165,8 +162,9 @@ export function EditPostComponent({ open, handleOpen, Selectedpost, view ,Search
         };
         const res = await EditCompanyPostDetails(data,Selectedpost.id);
         if (res.status === 200) {
-          const res = await GetListOfCompanyPost(CompanyInfo.companyid);
-          Searcheddata = res.data
+          const search =''
+          const res = await GetListOfCompanyPost(CompanyInfo.companyid,search);
+          updateSearcheddata(res.data)
           resetView();
           setForm({
             companyinfo: "",
@@ -182,9 +180,6 @@ export function EditPostComponent({ open, handleOpen, Selectedpost, view ,Search
           setSelectedJobTitle({});
           setSelectedJobfield({});
           setSelectedSkills([]);
-          const res2 = await CompanyPostDetails(Selectedpost.id)
-         
-          dispatch(EditPosts({index:view.index, updatedPosts:res2.data}))
           toast.success("Post updated successfully");
           handleOpen();
         }

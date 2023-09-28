@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../Loading/Loading";
-import { UserBlockUnBlock, UsersList } from "../../../../services/adminApi";
+import { BlockCompanyUserLists, UserBlockUnBlock } from "../../../../services/adminApi";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { Chip } from "@material-tailwind/react";
 
-function AllUsersList() {
+function BlockCompanyUserList() {
   const [Search, setSearch] = useState("");
   const [Searcheddata, setSearcheddata] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
@@ -16,7 +16,7 @@ function AllUsersList() {
     setSearch(searchTerm);
     handleLoading();
     try {
-      const res = await UsersList(searchTerm);
+      const res = await BlockCompanyUserLists(searchTerm);
       console.log(res);
       setFilteredUserList(res.data);
       setSearcheddata(res.data.results);
@@ -48,7 +48,7 @@ function AllUsersList() {
       }else{
           toast.success("Blocked sucessfully");
       }
-        const res2 = await UsersList(Search);
+        const res2 = await BlockCompanyUserLists(Search);
         setFilteredUserList(res2.data);
         setSearcheddata(res2.data.results);
       }
@@ -77,7 +77,7 @@ function AllUsersList() {
   };
   async function GetUsersList() {
     try {
-      const res = await UsersList(Search);
+      const res = await BlockCompanyUserLists(Search);
       setFilteredUserList(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -290,4 +290,4 @@ function AllUsersList() {
   );
 }
 
-export default AllUsersList;
+export default BlockCompanyUserList;

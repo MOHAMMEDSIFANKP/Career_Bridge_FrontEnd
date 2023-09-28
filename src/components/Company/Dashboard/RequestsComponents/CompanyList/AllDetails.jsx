@@ -1,9 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+function AllDetails({List,ResetList}) {
+  const [Search, setSearch] = useState("");
+  const [filteredUserList, setFilteredUserList] = useState(List);
+  useEffect(() => {
+    const filteredUsers = List.filter(
+      (List) =>
+        List.userInfo?.jobField.field_name.toLowerCase().includes(Search.toLowerCase()) 
+        // List.last_name.toLowerCase().includes(Search.toLowerCase()) ||
+        // List.email.toLowerCase().includes(Search.toLowerCase())
+    );
+    setFilteredUserList(filteredUsers);
+  }, [List, Search]);
 
-function AllDetails() {
   return (
     <>
-      <div className="border-t mt-3">
+    <div className="sticky top-0">
+        <input
+          type="text"
+          value={Search}
+          placeholder="Search ..."
+          className="border py-2 px-3 mt-4 mx-8 md:w-10/12 w-8/12 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 border-gray-400"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button
+          className="-ms-4 border py-2 px-3 rounded-lg bg-purple-400 font-bold text-white"
+          onClick={() => {
+            setSearch("");
+          }}
+        >
+          Clear
+        </button>
+      </div>
+      <ToastContainer />
+      <div className="">
         <div className="hover:bg-gray-200 cursor-pointer mx-3 py-5 mt-5 border rounded-xl grid grid-cols-[14rem,1fr,14rem]">
           <div className="flex justify-center items-center">
             <img

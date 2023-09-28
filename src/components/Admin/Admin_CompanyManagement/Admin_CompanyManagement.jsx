@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AdminCompanyManagemen from "./AdminCompanyLIst/AdminCompanyList";
+import AdminPostManagement from "./AdminPostManagement/AdminPostManagement";
 
 function Admin_CompanyManagement() {
   const [selected, setselected] = useState("Company List");
@@ -35,7 +36,7 @@ function Admin_CompanyManagement() {
             { selected === "Company List" ? (
               <AdminCompanyManagemen/>
             ) : (
-              <>Post Management</>
+              <AdminPostManagement/>
             )}
           </div>
         </div>

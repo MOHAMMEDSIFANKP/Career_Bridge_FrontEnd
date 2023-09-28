@@ -6,13 +6,13 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   CompanyPostBolckUnblock,
-  CompanyPostDetails,
-  GetListOfCompanyPost,
+  listofcompanypostarchived,
 } from "../../../../../services/companyApi";
-import { CleartPosts, setPosts } from "../../../../../Redux/CompanySlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Unblock = ({
   isOpen,
   view,
@@ -21,7 +21,6 @@ const Unblock = ({
   updateSearcheddata,
   Selectedpost,
 }) => {
-  const dispatch = useDispatch();
   const { CompanyInfo } = useSelector((state) => state.company);
   const ConfirmButton = async () => {
     try {
@@ -32,14 +31,11 @@ const Unblock = ({
       const res = await CompanyPostBolckUnblock(data, Selectedpost.id);
 
       if (res.status === 200) {
-        resetView();
-        const res2 = await GetListOfCompanyPost(CompanyInfo.companyid);
-        updateSearcheddata(res2.data);
-        dispatch(CleartPosts());
-        res2.data.map((post, index) => {
-          dispatch(setPosts(post));
-        });
-        const res3 = await CompanyPostDetails(Selectedpost.id);
+        const search = ''
+        const res2 = await listofcompanypostarchived(CompanyInfo.companyid,search);
+        console.log(res2,'sian');
+          updateSearcheddata(res2.data)
+          resetView();
         toast.success("Post Deleted successfully");
       }
     } catch (error) {
@@ -49,6 +45,7 @@ const Unblock = ({
   };
   return (
     <>
+     <ToastContainer />
       <Dialog open={isOpen} handler={onClose} size={"xs"}>
         <DialogHeader>Block Post</DialogHeader>
         <DialogBody>

@@ -28,6 +28,14 @@ const CompanyPostlistCreate = (values) =>{
     throw error;
   });
 }
+const ApplyJobsCreation = (values) =>{
+  return CompanyAxiosInstant.post("applyjobscreation/", values, {
+    withCredentials:true,
+  }).catch((error) => {
+    throw error;
+  });
+}
+
 //------------------------------------Get methods--------------------------------------/
 const GetCompanyDetails = (id) => {
   return CompanyAxiosInstant.get(`companydetails/${id}/`, {
@@ -36,15 +44,40 @@ const GetCompanyDetails = (id) => {
     throw error;
   });
 };
-const GetListOfCompanyPost = (id) =>{
-  return CompanyAxiosInstant.get(`listofcompanypost/${id}/`,{
+// GetPostList
+const GetListOfCompanyPost = (id,search) =>{
+  return CompanyAxiosInstant.get(`listofcompanypost/${id}/?page=1&search=${search}`,{
     withCredentials:true
   }).catch((error) => {
     throw error;
   });
 }
+// Get Company Archive PostList
+const listofcompanypostarchived = (id,search) =>{
+  return CompanyAxiosInstant.get(`listofcompanypostarchived/${id}/?page=1&search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+// Get Company Blocked PostList
+const ListofcompanypostBlocked = (id,search) =>{
+  return CompanyAxiosInstant.get(`listofcompanypostblocked/${id}/?page=1&search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+
 const CompanyPostDetails = (id) =>{
-  return CompanyAxiosInstant.get(`companypostdetails/${id}/`,{
+  return CompanyAxiosInstant.get(`companypostdetails/${id}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+const CompanyApplyPostList = (id) =>{
+  return CompanyAxiosInstant.get(`companyapplypostList/${id}/`,{
     withCredentials:true
   }).catch((error) => {
     throw error;
@@ -79,8 +112,12 @@ export {
   CompanyGoogleSignup,
   CompanyInfoCreate,
   CompanyPostlistCreate,
+  ApplyJobsCreation,
   GetCompanyDetails,
   GetListOfCompanyPost,
+  listofcompanypostarchived,
+  ListofcompanypostBlocked,
+  CompanyApplyPostList,
   CompanyPostDetails,
   EditCompanyDetails,
   EditCompanyPostDetails,

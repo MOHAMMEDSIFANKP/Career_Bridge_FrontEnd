@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import Loader from "../../Loading/Loading";
+import Loader from "../../../components/Loading/Loading";
 import {
   AdminNotification,
   AdminNotificationRead,
 } from "../../../services/adminApi";
-function AdminNotifications({ Selections }) {
+function Notifications({ Selections }) {
   const [NotificationList, setNotificaton] = useState([]);
   async function GetNotification() {
     const res = await AdminNotification();
@@ -47,7 +47,15 @@ function AdminNotifications({ Selections }) {
 
   return (
     <>
-      <div className="ps-6 mt-6 flex text-3xl items-center">
+      <div className="grid grid-rows-[5rem,
+      1fr]">
+
+
+          
+        <div>
+
+        </div>
+        <div className="ps-6 mt-6 flex text-3xl items-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -106,8 +114,9 @@ function AdminNotifications({ Selections }) {
           </div>
         )}
       </div>
+      </div>
     </>
   );
 }
 
-export default AdminNotifications;
+export default Notifications;

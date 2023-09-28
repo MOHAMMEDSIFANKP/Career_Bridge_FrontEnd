@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { UserRelatedJobs } from "../../../services/userApi";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "react-query";
 import Loader from "../../Loading/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ApplyJobsCreation } from "../../../services/companyApi";
 function HomeJoblist() {
   const { UserInfo } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
 
   const [RelatedPost, setRelatedPost] = useState([]);
   const [view, setView] = useState({ view: false, id: "", index: "" });
@@ -16,12 +18,24 @@ function HomeJoblist() {
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
- 
+  // ApplyForJob
+  const ApplyForJob = async () => {
+    const data = {
+      comanyInfo: Selectedpost.companyinfo.id,
+      userInfo: UserInfo.userinfoid,
+      Post: Selectedpost.id,
+    };
+    const res = await ApplyJobsCreation(data);
+    setView({ view: false, id: "", index: "" });
+    toast.success("Applyed Successfully");
+    UserRelatedList();
+  };
   //   Get userrelated Post in backend
   async function UserRelatedList() {
     const res = await UserRelatedJobs(UserInfo.userinfoid);
     setRelatedPost(res.data);
   }
+  // -----------------------------------React query-----------------------------------/
   const queryClient = useQueryClient();
   const { isLoading, error, data } = useQuery({
     queryKey: ["usersjoblist"],
@@ -38,31 +52,59 @@ function HomeJoblist() {
       </h1>
     );
   }
+  // -----------------------------------React query-----------------------------------/
+
   return (
     <>
+      <ToastContainer />
       {!view.view ? (
         <>
+          <p className="font-bold ms-10 text-xl">Recommended jobs</p>
           {RelatedPost.length > 0 ? (
             RelatedPost.filter(
               (Post) => !Post.is_blocked && !Post.is_deleted
             ).map((Post, index) => (
               <div
                 key={index}
-                className="grid grid-rows-[5rem,1fr] cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow"
+                className="grid grid-rows-[6rem,1fr] cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow"
                 onClick={() => SelectedItem(Post.id, index)}
               >
                 <div className="flex justify-between ">
-                  <div className="mt-5">
-                    <p className="font-bold text-black ms-10 pt-2 capitalize">
-                      {Post.Jobtitle.title_name}
-                    </p>
-                    <p className="font-bold ms-10 text-gray-700">
-                      {Post.companyinfo.company_name}
-                    </p>
+                  <div className="w-full flex  items-center">
+                    <div className="ms-10 w-20 rounded-full border p-1 borde-purple-100">
+                      <img
+                        src={Post.user_profile.profile_image}
+                        className="rounded-full"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ms-3 -mt-4">
+                      <p className="font-bold text-black pt-2 capitalize">
+                        {Post.Jobtitle.title_name}
+                      </p>
+                      <p className="font-bold text-gray-700">
+                        {Post.companyinfo.company_name}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <button>Save</button>
-                    <button>Apply</button>
+                  <div className="me-3 -mt-5 flex justify-center items-center">
+                    <button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 "
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                        />
+                      </svg>
+                    </button>
+                    <p className="text-sm">Save</p>
                   </div>
                 </div>{" "}
                 <div className="flex ms-9">
@@ -121,12 +163,13 @@ function HomeJoblist() {
                       d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
                     />
                   </svg>
-                  {Post.skills.map((skill, index) => (
+                  {Post.skills.slice(0, 7).map((skill, index) => (
                     <p className="mb-3 ms-2" key={index}>
                       {skill.skills}
-                      {index === 6 && Post.skills.length > 7 ? "..." : ","}
+                      {index < 6 && ","}
                     </p>
                   ))}
+                  {Post.skills.length > 7 && <p className="mb-3 ms-2">...</p>}
                 </div>
                 <div className="ms-10 ">
                   <p className="text-sm text-gray-600 font-bold">
@@ -145,6 +188,12 @@ function HomeJoblist() {
                         (Post.description.split(" ").length > 15 ? "..." : "")
                       : ""}
                   </div>
+                </div>
+                <div className="flex items-center mx-14 mb-2 -mt-2">
+                  <p className="text-gray-600 -ms-7 text-sm ">
+                    Posted:{" "}
+                    {Post?.days === 0 ? "Just now" : `${Post?.days} day ago`}{" "}
+                  </p>
                 </div>
               </div>
             ))
@@ -237,7 +286,37 @@ function HomeJoblist() {
                 {Selectedpost.companyinfo.city}
               </p>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
+              <hr className="my-3 w-5/6" />
+            </div>
+            <div className="flex justify-around">
+              <div>
+                <p className="text-gray-600 -ms-7 text-sm ">
+                  Posted:{" "}
+                  {Selectedpost?.days === 0
+                    ? "Just now"
+                    : `${Selectedpost?.days} day ago`}{" "}
+                </p>
+              </div>
+              <div className="">
+                <button className="border border-purple-400 rounded-2xl font-bold text-purple-400 px-2 py-1">
+                  Save
+                </button>
+                {!Selectedpost.applied ? (
+                  <button
+                    className="font-bold bg-purple-300 text-white rounded-2xl px-2 py-1 ms-2"
+                    onClick={ApplyForJob}
+                  >
+                    Apply
+                  </button>
+                ) : (
+                  <button className="font-bold bg-purple-300 text-white rounded-2xl px-2 py-1 ms-2">
+                    Applied
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-center items-center">
               <hr className="my-3 w-5/6" />
             </div>
             <div className="grid md:grid-rows-[7rem,1fr,1fr,1fr] gap-3 mx-10">

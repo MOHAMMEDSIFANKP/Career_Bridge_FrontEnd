@@ -15,11 +15,9 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../Loading/Loading";
-import { CompanyPostDetails, CompanyPostlistCreate } from "../../../../../services/companyApi";
+import { CompanyPostlistCreate } from "../../../../../services/companyApi";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { UpdateCompanyDetails, setPosts } from "../../../../../Redux/CompanySlice";
-
 // React Query
 import { useQuery } from "react-query";
 
@@ -153,8 +151,6 @@ export function AddPost({ open, handleOpen }) {
         };
         const res = await CompanyPostlistCreate(data);
         if (res.status === 201) {
-          const res2 =  await CompanyPostDetails(res.data.id)
-          dispatch(setPosts(res2.data))
           setForm({
             companyinfo: "",
             work_time: "",

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../Loading/Loading";
-import { UserBlockUnBlock, UsersList } from "../../../../services/adminApi";
+import { CompanyUsersList, UserBlockUnBlock, UsersList } from "../../../../services/adminApi";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { Chip } from "@material-tailwind/react";
 
-function AllUsersList() {
+function AllCompanyUsersList() {
   const [Search, setSearch] = useState("");
   const [Searcheddata, setSearcheddata] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
@@ -16,7 +16,7 @@ function AllUsersList() {
     setSearch(searchTerm);
     handleLoading();
     try {
-      const res = await UsersList(searchTerm);
+      const res = await CompanyUsersList(searchTerm);
       console.log(res);
       setFilteredUserList(res.data);
       setSearcheddata(res.data.results);
@@ -31,6 +31,8 @@ function AllUsersList() {
     setSearch("");
     handleSearch("");
   };
+
+
   //  For loading
   const [loading, setLoading] = useState(false);
   const handleLoading = () => setLoading((cur) => !cur);
@@ -44,13 +46,14 @@ function AllUsersList() {
       const res = await UserBlockUnBlock(data, id);
       if (res.status === 200) {
         if (res.data.is_active === true){
-          toast.success("Unblocked sucessfully");
-      }else{
-          toast.success("Blocked sucessfully");
-      }
-        const res2 = await UsersList(Search);
+            toast.success("Unblocked sucessfully");
+        }else{
+            toast.success("Blocked sucessfully");
+        }
+        const res2 = await CompanyUsersList(Search);
         setFilteredUserList(res2.data);
         setSearcheddata(res2.data.results);
+        
       }
       handleLoading();
     } catch (error) {
@@ -62,22 +65,19 @@ function AllUsersList() {
 
   // Next page
   const NextButton = async () => {
-    handleLoading()
     const res = await axios.get(filteredUserList.next);
-    handleLoading()
     setFilteredUserList(res.data);
     setSearcheddata(res.data.results);
   };
   const PrevButton = async () => {
-    handleLoading()
     const res = await axios.get(filteredUserList.previous);
-    handleLoading()
     setFilteredUserList(res.data);
     setSearcheddata(res.data.results);
   };
   async function GetUsersList() {
     try {
-      const res = await UsersList(Search);
+      const res = await CompanyUsersList(Search);
+      console.log(res.data,'company');
       setFilteredUserList(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -90,7 +90,7 @@ function AllUsersList() {
 
   const { data, isLoading, isError } = useQuery("UsersList", GetUsersList);
   if (isLoading) {
-    document.title = "Users List | Career Bridge";
+    document.title = "Company users List | Career Bridge";
     return <Loader />;
   }
 
@@ -286,8 +286,9 @@ function AllUsersList() {
           Next
         </button>
       </div>
+      
     </>
   );
 }
 
-export default AllUsersList;
+export default AllCompanyUsersList;

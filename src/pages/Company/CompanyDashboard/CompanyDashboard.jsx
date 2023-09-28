@@ -5,7 +5,7 @@ import ScheduledList from "../../../components/Company/Dashboard/ScheduledList/S
 import PostList from "../../../components/Company/Dashboard/PostsComponents/PostList";
 
 function CompanyDashboard() {
-  const [selected, setselected] = useState("post");
+  const [selected, setselected] = useState("request");
   return (
     <>
       <div className="h-screen grid grid-rows-[5rem,1fr]">

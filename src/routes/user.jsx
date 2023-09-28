@@ -11,7 +11,7 @@ import Education from '../pages/User/RegisterSteps/Education';
 import Languages from '../pages/User/RegisterSteps/Languages';
 import Skills from '../pages/User/RegisterSteps/Skills';
 import ProfileCreation from '../pages/User/RegisterSteps/ProfileCreation';
-
+import Notifications from '../pages/User/Notifications/Notifications';
 function UserRoutes() {
 
   return (
@@ -29,6 +29,7 @@ function UserRoutes() {
         <Route path='/profile' element={<UserProfilePage/>}/>
         <Route path='/skills' element={<Skills/>}/>
         <Route path='/profilecreation' element={<ProfileCreation/>}/>
+        <Route path='/notifications' element={<Notifications/>}/>
       {/* </Route> */}
     </Routes>
   );

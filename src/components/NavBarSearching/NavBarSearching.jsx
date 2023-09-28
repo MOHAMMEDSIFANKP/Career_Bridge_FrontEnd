@@ -39,7 +39,6 @@ function NavBarSearching() {
 
   const handleOnSelect = (item) => {
     console.log(item);
-    
   };
   async function GetJobSkillList(){
     const res = await AdminJobFieldList()

@@ -61,7 +61,7 @@ export function AdminSideBar({ Selections }) {
           </ListItemPrefix>
           Company
         </ListItem>
-        <ListItem>
+        <ListItem onClick={()=>{Selections('Inbox')}}>
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
           </ListItemPrefix>

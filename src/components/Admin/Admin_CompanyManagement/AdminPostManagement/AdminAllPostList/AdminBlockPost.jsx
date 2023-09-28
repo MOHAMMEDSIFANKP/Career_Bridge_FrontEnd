@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Dialog,
@@ -6,55 +6,64 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
-import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  CompanyPostBolckUnblock,
-  CompanyPostDetails,
-  GetListOfCompanyPost,
-} from "../../../../../services/companyApi";
-const DeletePost = ({
+  AllCompanyPostlist,
+  PostBlockedUnblocked,
+} from "../../../../../services/adminApi";
+import Loader from "../../../../Loading/Loading";
+const AdminBlockPost = ({
   isOpen,
   view,
   onClose,
   resetView,
   updateSearcheddata,
   Selectedpost,
+  BlockUnblock,
 }) => {
-  const { CompanyInfo } = useSelector((state) => state.company);
+  //  For loading
+  const [loading, setLoading] = useState(false);
+  const handleLoading = () => setLoading((cur) => !cur);
   const ConfirmButton = async () => {
     try {
       const data = {
-        is_blocked: "false",
-        is_deleted: "true",
+        is_blocked: BlockUnblock,
       };
-      const res = await CompanyPostBolckUnblock(data, Selectedpost.id);
+      handleLoading();
+      const res = await PostBlockedUnblocked(data, Selectedpost.id);
 
       if (res.status === 200) {
         resetView();
-        const search = ''
-        const res2 = await GetListOfCompanyPost(CompanyInfo.companyid,search);
+        const search = "";
+        const res2 = await AllCompanyPostlist(search);
         updateSearcheddata(res2.data);
         toast.success("Post Deleted successfully");
       }
+      handleLoading()
     } catch (error) {
+        handleLoading()
       console.log(error);
     }
     onClose();
   };
   return (
     <>
-     <ToastContainer />
+      {loading && <Loader />}
+      <ToastContainer />
       <Dialog open={isOpen} handler={onClose} size={"xs"}>
         <DialogHeader>Block Post</DialogHeader>
         <DialogBody>
           <p>
-            Are you sure you want to block '
+            Are you sure you want to block '{BlockUnblock}
             <span className="font-bold">
               {Selectedpost?.Jobtitle.title_name}
             </span>
-            ' from your profile?
+            ' from{" "}
+            <span className="font-bold">
+              {Selectedpost?.companyinfo.company_name}
+            </span>{" "}
+            Post?
           </p>{" "}
         </DialogBody>
         <DialogFooter>
@@ -77,4 +86,4 @@ const DeletePost = ({
     </>
   );
 };
-export { DeletePost };
+export { AdminBlockPost };

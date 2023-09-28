@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Loader from "../../../../Loading/Loading";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { EditPostComponent } from "../EditPostComponent/EditPostComponent";
 import { GetListOfCompanyPost } from "../../../../../services/companyApi";
 import { DeletePost } from "../BlockUnblock/DeletePost";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 function PostListingComponents() {
-  const dispatch = useDispatch();
-  const { Posts, CompanyInfo } = useSelector((state) => state.company);
+  const { CompanyInfo } = useSelector((state) => state.company);
 
   const [view, setView] = useState({ view: false, id: "", index: "" });
   const [Search, setSearch] = useState("");
+  const [Posts,setPosts] = useState([])
   const [Searcheddata, setSearcheddata] = useState([]);
   const [Selectedpost, setSelectedPost] = useState(null);
 
-  useEffect(() => {
-    if (Search.trim() === "") {
-      setSearcheddata(Posts);
-    }
-  }, [Search, Posts]);
-
   const SelectedItem = (id, index) => {
-    const sel = Posts.find((post) => post.id === id);
+    const sel = Posts.results.find((post) => post.id === id);
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
@@ -32,41 +28,73 @@ function PostListingComponents() {
   const handleOpenDelete = () => setOpenDelete(!openDelete);
   const [openDelete, setOpenDelete] = useState(false);
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-    const searchData = Posts.filter((post) => {
-      const jobCategoryMatch = post.job_category.field_name
-        .toLowerCase()
-        .includes(Search.toLowerCase());
-      const skillsMatch = post.skills.some((skill) =>
-        skill.skills.toLowerCase().includes(Search.toLowerCase())
-      );
-      const titleNameMatch = post.Jobtitle.title_name
-        .toLowerCase()
-        .includes(Search.toLowerCase());
-      return jobCategoryMatch || skillsMatch || titleNameMatch;
-    });
-    setSearcheddata(searchData);
+  const handleSearch = async (searchTerm) => {
+    setSearch(searchTerm);
+    try {
+      const res = await GetListOfCompanyPost(CompanyInfo.companyid, searchTerm);
+      setPosts(res.data);
+      setSearcheddata(res.data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const handleClear = () => {
+    setSearch('');
+    handleSearch('');
   };
 
   async function GetCompanyPost() {
-    if (Search.trim() === "") {
-      setSearcheddata(Posts);
+    try {
+      const res = await GetListOfCompanyPost(CompanyInfo.companyid, Search);
+      setPosts(res.data);
+      setSearcheddata(res.data.results);
+    } catch (error) {
+      console.log(error);
+      setPosts([]);
+      setSearcheddata([]);
     }
+  }
+
+  // Next page
+  const NextButton =async()=>{
+    const res = await axios.get(Posts.next)
+    setPosts(res.data);
+    setSearcheddata(res.data.results);
+  }
+  const PrevButton = async ()=>{
+    const res = await axios.get(Posts.previous)
+    setPosts(res.data);
+    setSearcheddata(res.data.results);
   }
   // Rest View
   const resetView = () => {
     setView({ view: false, id: "", index: "" });
   };
-  // Update data after deleting
+  // Update data after deleting and editting
   const updateSearcheddata = (newSearcheddata) => {
-    setSearcheddata(newSearcheddata);
+    setPosts(newSearcheddata);
+    setSearcheddata(newSearcheddata.results);
   };
+  //---------------------------- React quary---------------------------------------//
 
-  useEffect(() => {
-    GetCompanyPost();
-  }, []);
+  const { data, isLoading, isError } = useQuery("joblist", GetCompanyPost);
+  if (isLoading) {
+    return (
+        <Loader />
+    );
+  }
 
+  if (isError) {
+    return (
+      <h1 className="text-center font-bold text-2xl mt-5 text-gray-700">There was an error fetching data</h1>
+
+    );
+  }
+  //---------------------------- React quary---------------------------------------//
+
+
+  
   return (
     <>
       {!view.view ? (
@@ -77,18 +105,17 @@ function PostListingComponents() {
               value={Search}
               placeholder="Search ..."
               className="border py-2 px-3 mt-4 mx-8 md:w-10/12 w-8/12 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 border-gray-400"
-              onChange={handleSearch}
+              onChange={(e) => handleSearch(e.target.value)}
             />
             <button
               className="-ms-4 border py-2 px-3 rounded-lg bg-purple-400 font-bold text-white"
-              onClick={() => {
-                setSearch(""), setSearcheddata(Posts);
-              }}
+              onClick={handleClear}
             >
               Clear
             </button>
           </div>
-          {Searcheddata.length > 0 ? (
+          <p className="mx-10 font-bold sticky top-14 text-gray-900 text-sm">{Posts.count?Posts.count:0} result found</p>
+          {
             Searcheddata.filter(
               (Post) => !Post.is_blocked && !Post.is_deleted
             ).map((Post, index) => (
@@ -223,14 +250,10 @@ function PostListingComponents() {
                   </div>
                 </div>
               </div>
+              
             ))
-          ) : (
-            <p className="text-center mt-4 font-bold text-xl">
-              Result not found
-            </p>
-          )}
-          {Posts.filter((Post) => !Post.is_blocked && !Post.is_deleted)
-            .length === 0 ? (
+         }
+          {Posts.count === 0 ? (
             <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
               <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl">
                 <span>Add Your Post</span>
@@ -381,8 +404,13 @@ function PostListingComponents() {
               </div>
             </div>
           </div>
+          
         </>
       )}
+      <div className="flex justify-between my-5">
+      <button className={`border rounded-xl ms-9 border-purple-400 font-bold text-purple-400 px-4 py-1 ${Posts.previous === null ?'opacity-0':''} `} onClick={PrevButton}>Prev</button>
+      <button className={`bg-purple-400 rounded-xl me-9 font-bold text-white px-4 py-1 border ${Posts.next === null ? 'opacity-0':''}`} onClick={NextButton}>Next</button>
+      </div>
       <DeletePost
         isOpen={openDelete}
         view={view}
@@ -397,7 +425,7 @@ function PostListingComponents() {
         Selectedpost={Selectedpost}
         view={view}
         resetView={resetView}
-        Searcheddata={Searcheddata}
+        updateSearcheddata={updateSearcheddata}
       />
     </>
   );

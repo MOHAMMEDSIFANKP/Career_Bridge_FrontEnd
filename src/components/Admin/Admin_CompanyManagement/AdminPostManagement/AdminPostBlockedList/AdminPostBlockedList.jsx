@@ -1,37 +1,32 @@
 import React, { useEffect, useState } from "react";
 import Loader from "../../../../Loading/Loading";
-import { useSelector } from "react-redux";
-import { listofcompanypostarchived } from "../../../../../services/companyApi";
-import { Chip } from "@material-tailwind/react";
-import { Unblock } from "../BlockUnblock/UnblockPost";
+import { AdminBlockPost } from "../AdminAllPostList/AdminBlockPost";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { AllCompanyPostlist } from "../../../../../services/adminApi";
+import { Chip } from "@material-tailwind/react";
 
-function ArchivePosts() {
-  const { CompanyInfo } = useSelector((state) => state.company);
-
+function AdminAllPostList() {
+  const [BlockUnblock, setBlockUnblock] = useState("");
   const [view, setView] = useState({ view: false, id: "", index: "" });
   const [Search, setSearch] = useState("");
   const [Posts, setPosts] = useState([]);
   const [Searcheddata, setSearcheddata] = useState([]);
   const [Selectedpost, setSelectedPost] = useState(null);
-
   const SelectedItem = (id, index) => {
     const sel = Posts.results.find((post) => post.id === id);
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
-  // Unblock Modal
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(!open);
+
+  // Delete Modal
+  const handleOpenDelete = () => setOpenDelete(!openDelete);
+  const [openDelete, setOpenDelete] = useState(false);
 
   const handleSearch = async (searchTerm) => {
     setSearch(searchTerm);
     try {
-      const res = await listofcompanypostarchived(
-        CompanyInfo.companyid,
-        searchTerm
-      );
+      const res = await AllCompanyPostlist(searchTerm);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -43,13 +38,11 @@ function ArchivePosts() {
     setSearch("");
     handleSearch("");
   };
-
+  // Fech data backend
   async function GetCompanyPost() {
     try {
-      const res = await listofcompanypostarchived(
-        CompanyInfo.companyid,
-        Search
-      );
+      const Search = "";
+      const res = await AllCompanyPostlist(Search);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -76,12 +69,15 @@ function ArchivePosts() {
   };
   // Update data after deleting and editting
   const updateSearcheddata = (newSearcheddata) => {
-    console.log(newSearcheddata, "daxo");
     setPosts(newSearcheddata);
     setSearcheddata(newSearcheddata.results);
   };
+  //---------------------------- React quary---------------------------------------//
 
-  const { data, isLoading, isError } = useQuery("joblist", GetCompanyPost);
+  const { data, isLoading, isError } = useQuery(
+    "getCompanypost",
+    GetCompanyPost
+  );
   if (isLoading) {
     return <Loader />;
   }
@@ -117,10 +113,12 @@ function ArchivePosts() {
           <p className="mx-10 font-bold sticky top-14 text-gray-900 text-sm">
             {Posts.count ? Posts.count : 0} result found
           </p>
-          {Searcheddata.map((Post, index) => (
+          {Searcheddata?.map((Post, index) => (
             <div
               key={index}
-              className="grid grid-rows-[5rem,1fr] bg-red-50 cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow"
+              className={`grid grid-rows-[5rem,1fr]  cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow ${
+                Post.is_blocked ? "bg-red-50" : ""
+              }`}
               onClick={() => SelectedItem(Post.id, index)}
             >
               <div className="flex justify-between ">
@@ -132,22 +130,44 @@ function ArchivePosts() {
                     {Post.companyinfo.company_name}
                   </p>
                 </div>
-                <div className="flex">
-                  <div className="me-3 mt-3">
-                    <Chip
-                      variant="ghost"
-                      size="md"
-                      value="A r c h i v e d "
-                      color="yellow"
-                    />
+                <div className="flex -mt-4">
+                  <div className="flex justify-center items-center me-7">
+                    {Post.is_blocked ? (
+                      <Chip
+                        variant="ghost"
+                        color="red"
+                        size="sm"
+                        value="B l o c k e d"
+                        icon={
+                          <span className="mx-auto mt-1 block h-2 w-2 rounded-full bg-red-400 content-['']" />
+                        }
+                      />
+                    ) : (
+                      ""
+                    )}
                   </div>
-                  <div>
-                    <button
-                      className="rounded-md mt-3 me-3 text-white font-bold px-2 py-1 bg-green-400"
-                      onClick={handleOpen}
-                    >
-                      Unblock
-                    </button>
+                  <div className="flex me-3 items-center">
+                    {!Post.is_blocked ? (
+                      <button
+                        onClick={() => {
+                          handleOpenDelete(), setBlockUnblock(true);
+                        }}
+                        className="border bg-red-400 font-bold text-white px-4 py-1 rounded-xl
+                    "
+                      >
+                        Block
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          handleOpenDelete(), setBlockUnblock(false);
+                        }}
+                        className="border bg-green-400 font-bold text-white px-2 py-1 rounded-xl
+                    "
+                      >
+                        Unblock
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>{" "}
@@ -237,14 +257,18 @@ function ArchivePosts() {
           {Posts.count === 0 ? (
             <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
               <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl">
-                <span>Archive Post is empty</span>
+                <span>Add Your Post</span>
               </p>
             </div>
           ) : null}
         </>
       ) : (
         <>
-          <div className="border mx-10 mt-5  rounded-xl shadow">
+          <div
+            className={`border mx-10 mt-5  rounded-xl shadow ${
+              Selectedpost.is_blocked ? "bg-red-50" : ""
+            }`}
+          >
             <div className="ms-10 mt-3 flex justify-between">
               <div>
                 <p className="capitalize font-bold ">
@@ -254,14 +278,21 @@ function ArchivePosts() {
                   {Selectedpost.companyinfo.company_name}
                 </p>
               </div>
-              <div className="flex gap-3">
-                <div>
-                  <Chip
-                    variant="ghost"
-                    size="md"
-                    value="A r c h i v e d "
-                    color="yellow"
-                  />
+              <div className="flex">
+                <div className="flex justify-center items-center me-4 -mt-6">
+                  {Selectedpost.is_blocked ? (
+                    <Chip
+                      variant="ghost"
+                      color="red"
+                      size="sm"
+                      value="B l o c k e d"
+                      icon={
+                        <span className="mx-auto mt-1 block h-2 w-2 rounded-full bg-red-400 content-['']" />
+                      }
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div
                   className="me-7 cursor-pointer"
@@ -397,34 +428,40 @@ function ArchivePosts() {
           </div>
         </>
       )}
-      <div className="flex justify-between my-5">
-        <button
-          className={`border rounded-xl ms-9 border-purple-400 font-bold text-purple-400 px-4 py-1 ${
-            Posts.previous === null ? "opacity-0" : ""
-          } `}
-          onClick={PrevButton}
-        >
-          Prev
-        </button>
-        <button
-          className={`bg-purple-400 rounded-xl me-9 font-bold text-white px-4 py-1 border ${
-            Posts.next === null ? "opacity-0" : ""
-          }`}
-          onClick={NextButton}
-        >
-          Next
-        </button>
-      </div>
-      <Unblock
-        isOpen={open}
+      {!view.view ? (
+        <div className="flex justify-between py-5">
+          <button
+            className={`border rounded-xl ms-9 border-purple-400 font-bold text-purple-400 px-4 py-1 ${
+              Posts.previous === null ? "opacity-0" : ""
+            } `}
+            onClick={PrevButton}
+          >
+            Prev
+          </button>
+          <button
+            className={`bg-purple-400 rounded-xl me-9 font-bold text-white px-4 py-1 border ${
+              Posts.next === null ? "opacity-0" : ""
+            }`}
+            onClick={NextButton}
+          >
+            Next
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
+
+      <AdminBlockPost
+        isOpen={openDelete}
         view={view}
-        onClose={handleOpen}
+        onClose={handleOpenDelete}
         resetView={resetView}
         updateSearcheddata={updateSearcheddata}
         Selectedpost={Selectedpost}
+        BlockUnblock={BlockUnblock}
       />
     </>
   );
 }
 
-export default ArchivePosts;
+export default AdminAllPostList;

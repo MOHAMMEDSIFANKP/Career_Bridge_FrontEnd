@@ -1,10 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navbar,
-  MobileNav,
+  Badge,
   Typography,
-  Button,
-  IconButton,
   Menu,
   MenuHandler,
   MenuList,
@@ -26,14 +24,16 @@ import {
 } from "../../Redux/UserSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { LogoutCompanyDetails, CleartPosts } from "../../Redux/CompanySlice";
+import { LogoutCompanyDetails } from "../../Redux/CompanySlice";
 import NavBarSearching from "../NavBarSearching/NavBarSearching";
+import { NotificationConut } from "../../services/userApi";
 
 export function NavbarDefault() {
   // UserInfo Redux
   const { UserInfo } = useSelector((state) => state.user);
   // CompanyInfo Redux
   const { CompanyInfo } = useSelector((state) => state.company);
+  const [UserNofiyCout, setUserNofiyCout] = useState();
   const [openNav, setOpenNav] = React.useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,12 +52,23 @@ export function NavbarDefault() {
     localStorage.removeItem("token");
     navigate("/login");
   };
+  const Notification_count = async () => {
+    if (UserInfo.id){
+      const res = await NotificationConut(UserInfo.id);
+      setUserNofiyCout(res.data);
+    }else if (CompanyInfo.id){
+      const res = await NotificationConut(CompanyInfo.id);
+      setUserNofiyCout(res.data);
+    }
 
-  React.useEffect(() => {
+  };
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
+    document.title = "Home Page | Career Bridge";
+    Notification_count();
   }, []);
 
   const navList = (
@@ -109,13 +120,13 @@ export function NavbarDefault() {
           as="a"
           href="#"
           className="mr-4 cursor-pointer py-2 font-bold text-2xl"
-          onClick={() => navigate("/user/")}
+          onClick={() =>{UserInfo.id?  navigate("/user/") :  navigate("/company/")}}
         >
           Career Bridge
         </Typography>
         <div className="flex w-3/12  justify-end items-center">
           <div className="md:w-full me-2 hidden lg:block w-4/12">
-            <NavBarSearching />
+            {UserInfo.id ? <NavBarSearching /> : ""}
           </div>
           <div className="hidden lg:block ">
             <Menu
@@ -127,16 +138,19 @@ export function NavbarDefault() {
               <MenuHandler>
                 <div className="w-8 flex items-center justify-center h-8 rounded-full border-2 border-purple-300">
                   {UserInfo.profile_image ? (
-                    <img
-                      src={
-                        UserInfo.profile_image
-                          ? UserInfo.profile_image
-                          : defaultprofile
-                      }
-                      className="w-8 rounded-full"
-                      alt=""
-                    />
+                    <Badge content={UserNofiyCout ? UserNofiyCout.count : ""}>
+                      <img
+                        src={
+                          UserInfo.profile_image
+                            ? UserInfo.profile_image
+                            : defaultprofile
+                        }
+                        className="w-8 rounded-full"
+                        alt=""
+                      />
+                    </Badge>
                   ) : (
+                    <Badge content={UserNofiyCout ? UserNofiyCout.count : ""}>
                     <img
                       src={
                         CompanyInfo.profile_image
@@ -146,6 +160,7 @@ export function NavbarDefault() {
                       className="w-8 p-[2px] rounded-full"
                       alt=""
                     />
+                    </Badge>
                   )}
                 </div>
               </MenuHandler>
@@ -176,16 +191,31 @@ export function NavbarDefault() {
                   </div>
                 </MenuItem>
                 {UserInfo.email ? (
-                  <MenuItem
-                    className="text-center capitalize "
-                    onClick={() =>
-                      navigate(UserInfo.is_compleated ? "/user/profile" : "")
-                    }
-                  >
-                    {UserInfo.first_name
-                      ? `${UserInfo.first_name} ${UserInfo.last_name}`
-                      : "Unauthorize"}
-                  </MenuItem>
+                  <>
+                    <MenuItem
+                      className="text-center capitalize "
+                      onClick={() =>
+                        navigate(UserInfo.is_compleated ? "/user/profile" : "")
+                      }
+                    >
+                      {UserInfo.first_name
+                        ? `${UserInfo.first_name} ${UserInfo.last_name}`
+                        : "Unauthorize"}
+                    </MenuItem>
+                    <hr className="mx-4" />
+                    <div className="grid grid-cols-[9rem,1fr]" onClick={()=>navigate('/user/notifications')}>
+                    <MenuItem className="ps-5 text-center capitalize ">
+                      Notification{" "}
+                      
+                    </MenuItem>
+                   <div>
+                   <Badge
+                        content={UserNofiyCout ? UserNofiyCout.count : ""}
+                      />
+                   </div>
+                    </div>
+                    {/*  */}
+                  </>
                 ) : (
                   <>
                     <MenuItem
@@ -207,6 +237,18 @@ export function NavbarDefault() {
                     >
                       Dashboard
                     </MenuItem>
+                    <hr className="mx-4" />
+                    <div className="grid grid-cols-[9rem,1fr]">
+                    <MenuItem className="ps-5 text-center capitalize ">
+                      Notification{" "}
+                      
+                    </MenuItem>
+                   <div>
+                   {UserNofiyCout?(<Badge
+                        content={UserNofiyCout ? UserNofiyCout.count : ""}
+                      />):''}
+                   </div>
+                   </div>
                   </>
                 )}
                 <hr className="mx-4" />
@@ -217,38 +259,13 @@ export function NavbarDefault() {
             </Menu>
           </div>
         </div>
-       <div className="lg:hidden grid  grid-cols-[1fr,3rem] w-1/4">
-       <div className="md:w-full me-2  w-full">
+        <div className="lg:hidden grid  grid-cols-[1fr,3rem] w-1/4">
+          <div className="md:w-full me-2  w-full">
             <NavBarSearching />
           </div>
-       <div className="w-full flex justify-end items-center">
-       <Menu>
-          <MenuHandler className="ml-auto rounded-full border border-purple-400 p-[3px] w-7 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden">
-            {UserInfo.profile_image ? (
-              <img
-                src={
-                  UserInfo.profile_image
-                    ? UserInfo.profile_image
-                    : defaultprofile
-                }
-                className="w-16  rounded-full border-2 border-purple-400"
-                alt=""
-              />
-            ) : (
-              <img
-                src={
-                  CompanyInfo.profile_image
-                    ? CompanyInfo.profile_image
-                    : defaultprofile
-                }
-                className="w-16 p-[3px] rounded-full border-2 border-purple-400"
-                alt=""
-              />
-            )}
-          </MenuHandler>
-          <MenuList>
-            <MenuList className="rounded-xl text-black">
-              <MenuItem className="flex justify-center items-center ">
+          <div className="w-full flex justify-end items-center">
+            <Menu>
+              <MenuHandler className="ml-auto rounded-full border border-purple-400 p-[3px] w-7 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden">
                 {UserInfo.profile_image ? (
                   <img
                     src={
@@ -256,7 +273,7 @@ export function NavbarDefault() {
                         ? UserInfo.profile_image
                         : defaultprofile
                     }
-                    className="w-16 rounded-full border-2 border-purple-400"
+                    className="w-16  rounded-full border-2 border-purple-400"
                     alt=""
                   />
                 ) : (
@@ -270,34 +287,59 @@ export function NavbarDefault() {
                     alt=""
                   />
                 )}
-              </MenuItem>
-              {UserInfo.email ? (
-                <MenuItem
-                  className="text-center capitalize "
-                  onClick={() =>
-                    navigate(UserInfo.is_compleated ? "/user/profile" : "")
-                  }
-                >
-                  {UserInfo.first_name
-                    ? `${UserInfo.first_name} ${UserInfo.last_name}`
-                    : "Unauthorize"}
-                </MenuItem>
-              ) : (
-                <MenuItem className="text-center capitalize ">
-                  {CompanyInfo.first_name
-                    ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
-                    : "Unauthorize"}
-                </MenuItem>
-              )}
-              <hr className="mx-4" />
-              <MenuItem className="my-1 text-center" onClick={logout}>
-                Logout
-              </MenuItem>
-            </MenuList>
-          </MenuList>
-        </Menu>
-       </div>
-       </div>
+              </MenuHandler>
+              <MenuList>
+                <MenuList className="rounded-xl text-black">
+                  <MenuItem className="flex justify-center items-center ">
+                    {UserInfo.profile_image ? (
+                      <img
+                        src={
+                          UserInfo.profile_image
+                            ? UserInfo.profile_image
+                            : defaultprofile
+                        }
+                        className="w-16 rounded-full border-2 border-purple-400"
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        src={
+                          CompanyInfo.profile_image
+                            ? CompanyInfo.profile_image
+                            : defaultprofile
+                        }
+                        className="w-16 p-[3px] rounded-full border-2 border-purple-400"
+                        alt=""
+                      />
+                    )}
+                  </MenuItem>
+                  {UserInfo.email ? (
+                    <MenuItem
+                      className="text-center capitalize "
+                      onClick={() =>
+                        navigate(UserInfo.is_compleated ? "/user/profile" : "")
+                      }
+                    >
+                      {UserInfo.first_name
+                        ? `${UserInfo.first_name} ${UserInfo.last_name}`
+                        : "Unauthorize"}
+                    </MenuItem>
+                  ) : (
+                    <MenuItem className="text-center capitalize ">
+                      {CompanyInfo.first_name
+                        ? `${CompanyInfo.first_name} ${CompanyInfo.last_name}`
+                        : "Unauthorize"}
+                    </MenuItem>
+                  )}
+                  <hr className="mx-4" />
+                  <MenuItem className="my-1 text-center" onClick={logout}>
+                    Logout
+                  </MenuItem>
+                </MenuList>
+              </MenuList>
+            </Menu>
+          </div>
+        </div>
       </div>
       {/* <MobileNav open={openNav}>
         <div className="container mx-auto">{navList}</div>
