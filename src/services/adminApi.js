@@ -7,6 +7,14 @@ const AdminSignin = (values) => {
       throw error;
     });
 };
+const JobFieldCreater = (values) => {
+  return adminAxiosInstant
+    .post("JobFieldListAndCreater/", values, { withCredentials: true })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 // ---------------------------------------Get Methoda-------------------------------//
 const GetLanguages = () => {
   return adminAxiosInstant.get("LanguageListCreateAPIView", {
@@ -119,6 +127,35 @@ const AllCompanyPostlist = (search) => {
       throw error;
     });
 };
+// Blocked Company Post List
+const ListBlockPost= (search) => {
+  return adminAxiosInstant
+    .get(`listblockpost/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+const JobFieldListAndCreaterPagination= (search) => {
+  return adminAxiosInstant
+    .get(`jobfieldlistandcreaterpagination/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+const JobFieldListDeleted= (search) => {
+  return adminAxiosInstant
+    .get(`jobfieldlistdeleted/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 // ---------------------------------------Put or Patch Methoda-------------------------------//
 // User Block Unblock
 const UserBlockUnBlock = (values, id) => {
@@ -159,9 +196,19 @@ const AdminNotificationRead = (values, id) => {
       throw error;
     });
 };
+const JobFieldDetails = (values, id) => {
+  return adminAxiosInstant
+    .patch(`JobFieldDetails/${id}/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
 
 export {
   AdminSignin,
+  JobFieldCreater,
   GetLanguages,
   AdminJobFieldList,
   AdminJobTitlelist,
@@ -175,8 +222,12 @@ export {
   CompanyVerifiedList,
   CompanyBlockedList,
   AllCompanyPostlist,
+  JobFieldListAndCreaterPagination,
+  ListBlockPost,
+  JobFieldListDeleted,
   UserBlockUnBlock,
   VerifyAndBlock,
   PostBlockedUnblocked,
   AdminNotificationRead,
+  JobFieldDetails,
 };

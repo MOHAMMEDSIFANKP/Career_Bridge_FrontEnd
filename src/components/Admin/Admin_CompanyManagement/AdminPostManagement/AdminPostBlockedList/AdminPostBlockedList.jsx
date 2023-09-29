@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Loader from "../../../../Loading/Loading";
-import { AdminBlockPost } from "../AdminAllPostList/AdminBlockPost";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { AllCompanyPostlist } from "../../../../../services/adminApi";
+import { ListBlockPost } from "../../../../../services/adminApi";
 import { Chip } from "@material-tailwind/react";
+import { AdminUnblockModal } from "./AdminUnblockModal";
 
 function AdminAllPostList() {
   const [BlockUnblock, setBlockUnblock] = useState("");
@@ -26,7 +26,7 @@ function AdminAllPostList() {
   const handleSearch = async (searchTerm) => {
     setSearch(searchTerm);
     try {
-      const res = await AllCompanyPostlist(searchTerm);
+      const res = await ListBlockPost(searchTerm);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -42,7 +42,7 @@ function AdminAllPostList() {
   async function GetCompanyPost() {
     try {
       const Search = "";
-      const res = await AllCompanyPostlist(Search);
+      const res = await ListBlockPost(Search);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -257,7 +257,7 @@ function AdminAllPostList() {
           {Posts.count === 0 ? (
             <div className="bg-purple-50 h-[29rem] mt-4 mx-5 rounded-xl flex justify-center items-center">
               <p className="font-bold rounded-2xl border flex justify-center items-center text-gray-600 text-2xl">
-                <span>Add Your Post</span>
+                <span>Blocked list id emty</span>
               </p>
             </div>
           ) : null}
@@ -451,7 +451,7 @@ function AdminAllPostList() {
         ""
       )}
 
-      <AdminBlockPost
+      <AdminUnblockModal
         isOpen={openDelete}
         view={view}
         onClose={handleOpenDelete}
