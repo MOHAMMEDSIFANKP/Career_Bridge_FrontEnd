@@ -15,8 +15,14 @@ import {
   InboxIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
-
+import { useNavigate } from "react-router-dom";
 export function AdminSideBar({ Selections }) {
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    navigate('/admin/login');
+  };
   return (
     <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
@@ -25,13 +31,21 @@ export function AdminSideBar({ Selections }) {
         </Typography>
       </div>
       <List>
-        <ListItem onClick={()=>{Selections('Dashboard')}}>
+        <ListItem
+          onClick={() => {
+            Selections("Dashboard");
+          }}
+        >
           <ListItemPrefix>
             <PresentationChartBarIcon className="h-5 w-5" />
           </ListItemPrefix>
           Dashboard
         </ListItem>
-        <ListItem onClick={()=>{Selections('Users')}}>
+        <ListItem
+          onClick={() => {
+            Selections("Users");
+          }}
+        >
           <ListItemPrefix>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +58,11 @@ export function AdminSideBar({ Selections }) {
           </ListItemPrefix>
           Users
         </ListItem>
-        <ListItem onClick={()=>{Selections('Company')}}>
+        <ListItem
+          onClick={() => {
+            Selections("Company");
+          }}
+        >
           <ListItemPrefix>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +79,25 @@ export function AdminSideBar({ Selections }) {
           </ListItemPrefix>
           Company
         </ListItem>
-        <ListItem onClick={()=>{Selections('Inbox')}}>
+        <ListItem onClick={() => Selections("More")}>
+        <ListItemPrefix>
+        <svg
+          
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6"
+        >
+          <path d="M5.625 3.75a2.625 2.625 0 100 5.25h12.75a2.625 2.625 0 000-5.25H5.625zM3.75 11.25a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75zM3 15.75a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75zM3.75 18.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75z" />
+        </svg>
+        </ListItemPrefix>
+        More
+        </ListItem>
+        <ListItem
+          onClick={() => {
+            Selections("Inbox");
+          }}
+        >
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
           </ListItemPrefix>
@@ -76,19 +112,7 @@ export function AdminSideBar({ Selections }) {
             />
           </ListItemSuffix>
         </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Profile
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <Cog6ToothIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Settings
-        </ListItem>
-        <ListItem>
+        <ListItem onClick={handleSignOut}>
           <ListItemPrefix>
             <PowerIcon className="h-5 w-5" />
           </ListItemPrefix>

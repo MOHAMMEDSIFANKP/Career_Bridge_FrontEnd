@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Select, Option } from "@material-tailwind/react";
-import AllJobTitle from "./AllJobTitleList/AllJobTitle";
-import BlockedJobTitleList from "./BlockedTitleList/BlockedJobTitleList";
-import { AddJotTitleModal } from "./AddJotTitleModal/AddJotTitleModal";
+import SkillsList from "./SkillsList/SkillsList";
+import BlockedSkillsList from "./BlockedSkillsList/BlockedSkillsList";
+import { AddSkillsModal } from "./AddSkillsModal/AddSkillsModal";
 
-function JobTitle() {
-  const [selected, setSelected] = useState("Job TItle List");
+function Skills() {
+  const [selected, setSelected] = useState("All Skills List");
   const [open, setOpen] = useState(false);
  
   const handleOpen = () => setOpen(!open);
  useEffect(()=>{
-  document.title='Add Job Title Feature'
+  document.title='Skills | Career Bridge'
  },[])
   return (
     <>
@@ -19,10 +19,10 @@ function JobTitle() {
           <div>
             <p className="font-bold text-2xl">
               {" "}
-              {selected === "Job TItle List" ? (
-                <>All Job Title List</>
+              {selected === "All Skills List" ? (
+                <>All Skills List</>
               ) : (
-                <>Deleted Job Title List</>
+                <>Deleted Skills List</>
               )}
             </p>
             <p>See information about all posts</p>
@@ -34,28 +34,28 @@ function JobTitle() {
           <div className="mt-10">
             {" "}
             <Select label="Select Option ">
-              <Option onClick={() => setSelected("Job TItle List")}>
-                All Job TItle
+              <Option onClick={() => setSelected("All Skills List")}>
+              All Skills List
               </Option>
-              <Option onClick={() => setSelected("Delete Job TItle")}>
-                Delete Job TItle List
+              <Option onClick={() => setSelected("Blocked Skills List")}>
+                Blocked Skills List
               </Option>
             </Select>
           </div>
         </div>
         <div className="overflow-x-auto border-t">
           <div>
-            {selected === "Job TItle List" ? (
-             <AllJobTitle/>
+            {selected === "All Skills List" ? (
+              <SkillsList/>
             ) : (
-            <BlockedJobTitleList/>
+            <BlockedSkillsList/>
             )}
           </div>
         </div>
       </div>
-     <AddJotTitleModal open={open} handleOpen={(handleOpen)}/>
+      <AddSkillsModal open={open} handleOpen={handleOpen}/>
     </>
   );
 }
 
-export default JobTitle;
+export default Skills;

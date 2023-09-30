@@ -14,6 +14,20 @@ const JobFieldCreater = (values) => {
       throw error;
     });
 };
+const JobTitleCreate = (values) => {
+  return adminAxiosInstant
+    .post("JobTitledListAndCreater/", values, { withCredentials: true })
+    .catch((error) => {
+      throw error;
+    });
+};
+const SkillsCreate = (values) => {
+  return adminAxiosInstant
+    .post("SkillsListCreateAPIView/", values, { withCredentials: true })
+    .catch((error) => {
+      throw error;
+    });
+};
 
 // ---------------------------------------Get Methoda-------------------------------//
 const GetLanguages = () => {
@@ -51,30 +65,29 @@ const UsersList = (search) => {
 };
 // Get Company User List
 const CompanyUsersList = (search) => {
-  return adminAxiosInstant.get(
-    `companyuserslist/?page=1&search=${search}`,
-    { withCredentials: true } ).catch((error) => {
+  return adminAxiosInstant
+    .get(`companyuserslist/?page=1&search=${search}`, { withCredentials: true })
+    .catch((error) => {
       throw error;
-    })
-
+    });
 };
 // Get Block User List
 const BlockUsersList = (search) => {
-  return adminAxiosInstant.get(
-    `blockuserslist/?page=1&search=${search}`,
-    { withCredentials: true } ).catch((error) => {
+  return adminAxiosInstant
+    .get(`blockuserslist/?page=1&search=${search}`, { withCredentials: true })
+    .catch((error) => {
       throw error;
-    })
-
+    });
 };
 // Get Block Company User List
 const BlockCompanyUserLists = (search) => {
-  return adminAxiosInstant.get(
-    `blockcompanyuserlist/?page=1&search=${search}`,
-    { withCredentials: true } ).catch((error) => {
-      throw error;
+  return adminAxiosInstant
+    .get(`blockcompanyuserlist/?page=1&search=${search}`, {
+      withCredentials: true,
     })
-
+    .catch((error) => {
+      throw error;
+    });
 };
 // Get All Company List
 const AllCompanyList = (search) => {
@@ -128,7 +141,7 @@ const AllCompanyPostlist = (search) => {
     });
 };
 // Blocked Company Post List
-const ListBlockPost= (search) => {
+const ListBlockPost = (search) => {
   return adminAxiosInstant
     .get(`listblockpost/?page=1&search=${search}`, {
       withCredentials: true,
@@ -137,7 +150,8 @@ const ListBlockPost= (search) => {
       throw error;
     });
 };
-const JobFieldListAndCreaterPagination= (search) => {
+// Jobfield List With pagination
+const JobFieldListAndCreaterPagination = (search) => {
   return adminAxiosInstant
     .get(`jobfieldlistandcreaterpagination/?page=1&search=${search}`, {
       withCredentials: true,
@@ -146,9 +160,50 @@ const JobFieldListAndCreaterPagination= (search) => {
       throw error;
     });
 };
-const JobFieldListDeleted= (search) => {
+// Jobfield deleted list with pagination
+const JobFieldListDeleted = (search) => {
   return adminAxiosInstant
     .get(`jobfieldlistdeleted/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+// JobTitle list with pagination
+const JobTitledListAndpagiantions = (search) => {
+  return adminAxiosInstant
+    .get(`jobtitledlistandpagiantions/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+// JobTitle Deleted list with pagination
+const JobTitledBlockedList = (search) => {
+  return adminAxiosInstant
+    .get(`jobtitledblockedlist/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+// All skills list with pagination
+const SkilLslist = (search) => {
+  return adminAxiosInstant
+    .get(`skillslist/?page=1&search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+// Skills Deleted list with pagination
+const BlockedSkillsLists = (search) => {
+  return adminAxiosInstant
+    .get(`blockedskillslist/?page=1&search=${search}`, {
       withCredentials: true,
     })
     .catch((error) => {
@@ -205,10 +260,30 @@ const JobFieldDetails = (values, id) => {
       throw error;
     });
 };
+const JobTitledDetails = (values, id) => {
+  return adminAxiosInstant
+    .patch(`JobTitledDetails/${id}/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+const SkillsDetails = (values, id) => {
+  return adminAxiosInstant
+    .patch(`SkillsDetails/${id}/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
 
 export {
   AdminSignin,
   JobFieldCreater,
+  JobTitleCreate,
+  SkillsCreate,
   GetLanguages,
   AdminJobFieldList,
   AdminJobTitlelist,
@@ -225,9 +300,15 @@ export {
   JobFieldListAndCreaterPagination,
   ListBlockPost,
   JobFieldListDeleted,
+  JobTitledListAndpagiantions,
+  JobTitledBlockedList,
+  SkilLslist,
+  BlockedSkillsLists,
   UserBlockUnBlock,
   VerifyAndBlock,
   PostBlockedUnblocked,
   AdminNotificationRead,
   JobFieldDetails,
+  JobTitledDetails,
+  SkillsDetails,
 };

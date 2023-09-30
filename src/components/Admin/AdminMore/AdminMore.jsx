@@ -3,6 +3,7 @@ import AdminCompanyManagemen from "../Admin_CompanyManagement/AdminCompanyLIst/A
 import AdminPostManagement from "../Admin_CompanyManagement/AdminPostManagement/AdminPostManagement";
 import JobCategory from "./JobCategory/JobCategory";
 import JobTitle from "./JobTitle/JobTitle";
+import Skills from "./Skills/Skills";
 
 function AdminMore() {
   const [selected, setselected] = useState("Job Category");
@@ -50,7 +51,7 @@ function AdminMore() {
             ): selected === 'Job Titles'?(
                 <JobTitle/>
             ):(
-                <>skills</>
+               <Skills/>
             )}
          </div>
         </div>

@@ -11,7 +11,15 @@ import Admin_UserManagement from "../../components/Admin/Admin_UserManagement/Ad
 import Admin_CompanyManagement from "../../components/Admin/Admin_CompanyManagement/Admin_CompanyManagement";
 import AdminNotifications from "../../components/Admin/AdminNotifications/AdminNotifications";
 import AdminMore from "../../components/Admin/AdminMore/AdminMore";
+import AdminDashboard from "../../components/Admin/AdminDashboard/AdminDashboard";
+import { useNavigate } from "react-router-dom";
 function AdminHomePage() {
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    navigate('/admin/login');
+  };
   const [SelectedList, setSelectedList] = useState("Dashboard");
   const Selections = (data) => {
     setSelectedList(data);
@@ -19,7 +27,7 @@ function AdminHomePage() {
 
   return (
     <div className="h-screen grid grid-rows-[4rem]">
-      <div>
+      <div className="sticky top-0">
         <AdminNavBar />
       </div>
       <div className="grid grid-cols-[6rem,1fr] xl:grid-cols-[20rem,1fr]">
@@ -66,11 +74,7 @@ function AdminHomePage() {
                 className="h-5 w-5"
                 onClick={() => setSelectedList("Inbox")}
               />
-              <Cog6ToothIcon
-                className="h-5 w-5"
-                onClick={() => setSelectedList("Settings")}
-              />
-              <PowerIcon className="h-5 w-5" />
+              <PowerIcon className="h-5 w-5" onClick={handleSignOut} />
             </div>
           </div>
           <div className="invisible xl:visible xl:-mt-[11rem]">
@@ -79,7 +83,7 @@ function AdminHomePage() {
         </div>
         <div>
           {SelectedList === "Dashboard" ? (
-            <>Dashboards</>
+            <AdminDashboard/>
           ) : SelectedList === "Users" ? (
             <Admin_UserManagement />
           ) : SelectedList === "Company" ? (

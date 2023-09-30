@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import Loader from "../../../Loading/Loading";
+import Loader from "../../../../Loading/Loading";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { Chip, select } from "@material-tailwind/react";
+import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  JobFieldDetails,
   JobFieldListAndCreaterPagination,
-} from "../../../../services/adminApi";
-// import { CategoryDeletingModal } from "./CategoryDeletingModal";
+  JobTitledDetails,
+  JobTitledListAndpagiantions,
+} from "../../../../../services/adminApi";
+import { BlockJobTitleModal } from "./BlockJobTitleModal";
 
 function AllJobTitle() {
-  const [Form, setForm] = useState({ id: "", field_name: "" });
+  const [Form, setForm] = useState({ id: "", title_name: "", field: "" });
   const [view, setView] = useState({ view: false, id: "", index: "" });
+  const [JobCategory, setJobCategory] = useState([]);
   const [Search, setSearch] = useState("");
   const [Posts, setPosts] = useState([]);
   const [Searcheddata, setSearcheddata] = useState([]);
@@ -21,25 +23,34 @@ function AllJobTitle() {
   const SelectedItem = (id, index) => {
     const sel = Posts.results.find((post) => post.id === id);
     setSelectedPost(sel);
+    setForm({id:sel.id,title_name:sel.title_name,field:sel.field})
     setView({ view: true, id: id, index: index });
   };
   //  For loading
   const [loading, setLoading] = useState(false);
   const handleLoading = () => setLoading((cur) => !cur);
 
-    // Delete Modal
-    const handleOpenDelete = () => setOpenDelete(!openDelete);
-    const [openDelete, setOpenDelete] = useState(false);
-    const SelectedItemDlt = (id, index) => {
-        const sel = Posts.results.find((post) => post.id === id);
-        setSelectedPost(sel);
-      };
+  // Options
+  const options = JobCategory.map((job) => {
+    const value = job.field_name;
+    const id = job.id;
+    const label = job.field_name;
+    return { value, id, label };
+  });
+  // Delete Modal
+  const handleOpenDelete = () => setOpenDelete(!openDelete);
+  const [openDelete, setOpenDelete] = useState(false);
+
+  const SelectedItemDlt = (id, index) => {
+    const sel = Posts.results.find((post) => post.id === id);
+    setSelectedPost(sel);
+  };
 
   //   For searching
   const handleSearch = async (searchTerm) => {
     setSearch(searchTerm);
     try {
-      const res = await JobFieldListAndCreaterPagination(searchTerm);
+      const res = await JobTitledListAndpagiantions(searchTerm);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -53,16 +64,20 @@ function AllJobTitle() {
   };
   // Edit Jobtitle
   const EditJobTitle = async () => {
-    if (Form.field_name.trim() === "") {
+    if (Form.title_name.trim() === "") {
       toast.error("Field cannot be blank");
-    } else {
+    } else if (Form.field === ''){
+      toast.error('Select any Jobtitle')
+    }
+     else {
       try {
         handleLoading();
-        const res = await JobFieldDetails(Form, Form.id);
+        const res = await JobTitledDetails(Form, Form.id);
+        console.log(res);
         if (res.status === 200) {
-          toast.success(` ${res.data.field_name} Edited success fully`);
+          toast.success(` ${res.data.title_name} Edited success fully`);
           const Search = "";
-          const res2 = await JobFieldListAndCreaterPagination(Search);
+          const res2 = await JobTitledListAndpagiantions(Search);
           setPosts(res2.data);
           setSearcheddata(res2.data.results);
         } else {
@@ -71,6 +86,7 @@ function AllJobTitle() {
         setView({ view: false, id: "", index: "" });
         handleLoading();
       } catch (error) {
+        console.log(error);
         handleLoading();
         console.log(error);
         toast.error("Something Wrong");
@@ -78,13 +94,18 @@ function AllJobTitle() {
     }
   };
   // Fech data backend
-  async function GetCompanyPost() {
+  async function GetJobTitle() {
     try {
+      handleLoading();
       const Search = "";
-      const res = await JobFieldListAndCreaterPagination(Search);
+      const res = await JobTitledListAndpagiantions(Search);
+      const res2 = await JobFieldListAndCreaterPagination(Search);
       setPosts(res.data);
       setSearcheddata(res.data.results);
+      setJobCategory(res2.data.results);
+      handleLoading();
     } catch (error) {
+      handleLoading();
       console.log(error);
       setPosts([]);
       setSearcheddata([]);
@@ -93,14 +114,28 @@ function AllJobTitle() {
 
   // Next page
   const NextButton = async () => {
-    const res = await axios.get(Posts.next);
-    setPosts(res.data);
-    setSearcheddata(res.data.results);
+    handleLoading();
+    try {
+      const res = await axios.get(Posts.next);
+      setPosts(res.data);
+      setSearcheddata(res.data.results);
+      resetView();
+      handleLoading();
+    } catch (error) {
+      handleLoading();
+    }
   };
   const PrevButton = async () => {
-    const res = await axios.get(Posts.previous);
-    setPosts(res.data);
-    setSearcheddata(res.data.results);
+    handleLoading();
+    try {
+      const res = await axios.get(Posts.previous);
+      setPosts(res.data);
+      setSearcheddata(res.data.results);
+      resetView();
+      handleLoading();
+    } catch (error) {
+      handleLoading();
+    }
   };
   // Rest View
   const resetView = () => {
@@ -113,10 +148,7 @@ function AllJobTitle() {
   };
   //---------------------------- React quary---------------------------------------//
 
-  const { data, isLoading, isError } = useQuery(
-    "getCompanypost",
-    GetCompanyPost
-  );
+  const { data, isLoading, isError } = useQuery("getJobTitle", GetJobTitle);
   if (isLoading) {
     return <Loader />;
   }
@@ -153,23 +185,29 @@ function AllJobTitle() {
         {Posts.count ? Posts.count : 0} result found
       </p>
 
-      {Searcheddata.map((jobcategory, index) => (
+      {Searcheddata.map((jobtitle, index) => (
         <div
           key={index}
-          className="shadow border mx-5 rounded-xl my-4 grid grid-cols-2 py-4"
+          className="shadow border mx-5 rounded-xl my-4 grid grid-cols-[1fr,6rem] py-4"
         >
-          {view.view && view.id === jobcategory.id ? (
+          {view.view && view.id === jobtitle.id ? (
             <>
-              <input
-                type="text"
-                onClick={() => setForm({ ...Form, id: Selectedpost.id })}
-                onChange={(e) =>
-                  setForm({ ...Form, field_name: e.target.value })
-                }
-                defaultValue={Selectedpost.field_name}
-                className="border px-2 py-2 mx-8 md:w-10/12 w-8/12 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 border-gray-400"
-              />
-              <div className="flex justify-end mx-6">
+              <div className="grid grid-cols-2 gap-5 ms-5">
+                <Select
+                  options={options}
+                  onChange={(handleChange)=>setForm({...Form,field:handleChange.id})}
+                  value={Form.field ? options.find((job) => job.id === Form.field) : options.find((job) => job.id === Selectedpost.field)}
+                />
+                <input
+                  type="text"
+                  onChange={(e) =>
+                    setForm({ ...Form, title_name: e.target.value })
+                  }
+                  defaultValue={Selectedpost.title_name}
+                  className="border w-full px-2 py-2  rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 border-gray-400"
+                />
+              </div>
+              <div className="flex justify-center items-center">
                 <svg
                   onClick={EditJobTitle}
                   xmlns="http://www.w3.org/2000/svg"
@@ -190,11 +228,11 @@ function AllJobTitle() {
           ) : (
             <>
               <p className="font-bold text-gray-800 text-center ">
-                {jobcategory.field_name}
+                {jobtitle.title_name}
               </p>
               <div className="flex justify-end mx-3">
                 <svg
-                  onClick={() => SelectedItem(jobcategory.id, index)}
+                  onClick={() => SelectedItem(jobtitle.id, index)}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -209,7 +247,9 @@ function AllJobTitle() {
                   />
                 </svg>
                 <svg
-                onClick={()=>{handleOpenDelete(),SelectedItemDlt(jobcategory.id, index)}}
+                  onClick={() => {
+                    handleOpenDelete(), SelectedItemDlt(jobtitle.id, index);
+                  }}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -247,14 +287,14 @@ function AllJobTitle() {
         </button>
       </div>
 
-      {/* <CategoryDeletingModal
+      <BlockJobTitleModal
         isOpen={openDelete}
         view={view}
         onClose={handleOpenDelete}
         resetView={resetView}
         updateSearcheddata={updateSearcheddata}
         Selectedpost={Selectedpost}
-      /> */}
+      />
     </>
   );
 }

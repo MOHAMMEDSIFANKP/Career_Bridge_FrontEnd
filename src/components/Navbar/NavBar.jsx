@@ -40,7 +40,6 @@ export function NavbarDefault() {
 
   const logout = () => {
     dispatch(LogoutCompanyDetails());
-    dispatch(CleartPosts());
     dispatch(LogoutDetails());
     dispatch(ClearPosition());
     dispatch(ClearRole());
