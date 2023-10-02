@@ -12,6 +12,7 @@ import Languages from '../pages/User/RegisterSteps/Languages';
 import Skills from '../pages/User/RegisterSteps/Skills';
 import ProfileCreation from '../pages/User/RegisterSteps/ProfileCreation';
 import Notifications from '../pages/User/Notifications/Notifications';
+import Jobs from '../pages/User/Jobs/Jobs';
 function UserRoutes() {
 
   return (
@@ -19,7 +20,7 @@ function UserRoutes() {
       <Route element={<PrivateRoutes/>}>
       <Route path='/signup' exact element={<SignUpPage />} />
       </Route>
-      {/* <Route element={<UserProtected />}> */}
+      <Route element={<UserProtected />}>
         <Route path='/' element={<UserHomePage />} />
         <Route path='/position' element={<Position/>}/>
         <Route path='/role' element={<Role/>} />
@@ -30,7 +31,8 @@ function UserRoutes() {
         <Route path='/skills' element={<Skills/>}/>
         <Route path='/profilecreation' element={<ProfileCreation/>}/>
         <Route path='/notifications' element={<Notifications/>}/>
-      {/* </Route> */}
+        <Route path='/jobs' element={<Jobs/>}/>
+      </Route>
     </Routes>
   );
 }

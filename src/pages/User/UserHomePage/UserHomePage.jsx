@@ -112,7 +112,7 @@ function UserHomePage() {
             {selected === "home" ? (
               <HomeJoblist />
             ) : selected === "jobs" ? (
-              <div>jobs</div>
+              navigate('/user/jobs/')
             ) : (
               <div>company</div>
             )}
