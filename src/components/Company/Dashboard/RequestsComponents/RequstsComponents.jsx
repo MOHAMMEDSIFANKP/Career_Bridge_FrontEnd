@@ -1,48 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AllDetails from "./CompanyList/AllDetails";
 import PendingList from "./CompanyList/PendingList";
 import AcceptedList from "./CompanyList/AcceptedList";
 import RejectedList from "./CompanyList/RejectedList";
-import { useQuery, useQueryClient } from "react-query";
-import Loader from "../../../Loading/Loading";
-import { CompanyApplyPostList } from "../../../../services/companyApi";
-import { useSelector } from "react-redux";
 
 function RequstsComponents() {
-  const { CompanyInfo } = useSelector((state) => state.company);
-  const [List,setList] = useState([])
   const [selected, setselected] = useState("all");
-  async function GetCompanysList() {
-    try {
-      const res = await CompanyApplyPostList(CompanyInfo.companyid);
-      setList(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const ResetList = (data) => {
-    setList(data);
-  };
-    // ---------------------------------react quary-------------------------------------//
-    const queryClient = useQueryClient();
-    const { isLoading, error, data } = useQuery({
-      queryKey: ["Companylist"],
-      queryFn: () => GetCompanysList(),
-    });
-  
-    if (isLoading) {
-      return <Loader />;
-    }
-    if (error) {
-      return (
-        <h1 className="text-center mt-20 font-bold text-2xl text-purple-400">
-          Something went Wrong
-        </h1>
-      );
-    }
-    // ---------------------------------react quary-------------------------------------//
-  
+useEffect(()=>{
+  document.title = 'Request List | Career Bridge'
+},[])
   return (
     <>
       <div className="flex justify-center">
@@ -93,9 +59,9 @@ function RequstsComponents() {
               </div>
             </div>
           </div>
-          <div>
+          <div className="overflow-auto">
             {selected === "all" ? (
-              <AllDetails List={List} ResetList={ResetList}/>
+              <AllDetails />
             ) : selected === "pending" ? (
               <PendingList/>
             ) : selected === "accepted" ? (

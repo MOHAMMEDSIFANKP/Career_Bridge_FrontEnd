@@ -135,7 +135,7 @@ export function NavbarDefault() {
               }}
             >
               <MenuHandler>
-                <div className="w-8 flex items-center justify-center h-8 rounded-full border-2 border-purple-300">
+                <div className="w-8 flex justify-center h-8 rounded-full border-2 border-purple-300">
                   {UserInfo.profile_image ? (
                     <Badge content={UserNofiyCout ? UserNofiyCout.count : ""}>
                       <img
@@ -165,7 +165,7 @@ export function NavbarDefault() {
               </MenuHandler>
               <MenuList className="rounded-xl text-black">
                 <MenuItem className="flex justify-center items-center ">
-                  <div className="w-16 h-16 rounded-full border-2 border-purple-400">
+                  <div className="w-16 h-16 flex justify-center p-1 rounded-full border-2 border-purple-400">
                     {UserInfo.profile_image ? (
                       <img
                         src={

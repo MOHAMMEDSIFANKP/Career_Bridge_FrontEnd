@@ -69,6 +69,7 @@ const ListofcompanypostBlocked = (id,search) =>{
   });
 }
 
+// Get Company Post Details
 const CompanyPostDetails = (id) =>{
   return CompanyAxiosInstant.get(`companypostdetails/${id}`,{
     withCredentials:true
@@ -76,8 +77,33 @@ const CompanyPostDetails = (id) =>{
     throw error;
   });
 }
-const CompanyApplyPostList = (id) =>{
-  return CompanyAxiosInstant.get(`companyapplypostList/${id}/`,{
+// Get Company Apply table Lists
+const CompanyApplyPostList = (id,search) =>{
+  return CompanyAxiosInstant.get(`companyapplypostList/${id}/?search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+// Get Company Pending Apply table lists
+const PendingApplyJob = (id,search) =>{
+  return CompanyAxiosInstant.get(`pendingapplyJob/${id}/?search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+// Get Company Accepted Apply table list
+const AcceptedApplyJob = (id,search) =>{
+  return CompanyAxiosInstant.get(`acceptedapplyJob/${id}/?search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+// Get Company Rejected Apply table List
+const RejectedApplyJob = (id,search) =>{
+  return CompanyAxiosInstant.get(`rejectedapplyJob/${id}/?search=${search}`,{
     withCredentials:true
   }).catch((error) => {
     throw error;
@@ -100,8 +126,25 @@ const EditCompanyPostDetails = (value, id) => {
     throw error;
   });
 };
+// Company Post Block Unblock
 const CompanyPostBolckUnblock = (value, id) => {
   return CompanyAxiosInstant.put(`companypostbolckUnblock/${id}/`, value, {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
+// Company Apply Post accet or rejected
+const AcceptOrRejectedApplyJob = (value, id) => {
+  return CompanyAxiosInstant.put(`Accept_or_rejected_ApplyJob/${id}/`, value, {
+    withCredentials: true,
+  }).catch((error) => {
+    throw error;
+  });
+};
+// Company Apply Post scheduled
+const ScheduleDate = (value, id) => {
+  return CompanyAxiosInstant.put(`scheduledate/${id}/`, value, {
     withCredentials: true,
   }).catch((error) => {
     throw error;
@@ -119,7 +162,13 @@ export {
   ListofcompanypostBlocked,
   CompanyApplyPostList,
   CompanyPostDetails,
+  PendingApplyJob,
+  AcceptedApplyJob,
+  RejectedApplyJob,
+  // Put or Patch
   EditCompanyDetails,
   EditCompanyPostDetails,
   CompanyPostBolckUnblock,
+  AcceptOrRejectedApplyJob,
+  ScheduleDate,
 };

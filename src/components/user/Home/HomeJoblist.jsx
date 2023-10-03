@@ -6,11 +6,13 @@ import Loader from "../../Loading/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ApplyJobsCreation } from "../../../services/companyApi";
+import { Chip } from "@material-tailwind/react";
 function HomeJoblist() {
   const { UserInfo } = useSelector((state) => state.user);
 
   const [RelatedPost, setRelatedPost] = useState([]);
   const [view, setView] = useState({ view: false, id: "", index: "" });
+  const [Post, setPost] = useState([]);
   const [Selectedpost, setSelectedPost] = useState(null);
 
   const SelectedItem = (id, index) => {
@@ -33,7 +35,8 @@ function HomeJoblist() {
   //   Get userrelated Post in backend
   async function UserRelatedList() {
     const res = await UserRelatedJobs(UserInfo.userinfoid);
-    setRelatedPost(res.data);
+    setPost(res.data);
+    setRelatedPost(res.data.results);
   }
   // -----------------------------------React query-----------------------------------/
   const queryClient = useQueryClient();
@@ -59,7 +62,7 @@ function HomeJoblist() {
       <ToastContainer />
       {!view.view ? (
         <>
-          <p className="font-bold ms-10 text-xl">Recommended jobs</p>
+          <p className="font-bold ms-10 text-xl">{Post.count}  Recommended jobs</p>
           {RelatedPost.length > 0 ? (
             RelatedPost.filter(
               (Post) => !Post.is_blocked && !Post.is_deleted
@@ -88,6 +91,17 @@ function HomeJoblist() {
                     </div>
                   </div>
                   <div className="me-3 -mt-5 flex justify-center items-center">
+                    {Post.applied ? (
+                      <Chip
+                        variant="ghost"
+                        color="green"
+                        size="sm"
+                        value="A p p l i e d"
+                        className="me-6"
+                      />
+                    ) : (
+                      ""
+                    )}
                     <button>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

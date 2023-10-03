@@ -13,6 +13,8 @@ import { useSelector } from "react-redux";
 import { ApplyJobsCreation } from "../../../services/companyApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useParams } from 'react-router-dom';
+
 function Jobs() {
   const { UserInfo } = useSelector((state) => state.user);
   const [view, setView] = useState({ view: false, id: "", index: "" });
@@ -227,10 +229,10 @@ function Jobs() {
     Filters();
   };
   // Feching data from backend
-  const Filters = async () => {
+  const Filters = async (itemName = '') => {
     try {
       handleLoading();
-      const search = "";
+      const search = itemName || '';
       const res4 = await UserPostLists(
         UserInfo.userinfoid,
         search,
@@ -254,8 +256,11 @@ function Jobs() {
     }
   };
   //---------------------------- React quary---------------------------------------//
+  const { itemName } = useParams();
 
-  const { data, isLoading, isError } = useQuery("Filters", Filters);
+  const { data, isLoading, isError } = useQuery("Filters", () => {
+    return itemName ? Filters(itemName) : Filters();
+  });
 
   if (isLoading) {
     return <Loader />;

@@ -213,13 +213,13 @@ function Experience() {
                   <h3 className="font-bold text-xl">{experience.title}</h3>
                   <p className="text-lg">{experience.subtitle}</p>
                   <p className="text-gray-600">
-                    {experience.state}{" "}
-                    <span>
-                      <br />
-                    </span>
-                    {experience.country}{" "}
+                  {experience.country},{" "}{experience.state}{" "}
+                   
                   </p>
-                  <p className="text-gray-600">{experience.Description}</p>
+                 <div className="overflow-auto scrollbar-thin  rounded-xl scrollbar-thumb-purple-400 h-24 me-2">
+                  <p className="text-sm font-bold ">Descrption : </p>
+                 <p className="text-gray-600">{experience.Description}</p>
+                 </div>
                 </div>
               </div>
             </div>

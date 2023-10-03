@@ -105,6 +105,14 @@ const UserPostLists = (
     );
   }
 };
+// Update User is_compleated
+const usernotification = (id) => {
+  return userAxiosInstant
+    .get(`api/usernotification/${id}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => error.response);
+};
 
 //--------------------------Put or Patch Methods (for Updation)-------------------------------
 
@@ -177,6 +185,17 @@ const EducationDetails = (values, id) => {
       throw error;
     });
 };
+// Notificaton read
+const NotificationRead = (values, id) => {
+  return userAxiosInstant
+    .patch(`api/NotificationRead/${id}/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 //------------------------------Delete Methods------------------------------//
 // Delete skill in Userinfo table
 const Remove_skill = (values) => {
@@ -224,10 +243,12 @@ export {
   Restpassword,
   UpdateUseaccount,
   UserPostLists,
+  usernotification,
   // Put or pach methods
   UpdateUserInfoDetails,
   ExperienceDetails,
   EducationDetails,
+  NotificationRead,
   // delete methods
   Remove_skill,
   DeleteExperienceDetails,

@@ -17,7 +17,6 @@ function AllUsersList() {
     handleLoading();
     try {
       const res = await UsersList(searchTerm);
-      console.log(res);
       setFilteredUserList(res.data);
       setSearcheddata(res.data.results);
       handleLoading();

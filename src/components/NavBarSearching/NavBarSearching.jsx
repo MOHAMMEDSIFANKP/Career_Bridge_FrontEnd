@@ -4,8 +4,10 @@ import { Country, State }  from 'country-state-city';
 import { useQuery, useQueryClient } from "react-query";
 import { AdminJobFieldList, AdminJobTitlelist, AdminSkillsList } from "../../services/adminApi";
 import Loader from "../Loading/Loading";
+import { useNavigate } from "react-router-dom";
 
 function NavBarSearching() {
+  const navigate = useNavigate()
   const [JobField,setJobfield] = useState([])
   const [JobTitle,setJobTitle] = useState([])
   const [Skills,setSkills] = useState([])
@@ -32,13 +34,12 @@ function NavBarSearching() {
     ...jobFieldNames,
     ...JobTitleNames,
     ...SkillsNames,
-    // ...Jobtitle.map((job) => ({ type: 'Job Title', name: job.title_name })),
     ...countryOptions.map((country) => ({ type: 'Country', name: country.name })),
     ...stateOptions.map((state) => ({ type: 'State', name: state.name })),
   ];
 
   const handleOnSelect = (item) => {
-    console.log(item);
+    navigate(`/user/jobs/${item.name}`)
   };
   async function GetJobSkillList(){
     const res = await AdminJobFieldList()

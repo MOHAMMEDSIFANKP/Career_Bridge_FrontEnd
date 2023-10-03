@@ -22,7 +22,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "react-query";
 
 export function AddPost({ open, handleOpen }) {
-  const dispatch = useDispatch()
   const { CompanyInfo } = useSelector((state) => state.company);
   const [Form, setForm] = useState({
     companyinfo: "",

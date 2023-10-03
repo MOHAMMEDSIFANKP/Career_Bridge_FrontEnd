@@ -121,10 +121,10 @@ function UserHomePage() {
             <div className="border hover:bg-gray-100 cursor-pointer w-full h-52 rounded-xl shadow-md grid grid-rows-[6rem,1fr,1fr]"
             onClick={()=>navigate('/user/profile')}>
               <div className="flex justify-center mt-3">
-                <div className="w-20 h-20 rounded-full border-purple-400 border">
+                <div className="w-20 flex justify-center p-1 h-20 rounded-full border-purple-400 border">
                   <img
                     src={UserInfo?.profile_image}
-                    className="rounded-full"
+                    className="rounded-full w-20"
                     alt=""
                   />
                 </div>

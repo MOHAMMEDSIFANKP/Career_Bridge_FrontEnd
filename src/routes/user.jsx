@@ -31,7 +31,8 @@ function UserRoutes() {
         <Route path='/skills' element={<Skills/>}/>
         <Route path='/profilecreation' element={<ProfileCreation/>}/>
         <Route path='/notifications' element={<Notifications/>}/>
-        <Route path='/jobs' element={<Jobs/>}/>
+        <Route path='/jobs/:itemName' element={<Jobs/>}/>
+        <Route path='/jobs/' element={<Jobs/>}/>
       </Route>
     </Routes>
   );

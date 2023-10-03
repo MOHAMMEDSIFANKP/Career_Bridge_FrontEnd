@@ -102,7 +102,10 @@ function Education() {
                 <div className="text-center mt-3">
                   <h3 className="font-bold text-lg">{education.School}</h3>
                   <p className="text-lg">{education.Degree}</p>
+                  <div className="overflow-auto scrollbar-thin  rounded-xl scrollbar-thumb-purple-400 h-24 me-2">
+                  <p className="text-sm font-bold ">Descrption : </p>
                   <p className="text-gray-700">{education.Description}</p>
+                  </div>
                 </div>
               </div>
             </div>
