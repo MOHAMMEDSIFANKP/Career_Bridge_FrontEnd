@@ -14,7 +14,7 @@ function CompanyDashboard() {
         </div>
         <div className="mt-10 grid grid-rows-[4rem,1fr] container mx-auto">
           <div className="flex justify-center">
-            <div className="bg-purple-50 h-10 w-3/5 rounded-xl grid grid-cols-3 shadow-md">
+            <div className="bg-purple-50 h-10 w-3/5 rounded-xl grid grid-cols-2 shadow-md">
               <div
                 className={`flex items-center cursor-pointer  justify-center text-gray-700 font-bold ${
                   selected === "request"
@@ -25,16 +25,7 @@ function CompanyDashboard() {
               >
                 <p cla>Requests</p>
               </div>
-              <div
-                className={`flex items-center cursor-pointer  justify-center text-gray-700 font-bold ${
-                  selected === "schedule"
-                    ? "bg-purple-200 text-white rounded-xl"
-                    : "hover:text-purple-400"
-                }`}
-                onClick={() => setselected("schedule")}
-              >
-                Schedule
-              </div>
+             
               <div
                 className={`flex items-center cursor-pointer  justify-center text-gray-700 font-bold ${
                   selected === "post"
@@ -49,8 +40,6 @@ function CompanyDashboard() {
           </div>
           {selected === "request" ? (
             <RequstsComponents />
-          ) : selected === "schedule" ? (
-            <ScheduledList />
           ) : (
             <PostList/>
           )}

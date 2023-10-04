@@ -105,10 +105,34 @@ const UserPostLists = (
     );
   }
 };
-// Update User is_compleated
+// User Notifications
 const usernotification = (id) => {
   return userAxiosInstant
     .get(`api/usernotification/${id}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => error.response);
+};
+// User Applyied List
+const UserApplyPostList = (id,search) => {
+  return userAxiosInstant
+    .get(`api/UserApplyPostList/${id}/?search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => error.response);
+};
+// User Applyied Accepted List
+const UserAcceptedApplyPostList = (id,search) => {
+  return userAxiosInstant
+    .get(`api/UserAcceptedApplyPostList/${id}/?search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => error.response);
+};
+// User Applyied Pending List
+const UserPendingApplyPostList = (id,search) => {
+  return userAxiosInstant
+    .get(`api/UserPendingApplyPostList/${id}/?search=${search}`, {
       withCredentials: true,
     })
     .catch((error) => error.response);
@@ -244,6 +268,9 @@ export {
   UpdateUseaccount,
   UserPostLists,
   usernotification,
+  UserApplyPostList,
+  UserAcceptedApplyPostList,
+  UserPendingApplyPostList,
   // Put or pach methods
   UpdateUserInfoDetails,
   ExperienceDetails,

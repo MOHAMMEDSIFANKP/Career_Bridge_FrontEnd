@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import Loader from "../../../../Loading/Loading";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import {
-  AcceptOrRejectedApplyJob,
-  CompanyApplyPostList,
-  ScheduleDate,
-} from "../../../../../services/companyApi";
-import PdfIcon from "../../../../../assets/PdfIcon.png";
-import OpenToCv from "../../../../Profile/MyinfoComponent/Modal/OpenToCv";
+import Loader from "../../Loading/Loading";
+
 import axios from "axios";
-import ScheduleModal from "./ScheduleModal/ScheduleModal";
-function AllDetails({}) {
-  const { CompanyInfo } = useSelector((state) => state.company);
+import { UserAcceptedApplyPostList } from "../../../services/userApi";
+function AcceptedList() {
+  const { UserInfo } = useSelector((state) => state.user);
 
   const [view, setView] = useState({ view: false, id: "", index: "" });
-  const [user,setuser] = useState({id:null,schedule:''})
   const [Search, setSearch] = useState("");
   const [Posts, setPosts] = useState([]);
   const [Searcheddata, setSearcheddata] = useState([]);
@@ -25,22 +16,20 @@ function AllDetails({}) {
 
   // Date Schedule
   const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(!open);
+  const handleOpen = () => setOpen(!open);
 
   const SelectedItem = (id, index) => {
     const sel = Posts.results.find((post) => post.id === id);
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
-  // Cv
-  const [openCv, setOpenCv] = useState(false);
-  const handleOpenCv = () => setOpenCv(!openCv);
+
   // For seraching
   const handleSearch = async (searchTerm) => {
     setSearch(searchTerm);
     console.log(searchTerm);
     try {
-      const res = await CompanyApplyPostList(CompanyInfo.companyid, searchTerm);
+      const res = await UserAcceptedApplyPostList(UserInfo.userinfoid, searchTerm);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -52,43 +41,11 @@ function AllDetails({}) {
     setSearch("");
     handleSearch("");
   };
-  // Accepting for user
-  const Accepted = async (id) => {
-    try {
-      const data = {
-        accepted: true,
-        rejected: false,
-      };
-      const res = await AcceptOrRejectedApplyJob(data, id);
-      if (res.status === 200) {
-        GetRequsts();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // Rejecting for user
-  const Rejected = async (id) => {
-    try {
-      const data = {
-        accepted: false,
-        rejected: true,
-      };
-      const res = await AcceptOrRejectedApplyJob(data, id);
-      if (res.status === 200) {
-        GetRequsts();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-const refechData = ()=>{
-  GetRequsts()
-}
+
   // Fech data backend
   async function GetRequsts() {
     try {
-      const res = await CompanyApplyPostList(CompanyInfo.companyid, Search);
+      const res = await UserAcceptedApplyPostList(UserInfo.userinfoid, Search);
       setPosts(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -109,15 +66,7 @@ const refechData = ()=>{
     setPosts(res.data);
     setSearcheddata(res.data.results);
   };
-  // Rest View
-  const resetView = () => {
-    setView({ view: false, id: "", index: "" });
-  };
-  // Update data after deleting and editting
-  const updateSearcheddata = (newSearcheddata) => {
-    setPosts(newSearcheddata);
-    setSearcheddata(newSearcheddata.results);
-  };
+
   //---------------------------- React quary---------------------------------------//
 
   const { data, isLoading, isError } = useQuery("requests", GetRequsts);
@@ -167,7 +116,7 @@ const refechData = ()=>{
               >
                 <div className="w-20 border border-purple-400 rounded-full flex justify-center items-center">
                   <img
-                    src={Post.user?.profile_image}
+                    src={Post.Post.companyinfo.userId?.profile_image}
                     alt=""
                     className="w-20 p-1  rounded-full"
                   />
@@ -179,19 +128,20 @@ const refechData = ()=>{
               >
                 <div>
                   <p className="font-bold text-xl text-gray-800">
-                    {Post.user?.first_name} {Post.user?.last_name}
+                    {Post.Post.companyinfo.company_name}
                   </p>
                   <p className="font-bold text-gray-800">
-                    {Post.userInfo?.jobTitle.title_name}{" "}
+                    <p className="text-sm font-normal">Applyes Post</p>
+                    {Post.Post?.Jobtitle.title_name}{" "}
                   </p>
                   <div className="flex">
                     <p className="pe-1">Skills :</p>
-                    {Post.userInfo.skills.slice(0, 4).map((skill, index) => (
+                    {Post.Post.skills.slice(0, 4).map((skill, index) => (
                       <p key={index} className="pe-1">
                         {skill.skills},{" "}
                       </p>
                     ))}
-                    {Post.userInfo.skills.length > 3 && <p>...</p>}
+                    {Post.Post.skills.length > 3 && <p>...</p>}
                   </div>
                 </div>
                 <div className="flex text-sm pt-1">
@@ -200,50 +150,33 @@ const refechData = ()=>{
                   </p>
                 </div>
               </div>
-              <div className="grid grid-rows-[1fr,0.4rem]">
+              <div className="grid grid-rows-[1fr,1rem]">
                 <div className="flex justify-center items-center gap-4">
                   {Post.accepted ? (
                     <>
-                      <button className="bg-green-600 font-bold text-white px-4 py-2 rounded-xl">
+                      <button className="font-bold text-white bg-green-400 px-2 py-1 rounded-xl">
                         Message
                       </button>
-                      {Post.schedule ? (
-                        <button className="bg-gray-600 px-2 py-2 rounded-xl text-white font-bold"
-                        onClick={()=>{handleOpen(),setuser({...user,id:Post.id,schedule:Post.schedule})}}>
-                          Change
-                        </button>
-                      ) : (
-                        <button
-                          className="bg-red-400 font-bold text-white  p-2 me-3 py-2 rounded-xl"
-                         onClick={()=>{handleOpen(),setuser({...user,id:Post.id,schedule:Post.schedule})}}
-                        >
-                          Not Sckeduled
-                        </button>
-                      )}
+                      <p className="text-green-400 font-bold">Accepted</p>
                     </>
                   ) : (
                     <>
-                      <button
-                        className="bg-green-600 font-bold text-white px-4 py-2 rounded-xl"
-                        onClick={() => Accepted(Post.id)}
-                      >
-                        Accepted
-                      </button>
                       {Post.rejected ? (
-                        <p className="font-bold text-red-500">Rejected</p>
+                        <>
+                          <p className="text-red-300 font-bold ">Rejected </p>
+                        </>
                       ) : (
-                        <button
-                          className="bg-red-400 font-bold text-white px-4 py-2 rounded-xl"
-                          onClick={() => Rejected(Post.id)}
-                        >
-                          Reject
-                        </button>
+                        <p className="font-bold text-yellow-400">Pending</p>
                       )}
                     </>
                   )}
                 </div>
-                <div className="-mt-2 text-center font-bold">
-                  {Post.schedule ? <p>Scheduled at : {Post.schedule}</p> : ""}
+                <div className=" text-center font-bold">
+                  {Post.schedule ? (
+                    <p>Scheduled at : {Post.schedule}</p>
+                  ) : (
+                    <p>Not scheduled</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -258,7 +191,7 @@ const refechData = ()=>{
         </>
       ) : (
         <>
-          <div className="border mx-10 mt-5  rounded-xl shadow">
+          <div className="border mx-10 mt-5  pb-4 rounded-xl shadow">
             <div className="ms-10 mt-3 flex justify-between">
               <div className="">
                 <p className="capitalize font-bold ">Post details</p>
@@ -398,40 +331,37 @@ const refechData = ()=>{
             <div className="flex justify-center">
               <hr className="my-3 w-5/6" />
             </div>
-            <p className="text-sm font-bold capitalize ms-10 my-2">
-              user Details
-            </p>
+            <p className=" font-bold capitalize ms-10 my-2">Company Details</p>
             <div className="grid grid-cols-[20rem,1fr,1fr]">
               <div className="ms-10 capitalize">
                 <p className="text-sm font-bold">
                   name :{" "}
                   <span className="font-normal">
-                    {Selectedpost.user?.first_name}{" "}
-                    {Selectedpost.user?.last_name}
+                    {Selectedpost.Post.companyinfo?.company_name}{" "}
                   </span>
                 </p>
                 <p className="text-sm font-bold">
                   email :{" "}
                   <span className="font-normal lowercase">
-                    {Selectedpost.user?.email}
+                    {Selectedpost.Post.companyinfo.userId?.email}
                   </span>
                 </p>
                 <p className="text-sm font-bold">
-                  Job Category :{" "}
-                  <span className="font-normal">
-                    {Selectedpost.userInfo.jobField.field_name}
+                  industry :{" "}
+                  <span className="font-normal lowercase">
+                    {Selectedpost.Post.companyinfo?.industry}
                   </span>
                 </p>
                 <p className="text-sm font-bold">
-                  Job Title :{" "}
-                  <span className="font-normal">
-                    {Selectedpost.userInfo.jobTitle.title_name}
+                  company size :{" "}
+                  <span className="font-normal lowercase">
+                    {Selectedpost.Post.companyinfo?.company_size}
                   </span>
                 </p>
                 <p className="text-sm font-bold">
-                  emial :{" "}
+                  Street address :{" "}
                   <span className="font-normal">
-                    {Selectedpost.userInfo.streetaddress}
+                    {Selectedpost.Post?.companyinfo.streetaddress}
                   </span>
                 </p>
                 <div className="flex items-center">
@@ -450,125 +380,21 @@ const refechData = ()=>{
                     />
                   </svg>
                   <p className="text-sm ps-2">
-                    {Selectedpost.userInfo?.state} /{" "}
-                    {Selectedpost.userInfo?.city}
+                    {Selectedpost.Post?.companyinfo?.country} /{" "}
+                    {Selectedpost.Post?.companyinfo?.state} /{" "}
+                    {Selectedpost.Post?.companyinfo?.city}
                   </p>
                 </div>
-                <div className="flex text-sm  items-center">
-                  <p className="font-bold me-2">Bio : </p>
-                  <p>
-                    {Selectedpost.userInfo?.bio === "Add Bio"
-                      ? ""
-                      : Selectedpost.userInfo?.bio}
+              </div>
+              <div className="my-1 me-10">
+                <p className="font-bold text-sm sticky top-0 bg-white">
+                  Job description
+                </p>
+                <div className=" overflow-auto scrollbar-thin M scrollbar-thumb-purple-400 h-full">
+                  <p className="text-sm">
+                    {Selectedpost.Post.companyinfo?.description}
                   </p>
                 </div>
-                <div className="flex mt-2">
-                  <p className="text-sm font-bold me-2">Cv :</p>
-                  {Selectedpost.userInfo.cv ? (
-                    <>
-                      <div>
-                        <div onClick={handleOpenCv}>
-                          <img
-                            src={PdfIcon}
-                            alt="Pdf Icon"
-                            className="w-5 z-1 opacity-75"
-                          />
-                        </div>
-                        <OpenToCv
-                          isOpen={openCv}
-                          onClose={handleOpenCv}
-                          path={Selectedpost.userInfo.cv}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-              <div className="me-10 w-5/5 grid grid-rows-[3rem,1fr] border rounded-2xl border-purple-400 overflow-hidden">
-                <div className="flex items-center bg-white ">
-                  <p className="ms-5 font-bold">Education</p>
-                </div>
-                <div className="overflow-x-scroll px-2 flex scrollbar-thin M scrollbar-thumb-purple-400">
-                  {Selectedpost.userInfo.education.map((educations, index) => (
-                    <div
-                      key={index}
-                      className="w-52 border  border-gray-400 rounded-2xl ms-3"
-                    >
-                      <div className="text-center mt-2 w-52 ">
-                        <p className="font-bold capitalize mt-">
-                          {educations.School}
-                        </p>
-                        <p className="text-md capitalize my-1">
-                          {educations.Degree}
-                        </p>
-                        <p>
-                          {educations.DatesAttended} - {educations.Datesended}
-                        </p>
-                      </div>
-                      <div className="overflow-auto scrollbar-thin M scrollbar-thumb-purple-400 h-20 mt-2 mx-2">
-                        <p className="font-bold text-sm">Description</p>
-                        <p>{educations.Description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="me-10 w-5/5 grid grid-rows-[3rem,1fr]  border rounded-2xl border-purple-400 overflow-hidden">
-                <div className="flex items-center bg-white ">
-                  <p className="ms-5 font-bold">Experience</p>
-                </div>
-                <div className="overflow-x-scroll px-2 flex scrollbar-thin scrollbar-thumb-purple-400">
-                  <div className="flex justify-center mb-3 items-center"></div>
-                  {Selectedpost.userInfo.experience.map((experience, index) => (
-                    <div
-                      key={index}
-                      className="w-52 border  border-gray-400 rounded-2xl ms-3 mb-3"
-                    >
-                      <div className="text-center mt-4 w-52 ">
-                        <p className="font-bold capitalize mt-">
-                          {experience.subtitle}
-                        </p>
-                        <p className="text-md capitalize my-1">
-                          {experience.company}
-                        </p>
-                        <p>
-                          {experience.startdate} - {experience.enddate}
-                        </p>
-                        <p className="text-sm">
-                          {experience.state} , {experience.country}
-                        </p>
-                      </div>
-                      <div className="overflow-auto h-16 scrollbar-thin M scrollbar-thumb-purple-400 mx-2">
-                        <p className="font-bold text-sm">Description</p>
-                        <p>{experience.Description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="ms-10 flex items-center  flex-wrap">
-                <p className="my-1 me-2">langulage : </p>
-
-                {Selectedpost.userInfo?.languages.map((language, index) => (
-                  <p className=" text-sm">{language.language}</p>
-                ))}
-              </div>
-              <div className="flex ms-10 mb-3 items-center flex-wrap">
-                <p className="font-bold text-sm">skills : </p>
-
-                {Selectedpost.userInfo.skills.map((skill, index) => (
-                  <p
-                    key={index}
-                    className="px-2 text-white text-sm py-1 bg-purple-300 font-bold rounded-full mx-1"
-                  >
-                    {skill.skills}{" "}
-                  </p>
-                ))}
               </div>
             </div>
           </div>
@@ -592,9 +418,8 @@ const refechData = ()=>{
           Next
         </button>
       </div>
-      <ScheduleModal open={open} handleOpen={handleOpen} user={user} refechData={refechData}/>
     </>
   );
 }
 
-export default AllDetails;
+export default AcceptedList;

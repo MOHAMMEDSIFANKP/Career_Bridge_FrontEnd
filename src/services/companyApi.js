@@ -109,6 +109,22 @@ const RejectedApplyJob = (id,search) =>{
     throw error;
   });
 }
+// Get Notofication
+const CompanyNotification = (id) =>{
+  return CompanyAxiosInstant.get(`CompanyNotification/${id}/`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+// Get Company Home page UserList
+const CompanyHomeListing = (search) =>{
+  return CompanyAxiosInstant.get(`CompanyHomeListing/?search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
 
 //-----------------------------------Put or Patch methods-------------------------------/
 const EditCompanyDetails = (value, id) => {
@@ -165,6 +181,8 @@ export {
   PendingApplyJob,
   AcceptedApplyJob,
   RejectedApplyJob,
+  CompanyNotification,
+  CompanyHomeListing,
   // Put or Patch
   EditCompanyDetails,
   EditCompanyPostDetails,

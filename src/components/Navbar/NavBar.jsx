@@ -201,8 +201,15 @@ export function NavbarDefault() {
                         ? `${UserInfo.first_name} ${UserInfo.last_name}`
                         : "Unauthorize"}
                     </MenuItem>
+                   
                     <hr className="mx-4" />
-                    <div className="grid grid-cols-[9rem,1fr]" onClick={()=>navigate('/user/notifications')}>
+                    <MenuItem className="ps-5 text-center capitalize "
+                    onClick={()=>navigate(UserInfo.is_compleated ? '/user/dashboard/':'')}>
+                      Dashboard{" "}
+                    </MenuItem>
+                    <hr className="mx-4" />
+
+                    <div className="grid grid-cols-[9rem,1fr]" onClick={()=>navigate(UserInfo.is_compleated ? '/user/notifications':'')}>
                     <MenuItem className="ps-5 text-center capitalize ">
                       Notification{" "}
                       
@@ -238,7 +245,8 @@ export function NavbarDefault() {
                     </MenuItem>
                     <hr className="mx-4" />
                     <div className="grid grid-cols-[9rem,1fr]">
-                    <MenuItem className="ps-5 text-center capitalize ">
+                    <MenuItem className="ps-5 text-center capitalize "
+                    onClick={()=>navigate('/company/notification')}>
                       Notification{" "}
                       
                     </MenuItem>

@@ -7,7 +7,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ApplyJobsCreation } from "../../../services/companyApi";
 import { Chip } from "@material-tailwind/react";
+import { useLocation } from "react-router-dom";
 function HomeJoblist() {
+  const location = useLocation();
+  const user_id = location.state && location.state.user_id;
   const { UserInfo } = useSelector((state) => state.user);
 
   const [RelatedPost, setRelatedPost] = useState([]);
@@ -34,7 +37,7 @@ function HomeJoblist() {
   };
   //   Get userrelated Post in backend
   async function UserRelatedList() {
-    const res = await UserRelatedJobs(UserInfo.userinfoid);
+    const res = await UserRelatedJobs(user_id?user_id:UserInfo.userinfoid);
     setPost(res.data);
     setRelatedPost(res.data.results);
   }

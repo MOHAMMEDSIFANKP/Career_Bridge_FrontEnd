@@ -12,15 +12,19 @@ import {
 import PdfIcon from "../../../../../assets/PdfIcon.png";
 import OpenToCv from "../../../../Profile/MyinfoComponent/Modal/OpenToCv";
 import axios from "axios";
+import ScheduleModal from "./ScheduleModal/ScheduleModal";
 function AcceptedList({}) {
   const { CompanyInfo } = useSelector((state) => state.company);
 
   const [view, setView] = useState({ view: false, id: "", index: "" });
+  const [user,setuser] = useState({id:null,schedule:''})
   const [Search, setSearch] = useState("");
   const [Posts, setPosts] = useState([]);
   const [Searcheddata, setSearcheddata] = useState([]);
   const [Selectedpost, setSelectedPost] = useState(null);
-
+  // Date Schedule
+  const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(!open);
   const SelectedItem = (id, index) => {
     const sel = Posts.results.find((post) => post.id === id);
     setSelectedPost(sel);
@@ -76,6 +80,9 @@ function AcceptedList({}) {
     }
   };
 
+  const refechData = ()=>{
+  GetRequsts()
+}
   async function GetRequsts() {
     try {
       const res = await AcceptedApplyJob(CompanyInfo.companyid, Search);
@@ -198,11 +205,13 @@ function AcceptedList({}) {
                         Message
                       </button>
                       {Post.schedule ? (
-                        <button className="bg-gray-600 px-2 py-2 rounded-xl text-white font-bold">
+                        <button className="bg-gray-600 px-2 py-2 rounded-xl text-white font-bold"
+                        onClick={()=>{handleOpen(),setuser({...user,id:Post.id,schedule:Post.schedule})}}>
                           Change
                         </button>
                       ) : (
-                        <button className="bg-red-400 font-bold text-white  p-2 me-3 py-2 rounded-xl">
+                        <button className="bg-red-400 font-bold text-white  p-2 me-3 py-2 rounded-xl"
+                        onClick={()=>{handleOpen(),setuser({...user,id:Post.id,schedule:Post.schedule})}}>
                           Not Sckeduled
                         </button>
                       )}
@@ -578,6 +587,7 @@ function AcceptedList({}) {
           Next
         </button>
       </div>
+      <ScheduleModal open={open} handleOpen={handleOpen} user={user} refechData={refechData}/>
     </>
   );
 }

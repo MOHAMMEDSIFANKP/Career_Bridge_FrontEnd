@@ -226,7 +226,7 @@ function LoginPage() {
             localStorage.setItem("token", token);
             fetchUserInfo(decoded);
             if (decoded.is_compleated) {
-              navigate("/user/");
+              navigate('/user/', { state: { user_id: decoded?.userInfoId?decoded?.userInfoId:null} })
             } else {
               navigate("/user/position");
             }
