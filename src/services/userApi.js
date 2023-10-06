@@ -53,6 +53,12 @@ const UserInfo = (value) => {
     withCredentials: true,
   });
 };
+// Create User into
+const Rest_Password = (id,value) => {
+  return userAxiosInstant.post(`api/reset_password/${id}/`, value, {
+    withCredentials: true,
+  });
+};
 
 //-----------------------------Get Methods--------------------------------------------
 
@@ -271,6 +277,7 @@ export {
   UserApplyPostList,
   UserAcceptedApplyPostList,
   UserPendingApplyPostList,
+  Rest_Password,
   // Put or pach methods
   UpdateUserInfoDetails,
   ExperienceDetails,

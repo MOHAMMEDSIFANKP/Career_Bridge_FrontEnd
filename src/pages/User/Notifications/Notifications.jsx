@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import Loader from "../../../components/Loading/Loading";
-import {
-  AdminNotification,
-  AdminNotificationRead,
-} from "../../../services/adminApi";
 import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import { NotificationRead, usernotification } from "../../../services/userApi";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 function Notifications() {
+  const navigate = useNavigate()
   const {UserInfo} = useSelector((state) => state.user);
   const [NotificationList, setNotificaton] = useState([]);
   async function GetNotification() {
     const res = await usernotification(UserInfo.id);
     setNotificaton(res.data);
   }
-  const Isread = async (id, path) => {
+  const Isread = async (id, path,read) => {
+    if (read){
+      return navigate(path)
+    }
     try {
       const data = {
         is_read: true,
@@ -24,7 +25,7 @@ function Notifications() {
       if (res.status === 200) {
         const res2 = await usernotification(UserInfo.id);
         setNotificaton(res2.data);
-        // Selections(path);
+        navigate(path)
       }
     } catch (error) {
       console.log(error);
@@ -104,7 +105,7 @@ function Notifications() {
                 <div>
                   <button
                     className="me-7 text-gray-700 font-bold"
-                    onClick={() => Isread(notify.id, notify.path)}
+                    onClick={() => Isread(notify.id, notify.path,notify.is_read)}
                   >
                     View
                   </button>

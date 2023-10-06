@@ -14,6 +14,7 @@ import ProfileCreation from '../pages/User/RegisterSteps/ProfileCreation';
 import Notifications from '../pages/User/Notifications/Notifications';
 import Jobs from '../pages/User/Jobs/Jobs';
 import Dashboard from '../pages/User/Dashboard/Dashboard';
+import UserChat from '../pages/User/UserChat/UserChat';
 function UserRoutes() {
 
   return (
@@ -35,7 +36,7 @@ function UserRoutes() {
         <Route path='/jobs/:itemName' element={<Jobs/>}/>
         <Route path='/jobs/' element={<Jobs/>}/>
         <Route path='/dashboard/' element={<Dashboard/>}/>
-        
+        <Route path='/chat/' element={<UserChat/>}/>
       </Route>
     </Routes>
   );

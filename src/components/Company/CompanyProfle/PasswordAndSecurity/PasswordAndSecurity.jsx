@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import Editimg from "../../assets/Edit.png";
+import Editimg from "../../../../assets/Edit.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Loader from "../Loading/Loading";
-import { Rest_Password } from "../../services/userApi";
+import Loader from "../../../Loading/Loading";
+import { Rest_Password } from "../../../../services/userApi";
 import { useSelector } from "react-redux";
-export function PasswordSecurity() {
-  const { UserInfo } = useSelector((state) => state.user);
-  const [view, setview] = useState(false);
+export function PasswordAndSecurity() {
+    const { CompanyInfo } = useSelector((state) => state.company);
+    const [view, setview] = useState(false);
   const [password, setPassword] = useState({
     old_password: "",
     new_password: "",
@@ -77,7 +77,7 @@ export function PasswordSecurity() {
     if (Validation()) {
       try {
         handleLoading()
-        const res = await Rest_Password(UserInfo.id,password)
+        const res = await Rest_Password(CompanyInfo.id,password)
         if (res.status===200){
           toast.success(res.data.message)
         }

@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setCompanyDetails } from "../../../Redux/CompanySlice";
 // React Query
 import { useQuery } from "react-query";
+import { PasswordAndSecurity } from "../../../components/Company/CompanyProfle/PasswordAndSecurity/PasswordAndSecurity";
 
 function CompanyProfile() {
   const [option, setOption] = useState("myinfo");
@@ -266,10 +267,11 @@ function CompanyProfile() {
           <div className="w-full">
             <div className="container mx-auto">
               {option === "myinfo" && <ComapnyMyInfo />}
-              {/* {option === "password&security" && <PasswordSecurity />}
-                {option === "terms" && <MyinfoComponent />}
-                {option === "notification" && <MyinfoComponent />}
-                {option === "members&Permision" && <MyinfoComponent />} */}
+             {option === 'password&security' && <PasswordAndSecurity/>}
+             {option === "terms" && <ComapnyMyInfo />}
+             {option === "notification" && <ComapnyMyInfo />}
+             {option === "members&Permision" && <ComapnyMyInfo />}
+            
             </div>
           </div>
         </div>

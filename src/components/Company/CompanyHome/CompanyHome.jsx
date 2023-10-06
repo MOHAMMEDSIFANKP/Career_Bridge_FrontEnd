@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import Loader from "../../Loading/Loading";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import {
-  AcceptedApplyJob,
-  AcceptOrRejectedApplyJob,
   CompanyHomeListing,
 } from "../../../services/companyApi";
 import PdfIcon from "../../../assets/PdfIcon.png";
 import OpenToCv from "../../Profile/MyinfoComponent/Modal/OpenToCv";
 import axios from "axios";
 import ScheduleModal from "../Dashboard/RequestsComponents/CompanyList/ScheduleModal/ScheduleModal";
+import InviteModal from "./InviteModal/InviteModal";
 function CompanyHome({}) {
   const { CompanyInfo } = useSelector((state) => state.company);
 
@@ -27,6 +25,10 @@ function CompanyHome({}) {
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
+  // Invite Job
+  const [open, setOpen] = useState(false);
+ 
+  const handleOpen = () => setOpen(!open);
   // Cv
   const [openCv, setOpenCv] = useState(false);
   const handleOpenCv = () => setOpenCv(!openCv);
@@ -135,7 +137,8 @@ function CompanyHome({}) {
                     <p className="font-bold capitalize text-gray-800">
                       {Post.userId?.first_name} {Post.userId?.last_name}
                     </p>
-                    <p className="bg-purple-300 me-3 font-bold text-white rounded-xl px-3">
+                    <p className="bg-purple-300 me-3 font-bold text-white rounded-xl px-3"
+                    onClick={handleOpen}>
                       Invite user
                     </p>
                   </div>
@@ -413,6 +416,7 @@ function CompanyHome({}) {
           Next
         </button>
       </div>
+      <InviteModal open={open} handleOpen={handleOpen} Selectedpost={Selectedpost}/>
     </>
   );
 }

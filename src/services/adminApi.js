@@ -210,6 +210,17 @@ const BlockedSkillsLists = (search) => {
       throw error;
     });
 };
+// Chart in dashboard
+const GetChartData = () => {
+  return adminAxiosInstant
+    .get('get_chart_data/', {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 
 // ---------------------------------------Put or Patch Methoda-------------------------------//
 // User Block Unblock
@@ -304,6 +315,7 @@ export {
   JobTitledBlockedList,
   SkilLslist,
   BlockedSkillsLists,
+  GetChartData,
   UserBlockUnBlock,
   VerifyAndBlock,
   PostBlockedUnblocked,
