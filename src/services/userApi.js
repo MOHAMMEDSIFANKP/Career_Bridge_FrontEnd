@@ -143,6 +143,14 @@ const UserPendingApplyPostList = (id,search) => {
     })
     .catch((error) => error.response);
 };
+// Comany List for chatting
+const CompaniesList = (id) => {
+  return userAxiosInstant
+    .get(`api/CompaniesList/${id}/`, {
+      withCredentials: true,
+    })
+    .catch((error) => error.response);
+};
 
 //--------------------------Put or Patch Methods (for Updation)-------------------------------
 
@@ -278,6 +286,7 @@ export {
   UserAcceptedApplyPostList,
   UserPendingApplyPostList,
   Rest_Password,
+  CompaniesList,
   // Put or pach methods
   UpdateUserInfoDetails,
   ExperienceDetails,
