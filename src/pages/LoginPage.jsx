@@ -279,9 +279,11 @@ function LoginPage() {
       const decoded = jwtDecode(token);
       if (decoded.role === "user") {
         localStorage.setItem("token", token);
-        navigate("/user/");
+        fetchUserInfo(decoded);
+        navigate('/user/', { state: { user_id: decoded?.userInfoId?decoded?.userInfoId:null} })
       } else if (decoded.role === "company") {
         localStorage.setItem("token", token);
+        FechCompanyInfo(decoded);
         navigate("/company/");
       }
       setgUser([]);
@@ -362,7 +364,7 @@ function LoginPage() {
               </div>
               <div
                 onClick={() => login()}
-                className="flex rounded-3xl py-2 bg-purple-300 items-center"
+                className="flex rounded-3xl py-2 cursor-pointer bg-purple-300 items-center"
               >
                 <img
                   src={userImage}
@@ -383,7 +385,7 @@ function LoginPage() {
                   className="ml-2 rounded-full h-8"
                 />
                 <span className="flex-1 text-center font-bold text-white">
-                  Continue with giT
+                  Continue with Google
                 </span>
               </div>
               <div className="flex justify-center my-3 ">

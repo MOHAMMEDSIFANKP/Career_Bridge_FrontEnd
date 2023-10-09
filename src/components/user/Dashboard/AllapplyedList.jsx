@@ -5,7 +5,9 @@ import Loader from "../../Loading/Loading";
 
 import axios from "axios";
 import { UserApplyPostList } from "../../../services/userApi";
+import { useNavigate } from "react-router-dom";
 function AllapplyedList() {
+  const navigate = useNavigate()
   const { UserInfo } = useSelector((state) => state.user);
 
   const [view, setView] = useState({ view: false, id: "", index: "" });
@@ -24,6 +26,11 @@ function AllapplyedList() {
     setView({ view: true, id: id, index: index });
   };
 
+    // Message
+    const ClickMessage = (id) => {
+      const sel = Posts.results.find((post) => post.id === id);
+      navigate('/user/chat', { state: { sel } })
+    }
   // For seraching
   const handleSearch = async (searchTerm) => {
     setSearch(searchTerm);
@@ -154,7 +161,8 @@ function AllapplyedList() {
                 <div className="flex justify-center items-center gap-4">
                   {Post.accepted ? (
                     <>
-                      <button className="font-bold text-white bg-green-400 px-2 py-1 rounded-xl">
+                      <button className="font-bold text-white bg-green-400 px-2 py-1 rounded-xl"
+                      onClick={()=>ClickMessage(Post.id)}>
                         Message
                       </button>
                       <p className="text-green-400 font-bold">Accepted</p>

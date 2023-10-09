@@ -39,6 +39,9 @@ const GetLanguages = () => {
 const AdminJobFieldList = () => {
   return adminAxiosInstant.get("JobFieldListAndCreater/", {
     withCredentials: true,
+  })
+  .catch((error) => {
+    throw error;
   });
 };
 

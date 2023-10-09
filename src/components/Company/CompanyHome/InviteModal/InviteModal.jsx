@@ -33,8 +33,8 @@ function InviteModal({ open, handleOpen, Selectedpost }) {
                   Clear
                 </button>
               </div>
-              <div className="overflow-x-scroll mt-2 h-[12rem] px-2 flex text-sm scrollbar-thin scrollbar-thumb-purple-400">
-                  {Selectedpost.experience.map((experience, index) => (
+              <div className="overflow-x-scroll mt-4 h-[12rem] px-2 flex text-sm scrollbar-thin scrollbar-thumb-purple-400">
+                  {/* {Selectedpost.experience.map((experience, index) => (
                     <div
                       key={index}
                       className="w-52 border border-gray-400 rounded-2xl ms-3 mb-3"
@@ -58,7 +58,7 @@ function InviteModal({ open, handleOpen, Selectedpost }) {
                         <p>{experience.Description}</p>
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                   
                 </div>
             </div>

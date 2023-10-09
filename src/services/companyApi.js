@@ -126,6 +126,16 @@ const CompanyHomeListing = (search) =>{
   });
 }
 
+// Get Get Chating UserList
+const UsersListing = (id,search) =>{
+  return CompanyAxiosInstant.get(`userslisting/${id}/?search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
+
+
 //-----------------------------------Put or Patch methods-------------------------------/
 const EditCompanyDetails = (value, id) => {
   return CompanyAxiosInstant.put(`companydetails/${id}/`, value, {
@@ -183,6 +193,8 @@ export {
   RejectedApplyJob,
   CompanyNotification,
   CompanyHomeListing,
+  UsersListing,
+
   // Put or Patch
   EditCompanyDetails,
   EditCompanyPostDetails,

@@ -8,6 +8,7 @@ import CompanyProfile from "../pages/Company/CompanyProfile/CompanyProfile";
 import CompanyDashboard from "../pages/Company/CompanyDashboard/CompanyDashboard";
 import UserFullData from "../components/Company/Dashboard/RequestsComponents/CompanyList/UserFullData";
 import CompanyNotifications from "../pages/Company/CompanyNotifications";
+import CompanyChat from "../pages/Company/CompanyChat/CompanyChat";
 function CompanyRoutes() {
   return (
     <Routes>
@@ -21,6 +22,7 @@ function CompanyRoutes() {
         <Route path="/dashboard" element={<CompanyDashboard />} /> 
         <Route path="/userdetails" element={<UserFullData />} /> 
         <Route path="/notification" element={<CompanyNotifications />} /> 
+        <Route path="/chat" element={<CompanyChat />} /> 
       </Route>
     </Routes>
   );

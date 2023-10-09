@@ -13,7 +13,9 @@ import PdfIcon from "../../../../../assets/PdfIcon.png";
 import OpenToCv from "../../../../Profile/MyinfoComponent/Modal/OpenToCv";
 import axios from "axios";
 import ScheduleModal from "./ScheduleModal/ScheduleModal";
+import { useNavigate } from "react-router-dom";
 function AllDetails({}) {
+  const navigate = useNavigate()
   const { CompanyInfo } = useSelector((state) => state.company);
 
   const [view, setView] = useState({ view: false, id: "", index: "" });
@@ -32,6 +34,11 @@ function AllDetails({}) {
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
+    // Message
+    const ClickMessage = (id) => {
+      const sel = Posts.results.find((post) => post.id === id);
+      navigate('/company/chat', { state: { sel } })
+    }
   // Cv
   const [openCv, setOpenCv] = useState(false);
   const handleOpenCv = () => setOpenCv(!openCv);
@@ -204,7 +211,8 @@ const refechData = ()=>{
                 <div className="flex justify-center items-center gap-4">
                   {Post.accepted ? (
                     <>
-                      <button className="bg-green-600 font-bold text-white px-4 py-2 rounded-xl">
+                      <button className="bg-green-600 font-bold text-white px-4 py-2 rounded-xl"
+                      onClick={()=>ClickMessage(Post.id)}>
                         Message
                       </button>
                       {Post.schedule ? (

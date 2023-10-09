@@ -165,7 +165,7 @@ export function NavbarDefault() {
               </MenuHandler>
               <MenuList className="rounded-xl text-black">
                 <MenuItem className="flex justify-center items-center ">
-                  <div className="w-16 h-16 flex justify-center p-1 rounded-full border-2 border-purple-400">
+                  <div className="w-20 h-20 flex justify-center p-1 rounded-full border-2 border-purple-400">
                     {UserInfo.profile_image ? (
                       <img
                         src={
@@ -220,6 +220,11 @@ export function NavbarDefault() {
                       />
                    </div>
                     </div>
+                    <hr className="mx-4" />
+                    <MenuItem className="ps-5 text-center capitalize "
+                    onClick={()=>navigate('/user/chat')}>
+                      Chat
+                    </MenuItem>
                     {/*  */}
                   </>
                 ) : (
@@ -256,6 +261,10 @@ export function NavbarDefault() {
                       />):''}
                    </div>
                    </div>
+                   <MenuItem className="ps-5 text-center capitalize "
+                    onClick={()=>navigate('/company/chat')}>
+                      Chat
+                    </MenuItem>
                   </>
                 )}
                 <hr className="mx-4" />

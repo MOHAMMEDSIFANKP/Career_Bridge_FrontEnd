@@ -88,6 +88,7 @@ export function AddPost({ open, handleOpen }) {
     try {
       handleLoading();
       const response = await AdminJobFieldList();
+      console.log(response);
       setJobfield(response.data);
       const response2 = await AdminJobTitlelist();
       setJobTitle(response2.data);

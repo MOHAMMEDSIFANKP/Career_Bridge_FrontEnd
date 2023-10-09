@@ -3,35 +3,34 @@ import { NavbarDefault } from "../../../components/Navbar/NavBar";
 import defaultprofile from "../../../assets/defaultprofile.jpeg";
 import { useQuery } from "react-query";
 import Loader from "../../../components/Loading/Loading";
-import { CompaniesList } from "../../../services/userApi";
 import { useSelector } from "react-redux";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { wsApiUrl } from "../../../constants/constants";
 import { userAxiosInstant } from "../../../utils/axiosUtils";
+import { UsersListing } from "../../../services/companyApi";
 import { useLocation } from "react-router-dom";
-function UserChat() {
+function CompanyChat() {
   const location = useLocation();
-  const CompanyData = location.state && location.state.sel;
-
-  const { UserInfo } = useSelector((state) => state.user);
-  const [CompanyList, setCompanyList] = useState([]);
+  const UserData = location.state && location.state.sel;
+  const { CompanyInfo } = useSelector((state) => state.company);
+  const [UsersList, setUsersList] = useState([]);
   const [Search, setSearch] = useState("");
 
-  const [senderdetails, setSenderDetails] = useState(UserInfo);
+  const [senderdetails, setSenderDetails] = useState(CompanyInfo);
   const [recipientdetails, setRecipientDetails] = useState({});
   const [clientstate, setClientState] = useState("");
   const [messages, setMessages] = useState([]);
   const messageRef = useRef();
 
   useEffect(() => {
-    if (CompanyData) {
+    if (UserData) {
       setRecipientDetails({
-        id: CompanyData.Post.companyinfo.userId.id,
-        email: CompanyData.Post.companyinfo.userId.email,
-        profile_image: CompanyData.Post.companyinfo.userId.profile_image,
+        id: UserData.user.id,
+        email: UserData.user.email,
+        profile_image: UserData.user.profile_image,
       });
     }
-  }, [CompanyData]);
+  }, [UserData]);
   const onButtonClicked = () => {
     if (messageRef.current.value.trim() == "") {
       return;
@@ -47,15 +46,11 @@ function UserChat() {
   };
 
   const setUpChat = () => {
-    userAxiosInstant
-      .get(
-        `chat/user-previous-chats/${senderdetails.id}/${recipientdetails.id}/`
-      )
-      .then((response) => {
-        if (response.status == 200) {
-          setMessages(response.data);
-        }
-      });
+    userAxiosInstant.get(`chat/user-previous-chats/${senderdetails.id}/${recipientdetails.id}/`).then((response) => {
+      if (response.status == 200) {
+          setMessages(response.data)
+      }
+  })
     const client = new W3CWebSocket(
       `${wsApiUrl}/ws/chat/${senderdetails.id}/?${recipientdetails.id}`
     );
@@ -97,8 +92,8 @@ function UserChat() {
   const HandleSearch = async (e) => {
     setSearch(e.target.value);
     try {
-      const res = await CompaniesList(UserInfo.id, e.target.value);
-      setCompanyList(res.data);
+      const res = await UsersListing(CompanyInfo.id, e.target.value);
+      setUsersList(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -107,17 +102,17 @@ function UserChat() {
   const clearSearchAndFetchAll = async () => {
     setSearch("");
     try {
-      const res = await CompaniesList(UserInfo.id, "");
-      setCompanyList(res.data);
+      const res = await UsersListing(CompanyInfo.id, "");
+      setUsersList(res.data);
     } catch (error) {
       console.log(error);
     }
   };
   // Data fech in backend
-  async function GetCompanyList() {
+  async function GetUserList() {
     try {
-      const res = await CompaniesList(UserInfo.id, Search);
-      setCompanyList(res.data);
+      const res = await UsersListing(CompanyInfo.id, Search);
+      setUsersList(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -125,8 +120,8 @@ function UserChat() {
 
   //---------------------------- React quary---------------------------------------//
   const { data, isLoading, isError } = useQuery(
-    "GetCompanyList",
-    GetCompanyList
+    "GetUserList",
+    GetUserList
   );
   if (isLoading) {
     return <Loader />;
@@ -200,32 +195,32 @@ function UserChat() {
             <div className="mx-4">
               <p className="font-bold text-gray-800">Chat</p>
 
-              {CompanyList.length > 0 ? (
-                CompanyList.map((company, index) => (
+              {UsersList.length > 0 ? (
+                UsersList.map((users, index) => (
                   <div
                     key={index}
                     className="bg-purple-50 cursor-pointer rounded-xl my-3 grid grid-cols-[3.5rem,1fr,2rem]"
                     onClick={() =>
                       setRecipientDetails({
-                        id: company.userId,
-                        email: company.email,
-                        profile_image: company.profile_image,
+                        id: users.userId,
+                        email: users.email,
+                        profile_image: users.profile_image,
                       })
                     }
                   >
                     <div className="rounded-full flex justify-center items-center my-1 ms-2 w-10 h-10">
                       <img
-                        src={company.profile_image || defaultprofile}
+                        src={users.profile_image || defaultprofile}
                         alt=""
                         className="rounded-full h-9 w-9 border"
                       />
                     </div>
                     <div className="flex justify-start items-center">
-                      <p className="text-gray-800 capitalize">
-                        {company.company_name}
+                      <p className="text-gray-800 text-sm capitalize">
+                        {users.first_name} {users.last_name}
                       </p>
                     </div>
-                    <div>{company.someValue}</div>
+                    <div>{users.someValue}</div>
                   </div>
                 ))
               ) : (
@@ -333,4 +328,4 @@ function UserChat() {
   );
 }
 
-export default UserChat;
+export default CompanyChat;

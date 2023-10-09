@@ -144,9 +144,9 @@ const UserPendingApplyPostList = (id,search) => {
     .catch((error) => error.response);
 };
 // Comany List for chatting
-const CompaniesList = (id) => {
+const CompaniesList = (id,search) => {
   return userAxiosInstant
-    .get(`api/CompaniesList/${id}/`, {
+    .get(`api/CompaniesList/${id}/?search=${search}`, {
       withCredentials: true,
     })
     .catch((error) => error.response);

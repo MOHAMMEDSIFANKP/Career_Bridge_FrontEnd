@@ -5,7 +5,9 @@ import { NavbarDefault } from "../../components/Navbar/NavBar";
 import { NotificationRead} from "../../services/userApi";
 import { useSelector } from "react-redux";
 import { CompanyNotification } from "../../services/companyApi";
+import { useNavigate } from "react-router-dom";
 function CompanyNotifications() {
+  const navigate = useNavigate()
   const {CompanyInfo} = useSelector((state) => state.company);
   const [NotificationList, setNotificaton] = useState([]);
   async function GetNotification() {
@@ -22,6 +24,7 @@ function CompanyNotifications() {
       if (res.status === 200) {
         const res2 = await CompanyNotification(CompanyInfo.id);
         setNotificaton(res2.data);
+        navigate(path)
       }
     } catch (error) {
       console.log(error);
