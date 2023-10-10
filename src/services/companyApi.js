@@ -35,6 +35,30 @@ const ApplyJobsCreation = (values) =>{
     throw error;
   });
 }
+// Invite Jobs
+const InviteUserCreate = (values) =>{
+  return CompanyAxiosInstant.post("inviteusercreate/", values, {
+    withCredentials:true,
+  }).catch((error) => {
+    throw error;
+  });
+}
+
+// Invite Jobs user acceepted
+const IviteAcceptedUsers = (id) =>{
+  return CompanyAxiosInstant.post(`iviteacceptedusers/${id}/`, {
+    withCredentials:true,
+  }).catch((error) => {
+    throw error;
+  });
+}
+const InviteRejectedUsers = (id) =>{
+  return CompanyAxiosInstant.post(`iviterejectedusers/${id}/`, {
+    withCredentials:true,
+  }).catch((error) => {
+    throw error;
+  });
+}
 
 //------------------------------------Get methods--------------------------------------/
 const GetCompanyDetails = (id) => {
@@ -135,6 +159,14 @@ const UsersListing = (id,search) =>{
   });
 }
 
+// Get Get Chating UserList
+const InviteUserListUserside = (id,search) =>{
+  return CompanyAxiosInstant.get(`inviteUserlistuserside/${id}/?search=${search}`,{
+    withCredentials:true
+  }).catch((error) => {
+    throw error;
+  });
+}
 
 //-----------------------------------Put or Patch methods-------------------------------/
 const EditCompanyDetails = (value, id) => {
@@ -182,6 +214,9 @@ export {
   CompanyInfoCreate,
   CompanyPostlistCreate,
   ApplyJobsCreation,
+  InviteUserCreate,
+  IviteAcceptedUsers,
+  InviteRejectedUsers,
   GetCompanyDetails,
   GetListOfCompanyPost,
   listofcompanypostarchived,
@@ -194,6 +229,7 @@ export {
   CompanyNotification,
   CompanyHomeListing,
   UsersListing,
+  InviteUserListUserside,
 
   // Put or Patch
   EditCompanyDetails,

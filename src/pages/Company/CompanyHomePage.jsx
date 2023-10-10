@@ -70,6 +70,7 @@ function CompanyHomePage() {
                   ? "bg-gray-200 border border-gray-300"
                   : ""
               }`}
+              onClick={()=>navigate('/company/allusers')}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +87,7 @@ function CompanyHomePage() {
                 />
               </svg>
 
-              <p className="ms-4 ont-bold text-sm text-gray-800">Users</p>
+              <p className="ms-4 ont-bold text-sm text-gray-800">All Users</p>
             </div>
           </div>
           <div className="h-[50rem]  scrollbar-none overflow-y-auto mx-10">

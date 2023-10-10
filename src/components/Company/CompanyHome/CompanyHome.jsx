@@ -416,7 +416,7 @@ function CompanyHome({}) {
           Next
         </button>
       </div>
-      <InviteModal open={open} handleOpen={handleOpen} Selectedpost={Selectedpost}/>
+      <InviteModal open={open} handleOpen={handleOpen} Selectedpost={Selectedpost} resetView={resetView}/>
     </>
   );
 }

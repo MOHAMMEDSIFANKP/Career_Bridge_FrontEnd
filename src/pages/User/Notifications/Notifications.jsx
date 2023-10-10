@@ -59,7 +59,7 @@ function Notifications() {
         <div>
           <NavbarDefault />{" "}
         </div>
-        <div className="ps-6 mt-6 flex text-3xl items-center">
+        <div className="ps-6  container mx-auto mt-6 flex text-3xl items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -76,7 +76,7 @@ function Notifications() {
           </svg>
           <p className="ms-3 font-bold">Notification</p>
         </div>
-        <div className="overflow-y-auto mt-7 ms-2 me-5 rounded-xl shadow border h-[48rem]">
+        <div className="overflow-y-auto mt-7  container mx-auto rounded-xl  h-[48rem]">
           {NotificationList.length > 0 ? (
             NotificationList.map((notify, index) => (
               <div
