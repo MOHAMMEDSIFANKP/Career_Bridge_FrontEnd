@@ -41,7 +41,7 @@ function Dashboard() {
                   }`}
                   onClick={() => setselected("Pending")}
                 >
-                  Pending List
+                  Invite List
                 </div>
               </div>
             </div>

@@ -144,7 +144,7 @@ function BioComponents() {
               )}
             </div>
           ) : (
-            <div className="rounded-xl mx-3 my-3  h-24 border border-gray-300 bg-purple-50 ">
+            <div className="rounded-xl mx-3 my-3 overflow-auto scrollbar-thin M scrollbar-thumb-purple-400 h-24 border border-gray-300 bg-purple-50 ">
               <p className="ms-3 break-all">{UserInfo.bio}</p>
             </div>
           )}

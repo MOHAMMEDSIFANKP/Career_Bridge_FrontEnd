@@ -8,15 +8,18 @@ import {
 } from "../../../services/adminApi";
 import { useQuery } from "react-query";
 import Loader from "../../../components/Loading/Loading";
-import { UserPostLists } from "../../../services/userApi";
 import { useSelector } from "react-redux";
-import { ApplyJobsCreation } from "../../../services/companyApi";
+import {
+  ApplyJobsCreation,
+  userListCompany,
+} from "../../../services/companyApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+import InviteModal from "../../../components/Company/CompanyHome/InviteModal/InviteModal";
 
 function AllUsersList() {
-  const { UserInfo } = useSelector((state) => state.user);
+  const { CompanyInfo } = useSelector((state) => state.company);
   const [view, setView] = useState({ view: false, id: "", index: "" });
   const [Search, setSearch] = useState("");
   const [Lists, setLists] = useState([]);
@@ -47,10 +50,7 @@ function AllUsersList() {
   const [openJobTitle, setOpenJobTitle] = React.useState(false);
   const toggleOpenJobTitle = () => setOpenJobTitle((cur) => !cur);
   const displayJobTitle = showAllJobTitle ? JobTitle : JobTitle.slice(0, 5);
-  // Talent type
-  const [selectedTalentrype, setSelectedTalentrype] = useState([]);
-  const [openTalenttype, setOpenTalenttype] = React.useState(false);
-  const toggleOpenTalenttype = () => setOpenTalenttype((cur) => !cur);
+
   // Skills add and remove
   const handleCheckboxClick = async (skill) => {
     const isSkillSelected = selectedSkills.includes(skill);
@@ -67,16 +67,15 @@ function AllUsersList() {
     const skillsQueryParam = updatedSelectedSkills.join(",");
     const jobCategoriesQueryParam = selectedJobCategory.join(",");
     const jobTitleQueryParam = selectedJobTitle.join(",");
-    const talenttypeQueryParam = selectedTalentrype.join(",");
     try {
       const search = "";
-      const res = await UserPostLists(
-        UserInfo.userinfoid,
+      const res = await userListCompany(
+        CompanyInfo.companyid,
         search,
         skillsQueryParam,
         jobCategoriesQueryParam,
         jobTitleQueryParam,
-        talenttypeQueryParam
+        
       );
       console.log(res.data);
       setLists(res.data);
@@ -100,16 +99,15 @@ function AllUsersList() {
     const skillsQueryParam = selectedSkills.join(",");
     const jobCategoriesQueryParam = updatedSelectedJobcategory.join(",");
     const jobTitleQueryParam = selectedJobTitle.join(",");
-    const talenttypeQueryParam = selectedTalentrype.join(",");
     try {
       const search = "";
-      const res = await UserPostLists(
-        UserInfo.userinfoid,
+      const res = await userListCompany(
+        CompanyInfo.companyid,
         search,
         skillsQueryParam,
         jobCategoriesQueryParam,
         jobTitleQueryParam,
-        talenttypeQueryParam
+        
       );
       setLists(res.data);
       setSearcheddata(res.data.results);
@@ -132,50 +130,16 @@ function AllUsersList() {
     const skillsQueryParam = selectedSkills.join(",");
     const jobCategoriesQueryParam = selectedJobCategory.join(",");
     const jobTitleQueryParam = updatedSelectedJobTitle.join(",");
-    const talenttypeQueryParam = selectedTalentrype.join(",");
     try {
       const search = "";
-      const res = await UserPostLists(
-        UserInfo.userinfoid,
+      const res = await userListCompany(
+        CompanyInfo.companyid,
         search,
         skillsQueryParam,
         jobCategoriesQueryParam,
         jobTitleQueryParam,
-        talenttypeQueryParam
+        
       );
-      setLists(res.data);
-      setSearcheddata(res.data.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // TalentType add and remove
-  const handleCheckboxTalentrype = async (Talentrype) => {
-    const isTalentrypeSelected = selectedTalentrype.includes(Talentrype);
-    let updatedSelectedTalentType;
-    if (isTalentrypeSelected) {
-      updatedSelectedTalentType = selectedTalentrype.filter(
-        (selected) => selected !== Talentrype
-      );
-    } else {
-      updatedSelectedTalentType = [...selectedTalentrype, Talentrype];
-    }
-    setSelectedTalentrype(updatedSelectedTalentType);
-    const skillsQueryParam = selectedSkills.join(",");
-    const jobCategoriesQueryParam = selectedJobCategory.join(",");
-    const jobTitleQueryParam = selectedJobTitle.join(",");
-    const talenttypeQueryParam = updatedSelectedTalentType.join(",");
-    try {
-      const search = "";
-      const res = await UserPostLists(
-        UserInfo.userinfoid,
-        search,
-        skillsQueryParam,
-        jobCategoriesQueryParam,
-        jobTitleQueryParam,
-        talenttypeQueryParam
-      );
-      console.log(res.data.results);
       setLists(res.data);
       setSearcheddata(res.data.results);
     } catch (error) {
@@ -183,17 +147,17 @@ function AllUsersList() {
     }
   };
 
+
   //   For searching
   const handleSearch = async (searchTerm) => {
     setSearch(searchTerm);
     try {
-      const res = await UserPostLists(
-        UserInfo.userinfoid,
+      const res = await userListCompany(
+        CompanyInfo.companyid,
         searchTerm,
         selectedSkills,
         selectedJobCategory,
         selectedJobTitle,
-        selectedTalentrype
       );
       setLists(res.data);
       setSearcheddata(res.data.results);
@@ -201,6 +165,7 @@ function AllUsersList() {
       console.log(error);
     }
   };
+
 
   const handleClear = () => {
     setSearch("");
@@ -208,7 +173,6 @@ function AllUsersList() {
     setSelectedSkills([]);
     setSelectedJobCategory([]);
     setSelectedJobTitle([]);
-    setSelectedTalentrype([]);
   };
   //   Select a Post
   const SelectedItem = (id, index) => {
@@ -216,30 +180,26 @@ function AllUsersList() {
     setSelectedPost(sel);
     setView({ view: true, id: id, index: index });
   };
-  // ApplyForJob
-  const ApplyForJob = async () => {
-    const data = {
-      comanyInfo: Selectedpost.companyinfo.id,
-      userInfo: UserInfo.userinfoid,
-      Post: Selectedpost.id,
-    };
-    const res = await ApplyJobsCreation(data);
+   // Rest View
+   const resetView = () => {
     setView({ view: false, id: "", index: "" });
-    toast.success("Applyed Successfully");
-    Filters();
   };
+  // Invite Job
+  const [opens, setOpens] = useState(false);
+  const handleOpen = () => setOpens(!opens);
+  // inviteButton
+
   // Feching data from backend
-  const Filters = async (itemName = '') => {
+  const Filters = async (itemName = "") => {
     try {
       handleLoading();
-      const search = itemName || '';
-      const res4 = await UserPostLists(
-        UserInfo.userinfoid,
+      const search = itemName || "";
+      const res4 = await userListCompany(
+        CompanyInfo.companyid,
         search,
         selectedSkills,
         selectedJobCategory,
         selectedJobTitle,
-        selectedTalentrype
       );
       const res = await AdminSkillsList(search);
       const res2 = await AdminJobFieldList();
@@ -493,89 +453,11 @@ function AllUsersList() {
                 </div>
               </Collapse>
             </div>
-            <div>
-              <div className="flex justify-between mx-5 ">
-                <p className="font-bold ">Talent Type </p>
-                {openTalenttype ? (
-                  <svg
-                    onClick={toggleOpenTalenttype}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    onClick={toggleOpenTalenttype}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                )}
-              </div>
-              <Collapse open={openTalenttype} className="ms-6 ">
-                <div>
-                  <div className="flex gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedTalentrype.includes("fresher")}
-                      onChange={() => handleCheckboxTalentrype("fresher")}
-                    />
-                    <p
-                      className="cursor-pointer hover:text-blue-gray-400"
-                      onClick={() => handleCheckboxTalentrype("fresher")}
-                    >
-                      fresher
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedTalentrype.includes("intermediate")}
-                      onChange={() => handleCheckboxTalentrype("intermediate")}
-                    />
-                    <p
-                      className="cursor-pointer hover:text-blue-gray-400"
-                      onClick={() => handleCheckboxTalentrype("intermediate")}
-                    >
-                      intermediate
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedTalentrype.includes("export")}
-                      onChange={() => handleCheckboxTalentrype("export")}
-                    />
-                    <p
-                      className="cursor-pointer hover:text-blue-gray-400"
-                      onClick={() => handleCheckboxTalentrype("export")}
-                    >
-                      expert
-                    </p>
-                  </div>
-                </div>
-              </Collapse>
-            </div>
+           
           </div>
           <div className="border rounded-2xl shadow me-10 h-[50rem] scrollbar-thumb-amber-600 overflow-y-auto">
+          {!view.view ? (
+              <>
             <div className="ms-2 sticky top-0">
               <input
                 type="text"
@@ -594,12 +476,9 @@ function AllUsersList() {
             <p className="mx-10 font-bold sticky top-14 text-gray-900 text-sm">
               {Lists.count ? Lists.count : 0} result found
             </p>
-            {!view.view ? (
-              <>
+            
                 {Searcheddata.length > 0 ? (
-                  Searcheddata.filter(
-                    (Post) => !Post.is_blocked && !Post.is_deleted
-                  ).map((Post, index) => (
+                  Searcheddata.map((Post, index) => (
                     <div
                       key={index}
                       className="grid grid-rows-[6rem,1fr] cursor-pointer hover:bg-gray-100 text-gray-600 border mx-8 mt-4  rounded-2xl shadow"
@@ -607,30 +486,32 @@ function AllUsersList() {
                     >
                       <div className="flex justify-between ">
                         <div className="w-full flex  items-center">
-                          <div className="ms-10 w-20 rounded-full border p-1 borde-purple-100">
+                          <div className="ms-9 w-16 h-16 rounded-full flex justify-center items-center border p-1 border-purple-100">
                             <img
-                              src={Post.user_profile.profile_image}
-                              className="rounded-full"
-                              alt=""
+                              src={Post.userId?.profile_image}
+                              className="rounded-full h-full w-full"
+                              alt="Profile"
                             />
                           </div>
-                          <div className="ms-3 -mt-4">
-                            <p className="font-bold text-black pt-2 capitalize">
-                              {Post.Jobtitle.title_name}
-                            </p>
+
+                          <div className="ms-3 ">
                             <p className="font-bold text-gray-700">
-                              {Post.companyinfo.company_name}
+                              {Post.userId?.first_name} {Post.userId?.last_name}
                             </p>
                           </div>
                         </div>
                         <div className="me-3 -mt-5 flex justify-center items-center">
-                         {Post.applied? (<Chip
-                            variant="ghost"
-                            color="green"
-                            size="sm"
-                            value="A p p l i e d"
-                            className="me-6"
-                          />):''}
+                          {Post.invited ? (
+                            <Chip
+                              variant="ghost"
+                              color="green"
+                              size="sm"
+                              value="i n v i t e d"
+                              className="me-6"
+                            />
+                          ) : (
+                            ""
+                          )}
                           <button>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -665,7 +546,7 @@ function AllUsersList() {
                             d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"
                           />
                         </svg>
-                        <p className="ms-2">{Post.work_time}</p>
+                        <p className="ms-2">{Post.jobTitle?.title_name}</p>
                         <p className="mx-2 text-gray-700 ">|</p>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -687,8 +568,7 @@ function AllUsersList() {
                           />
                         </svg>
                         <p className="ms-2">
-                          {Post.companyinfo.country} / {Post.companyinfo.state}{" "}
-                          / {Post.companyinfo.city}
+                          {Post.state} / {Post.city}
                         </p>
                       </div>
                       <div className="ms-9 mt-1 flex  flex-wrap">
@@ -716,41 +596,6 @@ function AllUsersList() {
                           <p className="mb-3 ms-2">...</p>
                         )}
                       </div>
-                      <div className="ms-10 ">
-                        <p className="text-sm text-gray-600 font-bold">
-                          Education qualification
-                        </p>
-                        <div className="md:h-9 p-2 -mt-2">
-                          {typeof Post.education === "string"
-                            ? Post.education.split(" ").slice(0, 15).join(" ") +
-                              (Post.education.split(" ").length > 15
-                                ? "..."
-                                : "")
-                            : ""}
-                        </div>
-                        <p className="text-sm text-gray-600 font-bold">
-                          Desription{" "}
-                        </p>
-                        <div className="overflow-clip md:h-9  p-2 mb-3 -mt-2">
-                          {typeof Post.description === "string"
-                            ? Post.description
-                                .split(" ")
-                                .slice(0, 15)
-                                .join(" ") +
-                              (Post.description.split(" ").length > 15
-                                ? "..."
-                                : "")
-                            : ""}
-                        </div>
-                      </div>
-                      <div className="flex items-center mx-14 mb-2 -mt-2">
-                        <p className="text-gray-600 -ms-7 text-sm ">
-                          Posted:{" "}
-                          {Post?.days === 0
-                            ? "Just now"
-                            : `${Post?.days} day ago`}{" "}
-                        </p>
-                      </div>
                     </div>
                   ))
                 ) : (
@@ -761,27 +606,29 @@ function AllUsersList() {
               </>
             ) : (
               <>
-                <div className="border mx-10 mt-5  rounded-xl shadow">
+                <div className="border mx-10 my-5  rounded-xl shadow">
                   <div className="ms-10 mt-3 flex justify-between">
                     <div>
                       <p className="capitalize font-bold ">
-                        {Selectedpost.Jobtitle.title_name}
-                      </p>
-                      <p className="capitalize font-bold text-gray-700">
-                        {Selectedpost.companyinfo.company_name}
+                        {Selectedpost.userId.first_name}{" "}
+                        {Selectedpost.userId.last_name}
                       </p>
                     </div>
                     <div
                       className="me-7 flex items-center cursor-pointer"
                       onClick={() => setView({ ...view, view: !view })}
                     >
-                        {Selectedpost.applied? (<Chip
-                            variant="ghost"
-                            color="green"
-                            size="sm"
-                            value="A p p l i e d"
-                            className="me-6"
-                          />):''}
+                      {Selectedpost.invited ? (
+                        <Chip
+                          variant="ghost"
+                          color="green"
+                          size="sm"
+                          value="i n v i t e d"
+                          className="me-6"
+                        />
+                      ) : (
+                        ""
+                      )}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -798,131 +645,125 @@ function AllUsersList() {
                       </svg>
                     </div>
                   </div>
-                  <div className=" flex ms-10 text-gray-700 ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className="w-6 h-6 text-gray-700"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"
-                      />
-                    </svg>
-                    <p className="ms-2">{Selectedpost.work_time}</p>
-                  </div>
-                  <div className="mt-2 ms-10 flex text-gray-700">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className="w-6 h-6 text-gray-700"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-                      />
-                    </svg>
-                    <p className="ms-2">
-                      {Selectedpost.companyinfo.country} /{" "}
-                      {Selectedpost.companyinfo.state} /{" "}
-                      {Selectedpost.companyinfo.city}
+                  <div className=" mt-2 ms-10 text-gray-700 ">
+                    <p className="font-bold text-sm">
+                      Role :{" "}
+                      <span className="text-gray-900 font-normal">
+                        {Selectedpost.jobField.field_name}
+                      </span>
+                    </p>
+                    <p className="font-bold text-sm">
+                      Role Category :{" "}
+                      <span className="text-gray-900 font-normal">
+                        {Selectedpost.jobTitle.title_name}
+                      </span>
                     </p>
                   </div>
-                  <div className="flex justify-center items-center">
-                    <hr className="my-3 w-5/6" />
-                  </div>
-                  <div className="flex justify-around">
-                    <div>
-                      <p className="text-gray-600 -ms-7 text-sm ">
-                        Posted:{" "}
-                        {Selectedpost?.days === 0
-                          ? "Just now"
-                          : `${Selectedpost?.days} day ago`}{" "}
+
+                  <div className="flex justify-between">
+                    <div className="mt-2 text-sm ms-10 flex text-gray-700 ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        className="w-5 h-5 text-gray-900"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                        />
+                      </svg>
+                      <p className="ms-2 text-gray-900">
+                        {Selectedpost.state} / {Selectedpost.city}
                       </p>
                     </div>
-                    <div className="">
+                    <div className="me-10">
                       <button className="border border-purple-400 rounded-2xl font-bold text-purple-400 px-2 py-1">
                         Save
                       </button>
-                      {!Selectedpost.applied ? (
+                      {!Selectedpost?.invited ? (
                         <button
                           className="font-bold bg-purple-300 text-white rounded-2xl px-2 py-1 ms-2"
-                          onClick={ApplyForJob}
+                          onClick={handleOpen}
                         >
-                          Apply
+                          Invite
                         </button>
                       ) : (
-                       <></>
+                        <></>
                       )}
                     </div>
                   </div>
                   <div className="flex justify-center items-center">
                     <hr className="my-3 w-5/6" />
                   </div>
-                  <div className="grid md:grid-rows-[7rem,1fr,1fr,1fr] gap-3 mx-10">
-                    <div>
-                      <p className="font-bold text-sm">
-                        Role :{" "}
-                        <span className="text-gray-900 font-normal">
-                          {Selectedpost.Jobtitle.title_name}
-                        </span>
-                      </p>
-                      <p className="font-bold text-sm">
-                        Role Category :{" "}
-                        <span className="text-gray-900 font-normal">
-                          Software Development
-                        </span>
-                      </p>
-                      <p className="font-bold text-sm">
-                        Experience :{" "}
-                        <span className="text-gray-900 font-normal">
-                          {Selectedpost.level_of_experience}
-                        </span>
-                      </p>
-                      <p className="font-bold text-sm">
-                        Year of experience :{" "}
-                        <span className="text-gray-900 font-normal">
-                          {Selectedpost.year_of_experience
-                            ? Selectedpost.year_of_experience
-                            : 0}{" "}
-                          year
-                        </span>
-                      </p>
-                      <p className="font-bold text-sm">
-                        Industry Type :{" "}
-                        <span className="text-gray-900 font-normal">
-                          {Selectedpost.companyinfo.industry}
-                        </span>
-                      </p>
-                      <p className="font-bold text-sm">
-                        Employment Type :{" "}
-                        <span className="text-gray-900 font-normal">
-                          {Selectedpost.work_time}
-                        </span>
-                      </p>
+                  <div className=" gap-3 mx-10">
+                    <div className="my-1  overflow-auto h-[7rem] scrollbar-thin border rounded-xl p-1 scrollbar-thumb-purple-400 ">
+                      <p className="font-bold text-sm ">Bio</p>
+                      <p className="text-sm">{Selectedpost.bio}</p>
                     </div>
-                    <div className="my-1">
-                      <p className="font-bold text-sm">Education</p>
-                      <p className="text-sm">{Selectedpost.education}</p>
+                    <div className="me-10 w-5/5 grid grid-rows-[3rem,1fr] mt-5 border h-56 rounded-2xl  overflow-hidden">
+                      <div className="flex items-center bg-white ">
+                        <p className="ms-5 font-bold">Education</p>
+                      </div>
+                      <div className="overflow-x-scroll flex scrollbar-thin M scrollbar-thumb-purple-400">
+                        {Selectedpost.experience.map((experience) => (
+                          <div
+                            key={experience.id}
+                            className="w-52 border border-gray-400 flex  items-center justify-center rounded-2xl ms-3 mb-2"
+                          >
+                            <div className="text-center w-52">
+                              <p className="font-bold capitalize">
+                                {experience.subtitle}
+                              </p>
+                              <p className="text-md capitalize my-1">
+                                {experience.company}
+                              </p>
+                              <p>
+                                {experience.startdate} - {experience.enddate}
+                              </p>
+                              <p className="text-sm">
+                                {experience.state}, {experience.country}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="-mt-4">
-                      <p className="font-bold text-sm">Job description</p>
-                      <p className="text-sm">{Selectedpost.description}</p>
+                    <div className="me-10 w-5/5 grid grid-rows-[3rem,1fr] h-56 mt-5 border rounded-2xl overflow-hidden">
+                      <div className="flex items-center bg-white ">
+                        <p className="ms-5 font-bold">Education</p>
+                      </div>
+                      <div className="overflow-x-scroll flex scrollbar-thin M scrollbar-thumb-purple-400">
+                        {Selectedpost.education.map((educations, index) => (
+                          <div
+                            key={index}
+                            className="w-52 border  border-gray-400 flex  items-center justify-center  rounded-2xl ms-3 mb-3"
+                          >
+                            <div className="text-center  w-52 ">
+                              <p className="font-bold capitalize mt-">
+                                {educations.School}
+                              </p>
+                              <p className="text-md capitalize my-1">
+                                {educations.Degree}
+                              </p>
+                              <p>
+                                {educations.DatesAttended} -{" "}
+                                {educations.Datesended}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="">
+                    <div className="my-3">
                       <p className="font-bold text-sm">Key Skills</p>
                       <div className="flex flex-wrap">
                         {Selectedpost.skills.map((skill, index) => (
@@ -942,6 +783,8 @@ function AllUsersList() {
           </div>
         </div>
       </div>
+      <InviteModal open={opens} handleOpen={handleOpen} Selectedpost={Selectedpost} resetView={resetView}/>
+
     </>
   );
 }

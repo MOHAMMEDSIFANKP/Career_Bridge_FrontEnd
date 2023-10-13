@@ -159,7 +159,7 @@ const UsersListing = (id,search) =>{
   });
 }
 
-// Get Get Chating UserList
+// Get Invite userside list
 const InviteUserListUserside = (id,search) =>{
   return CompanyAxiosInstant.get(`inviteUserlistuserside/${id}/?search=${search}`,{
     withCredentials:true
@@ -167,7 +167,31 @@ const InviteUserListUserside = (id,search) =>{
     throw error;
   });
 }
-
+// Users list in company isde
+const userListCompany = (
+  id,
+  search,
+  skillsQueryParam,
+  jobCategoriesQueryParam,
+  jobTitleQueryParam,
+  talenttypeQueryParam
+) => {
+  if (search) {
+    return CompanyAxiosInstant.get(
+      `userListCompany/${id}/?search=${search}&?skills=${skillsQueryParam}&job_categories=${jobCategoriesQueryParam}&job_title=${jobTitleQueryParam}&talent_type=${talenttypeQueryParam}`,
+      {
+        withCredentials: true,
+      }
+    );
+  } else {
+    return CompanyAxiosInstant.get(
+      `userListCompany/${id}/?skills=${skillsQueryParam}&job_categories=${jobCategoriesQueryParam}&job_title=${jobTitleQueryParam}&talent_type=${talenttypeQueryParam}`,
+      {
+        withCredentials: true,
+      }
+    );
+  }
+};
 //-----------------------------------Put or Patch methods-------------------------------/
 const EditCompanyDetails = (value, id) => {
   return CompanyAxiosInstant.put(`companydetails/${id}/`, value, {
@@ -230,7 +254,7 @@ export {
   CompanyHomeListing,
   UsersListing,
   InviteUserListUserside,
-
+  userListCompany,
   // Put or Patch
   EditCompanyDetails,
   EditCompanyPostDetails,

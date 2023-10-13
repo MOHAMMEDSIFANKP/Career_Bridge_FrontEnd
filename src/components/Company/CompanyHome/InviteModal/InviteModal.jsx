@@ -137,7 +137,7 @@ function InviteModal({ open, handleOpen, Selectedpost, resetView }) {
                   Searcheddata?.map((Post, index) => (
                     <div
                       key={index}
-                      className={`w-52 border border-gray-400 hover:bg-gray-100 hover:shadow rounded-2xl ms-3 mb-3 ${
+                      className={`w-3/5 border border-gray-400 hover:bg-gray-100 hover:shadow rounded-2xl ms-3 mb-3 ${
                         datas.Post ? "bg-gray-100" : ""
                       }`}
                       onClick={() => setDatas({ ...datas, Post: Post.id })}
