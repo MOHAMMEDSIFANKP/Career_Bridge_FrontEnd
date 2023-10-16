@@ -88,7 +88,7 @@ export function AddPost({ open, handleOpen }) {
     try {
       handleLoading();
       const response = await AdminJobFieldList();
-      console.log(response);
+
       setJobfield(response.data);
       const response2 = await AdminJobTitlelist();
       setJobTitle(response2.data);
@@ -189,23 +189,25 @@ export function AddPost({ open, handleOpen }) {
       }
     }
   };
-  //---------------------------- React quary---------------------------------------//
-  const { data, isLoading, isError } = useQuery("joblist", getJoblist);
-  if (isLoading) {
-    return (
-        <Loader />
-    );
-  }
+  // //---------------------------- React quary---------------------------------------//
+  // const { data, isLoading, isError } = useQuery("joblist", getJoblist);
+  // if (isLoading) {
+  //   return (
+  //       <Loader />
+  //   );
+  // }
 
-  if (isError) {
-    return (
-      <h1 className="text-center font-bold text-2xl mt-5 text-gray-700">There was an error fetching data</h1>
+  // if (isError) {
+  //   return (
+  //     <h1 className="text-center font-bold text-2xl mt-5 text-gray-700">There was an error fetching data</h1>
 
-    );
-  }
-  //---------------------------- React quary---------------------------------------//
+  //   );
+  // }
+  // //---------------------------- React quary---------------------------------------//
 
-
+useEffect(()=>{
+  getJoblist()
+},[])
   return (
     <>
       <Dialog open={open} handler={handleOpen}>
