@@ -219,6 +219,7 @@ function LoginPage() {
     if (Validation()) {
       try {
         const res = await userSignin(user);
+        console.log(res);
         if (res.status === 200) {
           const token = JSON.stringify(res.data);
           const decoded = jwtDecode(token);
