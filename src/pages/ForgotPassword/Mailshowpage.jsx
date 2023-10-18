@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import Loader from "../../components/Loading/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import MailOpen from "../../assets/EmailImg/EmailOpen.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserUrl } from "../../constants/constants";
 import axios from "axios";
 
 function MailShowpage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state && location.state.Email;
   const [Email,setEmail] = useState({email:''})
   // Loading
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ function MailShowpage() {
 
   useEffect(() => {
     document.title = "Mail | Career Bridge";
-    setEmail({...Email,email:localStorage.getItem('email')})
+    setEmail({...Email,email:email})
   }, []);
 
   const Gmail = () => {

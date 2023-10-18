@@ -65,12 +65,13 @@ function UserChat() {
     };
     client.onmessage = (message) => {
       const dataFromServer = JSON.parse(message.data);
+      console.log(dataFromServer,'daxooo');
       if (dataFromServer) {
         setMessages((prevMessages) => [
           ...prevMessages,
           {
             message: dataFromServer.message,
-            sender_username: dataFromServer.senderUsername,
+            sender_email: dataFromServer.senderUsername,
           },
         ]);
       }
@@ -210,6 +211,7 @@ function UserChat() {
                         id: company.userId,
                         email: company.email,
                         profile_image: company.profile_image,
+                        company_name : company.company_name,
                       })
                     }
                   >
@@ -250,13 +252,12 @@ function UserChat() {
                     className="rounded-full h-9 w-9"
                   />
                 </div>
-                <p className="ms-2 text-gray-800 capitalize">Mohammed sifan</p>
+                <p className="ms-2 text-gray-800 capitalize">{recipientdetails.company_name}</p>
               </div>
               <div className="grid grid-rows-[1fr,4rem]">
                 <div class="p-4 overflow-auto h-[44.4rem]">
                   {messages.map((message, index) =>
-                    senderdetails.email === message.sender_email ||
-                    senderdetails.email === message.sender_username ? (
+                    senderdetails.email === message.sender_email? (
                       <>
                         <div class="flex justify-end mb-2" key={index}>
                           <div class="bg-purple-50 shadow border text-gray-800 py-1 px-4 rounded-md max-w-xs">

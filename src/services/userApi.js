@@ -78,7 +78,8 @@ const UserDetail = (id) => {
 const UserRelatedJobs = (id) => {
   return userAxiosInstant.get(`api/userrelatedjobs/${id}`, {
     withCredentials: true,
-  });
+  })
+  .catch((error) => error.response);
 };
 // Get User Details
 const NotificationConut = (id) => {
@@ -147,6 +148,14 @@ const UserPendingApplyPostList = (id,search) => {
 const CompaniesList = (id,search) => {
   return userAxiosInstant
     .get(`api/CompaniesList/${id}/?search=${search}`, {
+      withCredentials: true,
+    })
+    .catch((error) => error.response);
+};
+
+const AllCompanyList = (search) => {
+  return userAxiosInstant
+    .get(`api/allcompanylist/search=${search}`, {
       withCredentials: true,
     })
     .catch((error) => error.response);
@@ -287,6 +296,7 @@ export {
   UserPendingApplyPostList,
   Rest_Password,
   CompaniesList,
+  AllCompanyList,
   // Put or pach methods
   UpdateUserInfoDetails,
   ExperienceDetails,

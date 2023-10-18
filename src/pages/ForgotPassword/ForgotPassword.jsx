@@ -52,17 +52,20 @@ function ForgotPassword() {
       try {
         const response = await axios.post(UserUrl + "/api/forgotpassword/", email);
         if (response.data.status === 'success' ){
-          handleLoading()
+         
           toast.success(response.data.msg)
-          setemail({email:''})
           localStorage.setItem('UserId',response.data.user)
-          navigate('/forgot-resendmail')
+          const Email = email.email
+          navigate('/forgot-resendmail',{ state: {Email} })
+          setemail({email:''})
         }else{
-          handleLoading()
+          
           toast.error(response.data.msg)
           setemail({email:''})
         }
+        handleLoading()
       } catch (error) {
+        console.log(error);
         handleLoading()
         toast.error('Some think wrong')
       }

@@ -12,9 +12,10 @@ const createAxioxClient = (baseURL)=>{
 }
 
 const attatToken = (req, tokenName) =>{
-    let authToken = localStorage.getItem(tokenName.access)
-    if (authToken){
-        req.headers.Authorization = `Bearer ${authToken}`;
+    let authToken = localStorage.getItem('token')
+    const accesstoken = JSON.parse(authToken);
+    if (accesstoken){
+        req.headers.Authorization = `Bearer ${accesstoken.access}`;
     }
     return req
 }

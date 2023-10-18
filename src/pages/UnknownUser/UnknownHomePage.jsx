@@ -49,9 +49,10 @@ function UnknownHomePage() {
   const { isLoading, error, data } = useQuery({
     queryKey: ["usersjoblist"],
     queryFn: () => UnkownUserJobList(),
-  });
+  }, {retry:false});
 
   if (isLoading) {
+    document.title = 'Unkown Users';
     return <Loader />;
   }
   if (error) {

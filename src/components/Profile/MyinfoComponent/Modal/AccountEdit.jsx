@@ -1,11 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
   Button,
+  Dialog,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+  Checkbox,
 } from "@material-tailwind/react";
+
 import Select from "react-select";
 
 // Serviece
@@ -98,13 +103,12 @@ const AccountEdit = ({ isOpen, onClose }) => {
     }
     return true;
   };
-// Change first_name and last_name
+  // Change first_name and last_name
   const ConfirmButton = async () => {
     if (Validation()) {
       try {
         const res = await UpdateUseaccount(Form, UserInfo.id);
         if (res.status === 200) {
-         
           dispatch(
             UpdateUserDetails({
               first_name: res.data.first_name,
@@ -122,13 +126,13 @@ const AccountEdit = ({ isOpen, onClose }) => {
       } catch (error) {
         toast.error("something wrong");
       }
-      try{ 
+      try {
         const data = {
-          jobField: {field_name:SelectedJobfield.value},
-          jobTitle: {field:10,title_name:SelectedJobTitle.value},
-        }
-        const resp = await UpdateUserInfoDetails(data, UserInfo.userinfoid)
-        if (resp.status === 200){
+          jobField: { field_name: SelectedJobfield.value },
+          jobTitle: { field: 10, title_name: SelectedJobTitle.value },
+        };
+        const resp = await UpdateUserInfoDetails(data, UserInfo.userinfoid);
+        if (resp.status === 200) {
           dispatch(
             setRole({
               JobFiledRedex: resp.data.jobField.field_name,
@@ -136,9 +140,9 @@ const AccountEdit = ({ isOpen, onClose }) => {
             })
           );
         }
-      }catch(error){
+      } catch (error) {
         console.log(error);
-        toast.error("Something wrong")
+        toast.error("Something wrong");
       }
       onClose();
     }
@@ -155,14 +159,27 @@ const AccountEdit = ({ isOpen, onClose }) => {
     getJoblist();
   }, []);
   return (
-    <Dialog open={isOpen} handler={onClose}>
+    <>
       <ToastContainer />
-      <DialogHeader>Edit Account</DialogHeader>
-      <DialogBody>
-        <div className="mx-3 grid grid-rows-3 gap-3">
-          <div className="grid grid-cols-2">
+      <Dialog
+        size="xs"
+        open={isOpen}
+        handler={onClose}
+        className="bg-transparent shadow-none"
+      >
+        <Card className="mx-auto w-full max-w-[24rem]">
+          <div className="h-3 w-full flex justify-center items-center">
+            <div className="rounded-full h-24 w-24 mb-5 border-purple-400 border bg-purple-400 flex justify-center items-center">
+              <img
+                src={UserInfo.profile_image}
+                className="rounded-full p-[1px] h-24 w-24"
+                alt=""
+              />
+            </div>
+          </div>
+          <CardBody className="flex flex-col gap-1">
             <div className="mx-2">
-              <p className="text-black pb-1">First name</p>
+              <p className=" pb-1 text-sm text-gray-800">First name</p>
               <input
                 ref={first_nameInput}
                 type="text"
@@ -181,7 +198,7 @@ const AccountEdit = ({ isOpen, onClose }) => {
               />
             </div>
             <div className="mx-2">
-              <p className="text-black pb-1">Last name</p>
+              <p className="text-sm text-gray-800 pb-1">Last name</p>
               <input
                 ref={last_nameInput}
                 type="text"
@@ -199,62 +216,64 @@ const AccountEdit = ({ isOpen, onClose }) => {
                 }`}
               />
             </div>
-          </div>
-          <div className="mx-2">
-            <p className="text-black pb-1">Email</p>
-            <input
-              readOnly
-              ref={emailInput}
-              type="text"
-              placeholder="Ex: calicut "
-              defaultValue={Form.email}
-              name="email"
-              onChange={(e) => {
-                setForm({ ...Form, [e.target.name]: e.target.value });
-                seterror({ ...error, email: false });
-              }}
-              className={`border bg-gray-200 w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
-                error.email
-                  ? "focus:ring-red-200 border-2 border-red-400"
-                  : "border-gray-400"
-              }`}
-            />
-          </div>
-          <div className="grid grid-cols-2 mx-2 gap-5">
-            <div>
-              {" "}
-              <Select
-                value={SelectedJobfield ? SelectedJobfield : ""}
-                onChange={(selectedOption) =>
-                  setSelectedJobfield(selectedOption)
-                }
-                options={options}
+            <div className="mx-2">
+              <p className="text-gray-700 text-sm pb-1">Email</p>
+              <input
+                readOnly
+                ref={emailInput}
+                type="text"
+                placeholder="Ex: calicut "
+                defaultValue={Form.email}
+                name="email"
+                onChange={(e) => {
+                  setForm({ ...Form, [e.target.name]: e.target.value });
+                  seterror({ ...error, email: false });
+                }}
+                className={`border bg-gray-200 w-full py-2 px-3 rounded-lg text-black placeholder-gray-700 text-sm focus:border-purple-500 focus:outline-none focus:ring focus:ring-purple-100 ${
+                  error.email
+                    ? "focus:ring-red-200 border-2 border-red-400"
+                    : "border-gray-400"
+                }`}
               />
             </div>
-            <div>
-              <Select
-                value={SelectedJobTitle ? SelectedJobTitle : ""}
-                onChange={(selectedOption) =>
-                  setSelectedJobTitle(selectedOption)
-                }
-                options={option2}
-              />
+            <div className="mx-2 gap-1">
+              <div>
+                <p className="text-gray-700 text-sm pb-1">Job Category</p>{" "}
+                <Select
+                  value={SelectedJobfield ? SelectedJobfield : ""}
+                  onChange={(selectedOption) =>
+                    setSelectedJobfield(selectedOption)
+                  }
+                  options={options}
+                />
+              </div>
+              <div>
+                <p className="text-gray-700 text-sm pb-1">Job Title</p>
+
+                <Select
+                  value={SelectedJobTitle ? SelectedJobTitle : ""}
+                  onChange={(selectedOption) =>
+                    setSelectedJobTitle(selectedOption)
+                  }
+                  options={option2}
+                />
+              </div>
             </div>
-          </div>
-        </div>
-      </DialogBody>
-      <DialogFooter>
-        <Button variant="text" onClick={onClose} className="mr-1">
-          <span className="text-gray-800">Cancel</span>
-        </Button>
-        <button
-          className="bg-purple-300 rounded-2xl py-1 px-3 text-center text-white font-bold"
-          onClick={ConfirmButton}
-        >
-          <span>Confirm</span>
-        </button>
-      </DialogFooter>
-    </Dialog>
+          </CardBody>
+          <CardFooter className="pt-0 flex justify-between">
+            <Button variant="text" onClick={onClose} className="mr-1">
+              <span className="text-gray-800">Cancel</span>
+            </Button>
+            <button
+              className="bg-purple-300 rounded-full px-3 text-center text-white font-bold"
+              onClick={ConfirmButton}
+            >
+              <span>Confirm</span>
+            </button>
+          </CardFooter>
+        </Card>
+      </Dialog>
+    </>
   );
 };
 export { AccountEdit };

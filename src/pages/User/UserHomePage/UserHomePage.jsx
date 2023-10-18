@@ -114,7 +114,7 @@ function UserHomePage() {
             ) : selected === "jobs" ? (
               navigate('/user/jobs/')
             ) : (
-              <div>company</div>
+              navigate('/user/companylist')
             )}
           </div>
           <div className="flex justify-center">

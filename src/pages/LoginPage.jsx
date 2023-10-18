@@ -257,47 +257,55 @@ function LoginPage() {
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
-      setgUser(codeResponse);
-      GoogleAuth();
+      setgUser(codeResponse)
+      console.log(gUser, "jdsjkjasdjjbdskk")
     },
-    onError: (error) => console.log("Login Failed:", error),
+    onError: (error) => console.log("Login Failed:", error)
   });
-  const GoogleAuth = async () => {
-    handleLoading();
-    try {
-      if (!guser) return;
-      const response = await axios.get(
-        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${guser.access_token}`,
-        {
-          headers: {
-            Authorization: `Bearer ${guser.access_token}`,
-            Accept: "application/json",
-          },
+  
+  useEffect(() => {
+    const handleGoogleAuth = async () => {
+      try {
+        handleLoading();
+        if (!guser) return;
+        const response = await axios.get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${guser.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${guser.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+        
+
+        const res = await UserGoogleSignin(response.data);
+        const token = JSON.stringify(res.data);
+        const decoded = jwtDecode(token);
+        if (decoded.role === "user") {
+          localStorage.setItem("token", token);
+          fetchUserInfo(decoded);
+          navigate('/user/', { state: { user_id: decoded?.userInfoId?decoded?.userInfoId:null} })
+        } else if (decoded.role === "company") {
+          localStorage.setItem("token", token);
+          FechCompanyInfo(decoded);
+          navigate("/company/");
         }
-      );
-      const res = await UserGoogleSignin(response.data);
-      const token = JSON.stringify(res.data);
-      const decoded = jwtDecode(token);
-      if (decoded.role === "user") {
-        localStorage.setItem("token", token);
-        fetchUserInfo(decoded);
-        navigate('/user/', { state: { user_id: decoded?.userInfoId?decoded?.userInfoId:null} })
-      } else if (decoded.role === "company") {
-        localStorage.setItem("token", token);
-        FechCompanyInfo(decoded);
-        navigate("/company/");
+        setgUser([]);
+        handleLoading();
+      } catch (error) {
+        handleLoading();
+        if (error.response && error.response.data) {
+          toast.error(error.response.data.detail);
+        } else {
+          toast.error("An error occurred during signup.");
+        }
       }
-      setgUser([]);
-    } catch (error) {
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.detail);
-      } else {
-        toast.error("An error occurred during signup.");
-      }
-    } finally {
-      handleLoading();
     }
-  };
+
+    if (guser){
+      handleGoogleAuth();
+    }},[guser]);
 
   return (
     <>

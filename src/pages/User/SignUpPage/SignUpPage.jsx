@@ -5,15 +5,18 @@ import "react-toastify/dist/ReactToastify.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import Loader from "../../../components/Loading/Loading";
 import userImage from "../../../assets/icons8-google.svg";
-import { UserGoogleSignup } from "../../../services/userApi";
+import { UserDetail, UserGoogleSignup, UserInfoDetails } from "../../../services/userApi";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
+import { SetEducation, SetLanguage, SetSkills, setExperiences, setRole, setUserDetails } from "../../../Redux/UserSlice";
+import { useDispatch } from "react-redux";
 
 function SignUpPage() {
   useEffect(() => {
     FirstInputRef.current.focus();
     document.title = "SignUp | Career Bridge";
   }, []);
-
+  const dispatch = useDispatch()
   const navigate = useNavigate();
 
   const [other, setOther] = useState({ cpassword: "", check: false });
@@ -115,6 +118,77 @@ function SignUpPage() {
     // }
   };
 
+  // Redux storing
+  async function fetchUserInfo(token) {
+    if (!token.userInfoId) {
+      try {
+        const UserDetails = await UserDetail(token.user_id);
+        const userInformation = {
+          id: UserDetails.data.id,
+          profile_image: UserDetails.data.profile_image,
+          email: UserDetails.data.email,
+          first_name: UserDetails.data.first_name,
+          last_name: UserDetails.data.last_name,
+          is_active: UserDetails.data.is_active,
+          is_compleated: UserDetails.data.is_compleated,
+          id_admin: UserDetails.data.is_admin,
+          role: UserDetails.data.role,
+        };
+        if (userInformation) {
+          dispatch(setUserDetails({ UserInfo: userInformation }));
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    } else {
+      try {
+        const res = await UserInfoDetails(token.userInfoId);
+        const UserDetails = await UserDetail(token.user_id);
+        dispatch(
+          setRole({
+            JobFiledRedex: res.data.jobField.field_name,
+            JobTitleRedex: res.data.jobTitle.title_name,
+          })
+        );
+        res.data.experience.map((values, index) => {
+          dispatch(setExperiences(values));
+        });
+        res.data.education.map((values, index) => {
+          dispatch(SetEducation(values));
+        });
+        res.data.languages.map((values, index) => {
+          dispatch(SetLanguage(values));
+        });
+        res.data.skills.map((values, index) => {
+          dispatch(SetSkills(values));
+        });
+        const userInformation = {
+          id: UserDetails.data.id,
+          profile_image: UserDetails.data.profile_image,
+          email: UserDetails.data.email,
+          first_name: UserDetails.data.first_name,
+          last_name: UserDetails.data.last_name,
+          is_active: UserDetails.data.is_active,
+          is_compleated: UserDetails.data.is_compleated,
+          id_admin: UserDetails.data.is_admin,
+          role: UserDetails.data.role,
+          streetaddress: res.data.streetaddress,
+          userinfoid: res.data.id,
+          city: res.data.city,
+          state: res.data.state,
+          zipcode: res.data.zipcode,
+          bio: res.data.bio,
+          cv: res.data.cv,
+        };
+        if (userInformation) {
+          dispatch(setUserDetails({ UserInfo: userInformation }));
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    }
+  }
+
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
       setgUser(codeResponse);
@@ -141,7 +215,13 @@ function SignUpPage() {
       setgUser([]);
       const token = JSON.stringify(res.data.token)
       localStorage.setItem('token',token)
-      navigate("/user/position");
+      const decoded = jwtDecode(token);
+      if (decoded.is_compleated){
+        fetchUserInfo(decoded);
+        navigate('/user/', { state: { user_id: decoded?.userInfoId?decoded?.userInfoId:null} })
+      }else{
+        navigate("/user/position");
+      }
     } catch (error) {
       handleLoading();
       console.log(error.response);
@@ -153,6 +233,7 @@ function SignUpPage() {
     }
   };
 
+  
   return (
     <>
       {loading && <Loader />}
